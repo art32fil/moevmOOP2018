@@ -1,5 +1,5 @@
-#include "object.h"
 #include <iostream>
+#include "object.h"
 
 using namespace std;
 
@@ -20,6 +20,10 @@ Object::Object(ifstream& file){
 
 Object::Object() {
 	x = y = hp = 0;
+	cout << "Object:" << endl
+		<< "	x = " << x << endl
+		<< "	y = " << y << endl
+		<< "	hp = " << hp << endl;
 }
 
 Object::~Object(){

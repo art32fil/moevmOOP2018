@@ -1,7 +1,7 @@
-#include "field.h"
 #include <fstream>
 #include <iostream>
 #include <Windows.h>
+#include "field.h"
 
 using namespace std;
 
@@ -19,14 +19,12 @@ Field::~Field() {
 	cout << "Destroy Field:" << endl
 		<< "	xSize = " << xSize << endl
 		<< "	ySize = " << ySize << endl;
-	for (vector<Object*>::iterator it = armyA.begin(); it != armyA.end(); ++it){
+	for (List<Object*>::Iterator it = armyA.begin(); it != armyA.end(); ++it){
 		delete (*it);
 	}
-	armyA.clear();
-	for (vector<Object*>::iterator it = armyB.begin(); it != armyB.end(); ++it) {
+	for (List<Object*>::Iterator it = armyB.begin(); it != armyB.end(); ++it) {
 		delete (*it);
 	}
-	armyB.clear();
 	//delete[]armyA;
 	//delete[]armyB;
 }
@@ -39,16 +37,16 @@ void Field::getArmyFromFile(ifstream& file) {
 	file >> countArmyA;
 	//armyA = new Object*[countArmyA];
 	for (int i = 0; i < countArmyA; i++) {
-		armyA.push_back(new Object(file));
+		armyA.append(new Object(file));
 	}
 	file >> countArmyB;
 	//armyB = new Object*[countArmyB];
 	for (int i = 0; i < countArmyB; i++) {
-		armyB.push_back(new Object(file));
+		armyB.append(new Object(file));
 	}
 }
 
-bool Field::checkArmyCoords(vector<Object*> army, int count, int i, int j){
+bool Field::checkArmyCoords(List<Object*> &army, int count, int i, int j){
 	for (int armyI = 0; armyI < count; armyI++) {
 		if (army[armyI]->checkObjCoords(i, j)) {
 			return true;
@@ -57,7 +55,7 @@ bool Field::checkArmyCoords(vector<Object*> army, int count, int i, int j){
 	return false;
 }
 
-bool printArmy(vector<Object*> army, int color, int count, int i, int j) {
+bool printArmy(List<Object*> &army, int color, int count, int i, int j) {
 	for (int armyI = 0; armyI < count; armyI++) {
 		if (army[armyI]->checkObjCoords(i, j)) {
 			char symb = 'O';
@@ -91,11 +89,11 @@ void Field::printField() {
 	}
 }
 
-vector<Object*> Field::getArmyA() {
+List<Object*>& Field::getArmyA() {
 	return armyA;
 }
 
-vector<Object*> Field::getArmyB() {
+List<Object*>& Field::getArmyB() {
 	return armyB;
 }
 
@@ -107,7 +105,7 @@ int Field::getCountArmyB() {
 	return countArmyB;
 }
 
-void Field::getDamage(vector<Object*> army, int count, int i, int j, int damage) {
+void getDamage(List<Object*> &army, int count, int i, int j, int damage) {
 	for (int armyI = 0; armyI < count; armyI++) {
 		if (army[armyI]->checkObjCoords(i, j)) {
 			army[armyI]->getDamage(damage);

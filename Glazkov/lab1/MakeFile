@@ -1,0 +1,6 @@
+link_all: main.o iter.o
+	g++ main.o iter.o -o main
+main.o: main.cpp iter.h
+	g++ -c main.cpp
+iter.o: iter.cpp iter.h
+	g++ -c iter.cpp
