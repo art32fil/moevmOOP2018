@@ -46,13 +46,13 @@ void Field::getArmyFromFile(ifstream& file) {
 	}
 }
 
-bool Field::checkArmyCoords(List<Object*> &army, int count, int i, int j){
+Object* Field::checkArmyCoords(List<Object*> &army, int count, int i, int j){
 	for (int armyI = 0; armyI < count; armyI++) {
 		if (army[armyI]->checkObjCoords(i, j)) {
-			return true;
+			return army[armyI];
 		}
 	}
-	return false;
+	return nullptr;
 }
 
 bool printArmy(List<Object*> &army, int color, int count, int i, int j) {
@@ -105,10 +105,10 @@ int Field::getCountArmyB() {
 	return countArmyB;
 }
 
-void getDamage(List<Object*> &army, int count, int i, int j, int damage) {
+/*void getDamage(List<Object*> &army, int count, int i, int j, int damage) {
 	for (int armyI = 0; armyI < count; armyI++) {
 		if (army[armyI]->checkObjCoords(i, j)) {
 			army[armyI]->getDamage(damage);
 		}
 	}
-}
+}*/

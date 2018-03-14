@@ -23,7 +23,7 @@ public:
 
 	void getSizeFromFile(ifstream& file); // получить размеры поля из файла
 	void getArmyFromFile(ifstream& file); // получить объекты армий из файла
-	bool checkArmyCoords(List<Object*> &army, int count, int i, int j); // проверить наличие объектов армии на координатах
+	Object* checkArmyCoords(List<Object*> &army, int count, int i, int j); // проверить наличие объектов армии на координатах
 	List<Object*>& getArmyA(); // получить контейнер первой армии
 	List<Object*>& getArmyB(); // получить контейнер второй армии
 	int getCountArmyA(); // получить количество объектов первой армии
