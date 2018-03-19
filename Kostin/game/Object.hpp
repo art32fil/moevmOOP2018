@@ -31,52 +31,56 @@ class Object {
 private:
     Coordinates coords;
     int hit_points;
+    size_t position; // of Object in List
 public:
     Object(){
-        std::cout << "\tx = " << coords.axis_x << std::endl
+        /*std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
-                  << "Object()" << std::endl;
+                  << "\033[1;32m Object() \033[0m" << std::endl << std::endl;*/
     }
-    Object(size_t arg_x, size_t arg_y, int hp = 100) : coords(arg_x, arg_y), hit_points(hp){
+    Object(size_t arg_x, size_t arg_y, int hp = 100, size_t pos = 0)
+                : coords(arg_x, arg_y), hit_points(hp), position(pos){
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
-                  << "Object(size_t, size_t, int)" << std::endl;
+                  << "\033[1;32m Object(size_t, size_t, int) \033[0m" << std::endl << std::endl;
     }
     ~Object(){
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
-                  << "~Object()" << std::endl;
+                  << "\033[1;31m ~Object() \033[0m" << std::endl << std::endl;
     }
-
     Object(Object const &obj){
         coords = obj.get_coords();
         hit_points = obj.get_hp();
-
+        position = obj.get_position();
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
-                  << "Object(Object const &)" << std::endl;
+                  << "\033[1;32m Object(Object const &) \033[0m" << std::endl << std::endl;
     }
-    Object(Object&& obj) : coords(std::move(obj.get_coords()))
-                        , hit_points(std::move(obj.get_hp())) {
+    Object(Object&& obj) : coords(std::move(obj.get_coords())),
+                hit_points(std::move(obj.get_hp())), position(std::move(obj.get_position())) {
                             std::cout << "\tx = " << coords.axis_x << std::endl
                                       << "\ty = " << coords.axis_y << std::endl
                                       << "\thp = " << hit_points << std::endl
-                                      << "Object(Object &&)" << std::endl;
+                                      << "\033[1;32m Object(Object &&) \033[0m" << std::endl << std::endl;
              }
-    Object &operator=(Object&& obj){
+
+    Object &operator=  (Object&& obj){
          coords = std::move(obj.get_coords());
          hit_points = std::move(obj.get_hp());
+         position = std::move(obj.get_position());
          return *this;
     }
-    Object &operator=(Object &obj){
+    Object &operator=  (Object &obj){
         if(this != &obj)
         {
             coords = obj.get_coords();
             hit_points = obj.get_hp();
+            position = obj.get_position();
         }
         return *this;
     }
@@ -84,16 +88,25 @@ public:
         return (obj.coords.axis_x == coords.axis_x && obj.coords.axis_y == coords.axis_y);
     }
 
-    void        get_Damag(size_t &dmg);
-    int         &get_hp(){ return hit_points; }
-    const int         &get_hp() const { return hit_points; }
-    Coordinates &get_coords(){ return coords; }
-    const Coordinates &get_coords() const { return coords; }
+    void              get_Damag(size_t const &dmg);
+    int               &get_hp()                 { return hit_points; }
+    const int         &get_hp()const            { return hit_points; }
+    Coordinates       &get_coords()             { return coords; }
+    const Coordinates &get_coords() const       { return coords; }
+    size_t            &get_position()           { return position; }
+    const size_t      &get_position() const     { return position; }
 
-    //Object* check_Position(){}; //это  перегрузка оператора ==
+    Object* check_Coords(Coordinates const &);
 };
 
-void Object::get_Damag(size_t &dmg){
+Object* Object::check_Coords(Coordinates const &crds){
+    if(coords.axis_x == crds.axis_x && coords.axis_y == crds.axis_y)
+        return this;
+    else
+        return nullptr;
+};
+
+void Object::get_Damag(size_t const &dmg){
     get_hp() -= dmg;
 }
 

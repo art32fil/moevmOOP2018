@@ -20,12 +20,12 @@
 using namespace std;
 
 void menu(){
-    std::cout << '\n';
-    std::cout << "*********************************************" << '\n';
-    std::cout << "** 1 - check colour of army on postion     **" << '\n';
-    std::cout << "** 0 - exit                                **" << '\n';
-    std::cout << "*********************************************" << '\n';
-    std::cout << '\n';
+    std::cout << '\n' <<
+    "\033[1;35m*********************************************" <<
+      '\n' << "** 1 - check colour of army on postion     **" <<
+      '\n' << "** 0 - exit                                **" <<
+      '\n' << "*********************************************\033[0m" <<
+    '\n' << '\n';
 }
 
 int main(int argc, char const *argv[]) {
@@ -45,26 +45,43 @@ int main(int argc, char const *argv[]) {
         std::cin >> choice;
         switch (choice) {
             case 0:
+            std::cout << "---------------------------------------------" << '\n';
                 return 0;
 
             case 1:
                 std::cout << "Enter position x and y: ";
                 std::cin >> pos_x >> pos_y;
-                obj = {pos_x, pos_y, 0}; //Colled of Constructor!
-                ob = new std::pair<int, Object&>{btlf.check_colour_of_army_on_postion(obj)};
+                std::cout << '\n' << "it's interim object : ";
+                std::cout << '\n';
+                obj = {pos_x, pos_y}; //Colled of Constructor!
+                ob = new std::pair<int, Object&>{btlf.check_colour_on_postion(obj)};
                 if(ob->first == 1){
-                    std::cout << "It is object of RED army!" << '\n';
+                    std::cout << "It is object of \033[1;31m RED \033[0m army!" << '\n';
                 }
                 else if(ob->first ==  2)
-                    std::cout << "It is object of RED army!" << '\n';
-                else if(ob->first == 3)
+                    std::cout << "It is object of \033[1;32m GREEN \033[0m army!" << '\n';
+                else if(ob->first == 3){
                     std::cout << "It is object don't belong any army!" << '\n';
+                    break;
+                }
                 std::cout << '\n';
                 std::cout << "Enter quantity of damage: ";
                 std::cin >> dmg;
                 ob->second.get_Damag(dmg);
-
+                std::cout << '\n' << "Hit points: " << ob->second.get_hp() << endl;
                 std::cout << '\n';
+                btlf.Draw_battlefield();
+
+                //ПОФИКСИТЬ - НЕПОНИМАЮ
+                if(ob->second.get_hp() <= 0 && ob->first == 1 ){ //
+
+                    btlf.get_red_arm().Delete_elem(find_pos(ob->second.get_position()));
+                }
+                if(ob->second.get_hp() <= 0 && ob->first == 2 ){
+                    btlf.get_gr_arm().Delete_elem(ob->second.get_position()-1);
+                }
+                //
+
             break;
             default:
                 std::cout << "Incorrect choice!" << '\n';
