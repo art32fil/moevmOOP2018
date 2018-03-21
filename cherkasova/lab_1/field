@@ -23,7 +23,7 @@ class Field{
     vector <List<Object>*> all_cont;     
 
 public:
-    Field( int x_size_ = 8, int y_size_ = 8, int army_ = 2);
+    Field( int x_size_, int y_size_, int army_);
     ~Field();
     char **getmap(){return map;}
     vector <List<Object>*> getconts() {return all_cont;}
