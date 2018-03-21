@@ -1,10 +1,10 @@
 all: iter list object field main 
 	g++ -o out main.cpp -std=c++17 -g
-iter:
+iter: 
 	g++ -c iter -std=c++17 -g
-list:
+list: 
 	g++ -c list -std=c++17 -g
-object:
+object: 
 	g++ -c object -std=c++17 -g
 field: 
 	g++ -c field -std=c++17 -g
