@@ -16,14 +16,14 @@ class Field{
     friend class Object;
     friend class List<Object>;
     
-    int x_size;
-    int y_size;
-    int army_amount;
+    int x_size_;
+    int y_size_;
+    int army_amount_;
     char **map; //map[y][x] - access
     vector <List<Object>*> all_cont;     
 
 public:
-    Field( int x_size_, int y_size_, int army_);
+    Field( int x_size, int y_size, int army);
     ~Field();
     char **getmap(){return map;}
     vector <List<Object>*> getconts() {return all_cont;}
@@ -40,34 +40,34 @@ public:
 
 
 //---------------------------------FIELD-METHODS-------------------------------------------
-Field::Field( int x_size_ = 8, int y_size_ = 8, int army_ = 2) 
+Field::Field( int x_size, int y_size, int army) 
 {
-    x_size = x_size_;
-    y_size = y_size_;
-    army_amount = army_;
-    cout << "Field:\n    x_size = " << x_size << "\n    y_size = " << y_size <<endl;
+    x_size_ = x_size;
+    y_size_ = y_size;
+    army_amount_ = army;
+    cout << "Field:\n    x_size_ = " << x_size_ << "\n    y_size_ = " << y_size_ <<endl;
         
 //  create a clean map
-    map = new char*[y_size]; 
-    for(int i = 0; i < y_size; i++){ 
-        map[i] = new char[x_size];
+    map = new char*[y_size_]; 
+    for(int i = 0; i < y_size_; i++){ 
+        map[i] = new char[x_size_];
     }
-    for(int i = 0; i < x_size; i++){
-        for(int j = 0; j < y_size; j++){
+    for(int i = 0; i < x_size_; i++){
+        for(int j = 0; j < y_size_; j++){
             map[i][j] = '.';
         }
     }
 // create containers for armies
-    for(int i = 0; i < army_amount; i++){ 
+    for(int i = 0; i < army_amount_; i++){ 
         List<Object> *some = new List<Object>;
         all_cont.push_back(some);
     }  
 }
 
 Field::~Field(){
-    cout << "~Field:\n    x_size = " << x_size << "\n    y_size = " << y_size <<endl; 
-    for(int i = 0; i < army_amount; i++){ all_cont[i]->~List(); }
-    for(int j = 0; j < x_size; j++){ delete[] map[j]; }
+    cout << "~Field:\n    x_size_ = " << x_size_ << "\n    y_size_ = " << y_size_ <<endl; 
+    for(int i = 0; i < army_amount_; i++){ all_cont[i]->~List(); }
+    for(int j = 0; j < x_size_; j++){ delete[] map[j]; }
     delete[] map;
     cout << "~Field.\n";
 }
@@ -78,11 +78,11 @@ void Field::read_file(fstream &f)
 {
     int obj_amount = 0;
     int j = 0;
-    while(j < army_amount){  
+    while(j < army_amount_){  
         f >> obj_amount; 
         int i = 0;
         while (i++ < obj_amount){ 
-            Object *ob = new Object(f);
+            Object *ob = new Object(f, i);
             all_cont[j]->insert_tail(*ob); // add an object to j container   
             add_to_map(ob->gety(), ob->getx()); // mark this object on the map
         }
@@ -138,17 +138,17 @@ void Field::print_field()
 {   
     check_map();
     cout <<endl;
-    for(int i = 0; i < y_size; i++){ if(i==0) cout << "  "; cout <<  i; } cout << endl;        
-    for(int i = 0; i < y_size; i++){ 
-        if(i==0 || i == y_size-1) {
+    for(int i = 0; i < y_size_; i++){ if(i==0) cout << "  "; cout <<  i; } cout << endl;        
+    for(int i = 0; i < y_size_; i++){ 
+        if(i==0 || i == y_size_-1) {
             if(i==0) cout << "  ";
             cout << "+"; 
         }
         else cout << "-"; 
     }cout << endl;   
-    for(int i = 0; i < y_size; i++){
+    for(int i = 0; i < y_size_; i++){
         cout << i << "|";
-        for(int j = 0; j < x_size; j++){
+        for(int j = 0; j < x_size_; j++){
             int belong = belonging_army(j,i);
             switch(belong){
                 case 0:
@@ -165,14 +165,14 @@ void Field::print_field()
         }
         cout<< "|" <<endl;
     }
-    for(int i = 0; i < y_size; i++){ 
-        if(i==0 || i == y_size-1) {
+    for(int i = 0; i < y_size_; i++){ 
+        if(i==0 || i == y_size_-1) {
             if(i==0) cout << "  ";
             cout << "+"; 
         }
         else cout << "-"; 
     }cout<<endl;   
-    for(int i = 0; i < y_size; i++){ if(i==0) cout << "  "; cout <<  i; } cout << endl; 
+    for(int i = 0; i < y_size_; i++){ if(i==0) cout << "  "; cout <<  i; } cout << endl; 
     cout <<endl;      
 }
 

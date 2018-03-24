@@ -68,7 +68,7 @@ int main()
         }
     }
 
-    Field *fd = new Field(x_load, y_load);        
+    Field *fd = new Field(x_load, y_load, army_amount);        
    
     if(choice){ // file
         fd->read_file(fin);

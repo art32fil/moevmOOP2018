@@ -12,24 +12,27 @@ class Field;
 //--------------------------------------OBJECT-------------------------------------------
 class Object {
 
-    int x;
-    int y;
-    int hp;
+    int x_;
+    int y_;
+    int hp_;
+    int id_;
 
-public:
-    int getx(){return x;}
-    int gety(){return y;}
-    int gethp(){return hp;}            
-    void print_ob() {cout << "Object:\n    x = " << x << "\n    y = " << y << "\n    hp = " << hp << "\nObject." <<endl; }
-    void print_ob_simple() { cout << "[ " << x << " " << y << " "<< hp << " ]" << endl; }
+public: 
+    int getx(){return x_;}
+    int gety(){return y_;}
+    int gethp(){return hp_;} 
+    int getid(){return id_; }           
+    void print_ob() {cout << "Object:\n    x = " << x_ << "\n    y = " << y_ << "\n    hp = " << hp_ 
+                            << "\n    " << "id = " << id_ << "\nObject." <<endl; }
+    void print_ob_simple() { cout << "[ " << x_ << " " << y_ << " "<< hp_ << " " << id_ << " ]" << endl; }
     
     
-    void read_obj(fstream &f);
+    void read_obj(fstream &f, int iobj);
     void damage(int d);
     bool is_obj(int i, int j,  char **m);
 
-    Object(int x_, int y_, int hp_) { x = x_; y = y_; hp = hp_; print_ob(); }
-    Object(fstream &f) { read_obj(f); print_ob(); }
+    Object(int x, int y, int hp, int id) { x_ = x; y_ = y; hp_ = hp;  id_ = id;  print_ob(); }
+    Object(fstream &f, int iobj) { read_obj(f, iobj); print_ob(); }
 
 // destructor ~Elem (see file list)
     // ~Object() { cout <<"~"; print_ob(); } 
@@ -38,7 +41,7 @@ public:
 
 
 //---------------------------------OBJECT-METHODS------------------------------------------
-void Object::damage(int d) { hp = hp - d; }
+void Object::damage(int d) { hp_ = hp_ - d; }
 
 bool Object::is_obj(int i, int j, char **m)
 {
@@ -46,10 +49,11 @@ bool Object::is_obj(int i, int j, char **m)
     return false;
 }
 
-void Object::read_obj(fstream &f)
+void Object::read_obj(fstream &f, int iobj)
 {
-    f >> x >> y >> hp;  
-    // cout << "check obj from file: " << x <<" "<<y<<" "<<hp<<endl;  
+    f >> x_ >> y_ >> hp_;
+    id_ = iobj;  
+    // cout << "check obj from file: " << _x <<" "<<y<<" "<<hp<<endl;  
 }
 
 //-----------------------------------------------------------------------------------------

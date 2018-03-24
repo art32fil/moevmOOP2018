@@ -22,7 +22,8 @@ class Elem
 
 public:
     Elem(T info = decltype(info)(0), Elem *n = nullptr, Elem *p = nullptr) : info(info), next(n),prev(p) {}
-    ~Elem(){ cout << "~Object:\n    x = " << info.getx() << "\n    y = " << info.gety() << "\n    hp = " << info.gethp() <<"\n~Object." <<endl;}
+    ~Elem(){ cout << "~Object:\n    x = " << info.getx() << "\n    y = " << info.gety() << "\n    hp = " << info.gethp() 
+                    <<"\n    id = " << info.getid() << "\n~Object." <<endl;}
     T& get(){ return info; } // getter and setter too because of &
     const T& get() const { return info; } 
 };
