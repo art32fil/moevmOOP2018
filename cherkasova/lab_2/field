@@ -1,0 +1,181 @@
+#ifndef FIELD
+#define FIELD
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include "list"
+#include "iter"
+#include "object"
+
+using namespace std;
+
+class Object;
+
+//--------------------------------------FIELD----------------------------------------------
+class Field{
+    friend class Object;
+    friend class List<Object>;
+    
+    int x_size;
+    int y_size;
+    int army_amount;
+    char **map; //map[y][x] - access
+    vector <List<Object>*> all_cont;     
+
+public:
+    Field( int x_size_, int y_size_, int army_);
+    ~Field();
+    char **getmap(){return map;}
+    vector <List<Object>*> getconts() {return all_cont;}
+    void print_field();
+    void print_cont();
+    void add_to_map(int i, int j);
+    void read_file(fstream &f);
+    int find_ob_index(int i, int j);
+    int belonging_army(int i, int j);
+    void check_map();
+
+};
+//-----------------------------------------------------------------------------------------
+
+
+//---------------------------------FIELD-METHODS-------------------------------------------
+Field::Field( int x_size_ = 8, int y_size_ = 8, int army_ = 2) 
+{
+    x_size = x_size_;
+    y_size = y_size_;
+    army_amount = army_;
+    cout << "Field:\n    x_size = " << x_size << "\n    y_size = " << y_size <<endl;
+        
+//  create a clean map
+    map = new char*[y_size]; 
+    for(int i = 0; i < y_size; i++){ 
+        map[i] = new char[x_size];
+    }
+    for(int i = 0; i < x_size; i++){
+        for(int j = 0; j < y_size; j++){
+            map[i][j] = '.';
+        }
+    }
+// create containers for armies
+    for(int i = 0; i < army_amount; i++){ 
+        List<Object> *some = new List<Object>;
+        all_cont.push_back(some);
+    }  
+}
+
+Field::~Field(){
+    cout << "~Field:\n    x_size = " << x_size << "\n    y_size = " << y_size <<endl; 
+    for(int i = 0; i < army_amount; i++){ all_cont[i]->~List(); }
+    for(int j = 0; j < x_size; j++){ delete[] map[j]; }
+    delete[] map;
+    cout << "~Field.\n";
+}
+
+void Field::add_to_map(int i, int j) { map[i][j] = 'o'; }
+
+void Field::read_file(fstream &f)
+{
+    int obj_amount = 0;
+    int j = 0;
+    while(j < army_amount){  
+        f >> obj_amount; 
+        int i = 0;
+        while (i++ < obj_amount){ 
+            Object *ob = new Object(f);
+            all_cont[j]->insert_tail(*ob); // add an object to j container   
+            add_to_map(ob->gety(), ob->getx()); // mark this object on the map
+        }
+        j++;    
+    }
+    cout << "Field.\n";
+    
+}
+
+void Field::print_cont()
+{
+    for(int i = 0; i < all_cont.size(); i++){
+        int count = 0; 
+        for( Elem<Object> &elem : *(all_cont[i])){ 
+            cout << i << "," << count << ": "; elem.get().print_ob_simple();
+            count++;
+        }
+    }
+}
+
+int Field::find_ob_index(int i, int j) //map[j][i]-ok
+{
+    for(int a = 0; a < all_cont.size(); a++){
+        int count = 0; 
+        for( Elem<Object> &elem : *(all_cont[a])){ //: List<Object>* 
+            if(elem.get().getx() == i && elem.get().gety() == j) return count; 
+            count++;
+        }
+    }
+    return -1; // not found
+}
+
+int Field::belonging_army(int i, int j)
+{
+    for(int a = 0; a < all_cont.size(); a++){
+        for( Elem<Object> &elem : *(all_cont[a])){ 
+            if(elem.get().getx() == i && elem.get().gety() == j) return a;
+        }
+    }
+    return -1; //not found
+}
+
+void Field::check_map()
+{
+    for(int a = 0; a < all_cont.size(); a++){
+        for( Elem<Object> &elem : *(all_cont[a])){ 
+            if(elem.get().gethp() <= 0) map[elem.get().gety()][elem.get().getx()] = 'x';
+        }
+    }
+}
+
+void Field::print_field()
+{   
+    check_map();
+    cout <<endl;
+    for(int i = 0; i < y_size; i++){ if(i==0) cout << "  "; cout <<  i; } cout << endl;        
+    for(int i = 0; i < y_size; i++){ 
+        if(i==0 || i == y_size-1) {
+            if(i==0) cout << "  ";
+            cout << "+"; 
+        }
+        else cout << "-"; 
+    }cout << endl;   
+    for(int i = 0; i < y_size; i++){
+        cout << i << "|";
+        for(int j = 0; j < x_size; j++){
+            int belong = belonging_army(j,i);
+            switch(belong){
+                case 0:
+                    cout << "\x1b[31m"<<map[i][j]<<"\x1b[0m";
+                    break;
+                case 1:
+                    cout << "\x1b[32m"<<map[i][j]<<"\x1b[0m";
+                    break;
+// ...another armies
+                default:
+                    cout << map[i][j];
+                    break;
+            }
+        }
+        cout<< "|" <<endl;
+    }
+    for(int i = 0; i < y_size; i++){ 
+        if(i==0 || i == y_size-1) {
+            if(i==0) cout << "  ";
+            cout << "+"; 
+        }
+        else cout << "-"; 
+    }cout<<endl;   
+    for(int i = 0; i < y_size; i++){ if(i==0) cout << "  "; cout <<  i; } cout << endl; 
+    cout <<endl;      
+}
+
+//-----------------------------------------------------------------------------------------
+
+#endif //FIELD
