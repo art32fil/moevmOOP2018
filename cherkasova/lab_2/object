@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "iter"
+#include <memory>
 
 using namespace std;
 
@@ -17,6 +18,8 @@ class Object {
     int hp_;
     int id_;
 
+//    const shared_ptr<> crown = true;
+
 public: 
     int getx(){return x_;}
     int gety(){return y_;}
@@ -24,7 +27,7 @@ public:
     int getid(){return id_; }           
     void print_ob() {cout << "Object:\n    x = " << x_ << "\n    y = " << y_ << "\n    hp = " << hp_ 
                             << "\n    " << "id = " << id_ << "\nObject." <<endl; }
-    void print_ob_simple() { cout << "[ " << x_ << " " << y_ << " "<< hp_ << " " << id_ << " ]" << endl; }
+    void print_ob_simple() { cout << "[ " << id_ << " " << x_ << " " << y_ << " "<< hp_ << " ]" << endl; }
     
     
     void read_obj(fstream &f, int iobj);
