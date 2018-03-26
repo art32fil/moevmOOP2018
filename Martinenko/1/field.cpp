@@ -39,18 +39,18 @@ void Field::getArmies(ifstream&f){
 
 void Field::paint(){
 cout<<"  ";
-for(int i = 0;i <y_size;i++)cout<< i;
+for(int i = 0;i <x_size;i++)cout<< i;
 cout << endl << "  +";
-for (int i =0;i<y_size-2;i++)cout << "-";
+for (int i =0;i<x_size-2;i++)cout << "-";
 cout <<"+"<<endl;
-for (int i = 0;i<x_size;i++){
+for (int i = 0;i<y_size;i++){
 	cout<<"\033[0m";
 	cout << i << "|";
-	for (int j = 0;j<y_size;j++){
+	for (int j = 0;j<x_size;j++){
 		auto it1 = armyA.begin();
 		auto it2 = armyB.begin();
 	for (;it1 !=armyA.end();++it1){
-	if (it1.p->data.isObject(i,j)){ 
+	if (it1.p->data.isObject(j,i)){ 
 		cout<<"\033[0;31m";		
 		if(it1.p->data.isDead())cout  <<"x";
 		else cout << "o";
@@ -59,7 +59,7 @@ for (int i = 0;i<x_size;i++){
 		}
 	
 	while(it2!=armyB.end()){
-	if(it2.p->data.isObject(i,j)){
+	if(it2.p->data.isObject(j,i)){
 		cout <<"\033[1;32m";
 		if (it2.p->data.isDead())cout <<"x";
 		else cout << "o";
