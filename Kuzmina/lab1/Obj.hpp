@@ -10,9 +10,7 @@ private:
     int y;
     int hp;
 public:
-    Object(int x, int y, int hp);
     Object(ifstream& file);
-    Object();
     ~Object();
     
     void getDamage(int);

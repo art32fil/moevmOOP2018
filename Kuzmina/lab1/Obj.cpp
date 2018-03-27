@@ -3,24 +3,12 @@
 
 using namespace std;
 
-Object::Object(int x, int y, int hp) : x(x), y(y), hp(hp){
-    cout << "Object:" << endl
-    << "    x = " << x << endl
-    << "    y = " << y << endl
-    << "    hp = " << hp << endl;
-    cout << "Object." << endl;
-}
-
 Object::Object(ifstream& file){
     file >> x >> y >> hp;
     cout << "Object:" << endl
     << "    x = " << x << endl
     << "    y = " << y << endl
     << "    hp = " << hp << endl;
-}
-
-Object::Object() {
-    x = y = hp = 0;
 }
 
 Object::~Object(){

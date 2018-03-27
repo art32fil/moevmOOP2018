@@ -18,13 +18,11 @@ int main() {
             cout << "Selected target is red\nInput a damage value: ";
             cin >> damage;
             field->checkArmyCoords(field->get_army_B(), field->get_size_B(), (int)y-48, (int)x - 48)->getDamage(damage);
-           // field->getDamage(field->get_army_B(), field->get_size_B(), (int)y - 48, (int)x - 48, damage);
         }
         if (field->checkArmyCoords(field->get_army_A(), field->get_size_A(), (int)y - 48, (int)x - 48)) {
             cout << "Selected target is green\nInput a damage value: ";
             cin >> damage;
             field->checkArmyCoords(field->get_army_A(), field->get_size_A(), (int)y-48, (int)x - 48)->getDamage(damage);
-            //field->getDamage(field->get_army_A(), field->get_size_A(), (int)y - 48, (int)x - 48, damage);
         }
         else {
             cout << "No Enemy here" << endl << "---------------------------------------" << endl;
