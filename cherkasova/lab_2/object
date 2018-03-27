@@ -8,34 +8,33 @@
 
 using namespace std;
 
-class Field;
-
 //--------------------------------------OBJECT-------------------------------------------
-class Object {
-
+class Object 
+{
     int x_;
     int y_;
     int hp_;
     int id_;
 
-//    const shared_ptr<> crown = true;
-
 public: 
-    int getx(){return x_;}
-    int gety(){return y_;}
-    int gethp(){return hp_;} 
-    int getid(){return id_; }           
-    void print_ob() {cout << "Object:\n    x = " << x_ << "\n    y = " << y_ << "\n    hp = " << hp_ 
-                            << "\n    " << "id = " << id_ << "\nObject." <<endl; }
-    void print_ob_simple() { cout << "[ " << id_ << " " << x_ << " " << y_ << " "<< hp_ << " ]" << endl; }
+    int &getx();
+    int &gety();
+    int &gethp();
+    int &getid();         
     
+    void print_ob();
+    void print_ob_simple();
     
-    void read_obj(fstream &f, int iobj);
-    void damage(int d);
-    bool is_obj(int i, int j,  char **m);
+    void read_obj(fstream &f, int id);
+    void damage(int damage);
+    bool is_obj(int i, int j, char **m);
 
-    Object(int x, int y, int hp, int id) { x_ = x; y_ = y; hp_ = hp;  id_ = id;  print_ob(); }
-    Object(fstream &f, int iobj) { read_obj(f, iobj); print_ob(); }
+    Object(int x, int y, int hp, int id);
+    Object(istream &in, int id);      
+    Object();  
+
+    void operator<<(Object &ob); 
+    istream &operator>>(istream &in);
 
 // destructor ~Elem (see file list)
     // ~Object() { cout <<"~"; print_ob(); } 
@@ -44,21 +43,68 @@ public:
 
 
 //---------------------------------OBJECT-METHODS------------------------------------------
-void Object::damage(int d) { hp_ = hp_ - d; }
+Object::Object(int x, int y, int hp, int id) {
+    x_ = x; 
+    y_ = y; 
+    hp_ = hp;  
+    id_ = id;  
+    print_ob(); 
+}
 
-bool Object::is_obj(int i, int j, char **m)
-{
+Object::Object(istream &in, int id){ 
+    in >> x_ >> y_ >> hp_;
+    id_ = id;
+    print_ob(); 
+}
+
+void Object::damage(int damage) { 
+    hp_ -= damage; 
+}
+
+bool Object::is_obj(int i, int j, char **m){
     if (m[j][i] == 'o') return true;    
     return false;
 }
 
-void Object::read_obj(fstream &f, int iobj)
-{
-    f >> x_ >> y_ >> hp_;
-    id_ = iobj;  
-    // cout << "check obj from file: " << _x <<" "<<y<<" "<<hp<<endl;  
+void Object::print_ob() {
+        cout << "Object:"<< endl 
+             << "    x = " << x_ << endl
+             << "    y = " << y_ << endl
+             << "    hp = " << hp_ << endl
+             << "    id = " << id_ << endl
+             << "Object." <<endl; 
 }
 
+void Object::print_ob_simple() { 
+    cout << "[ " << id_ << " " << x_ << " " << y_ << " "<< hp_ << " ]" << endl; 
+}
+
+istream &Object::operator>>(istream &in){
+    in >> x_ >> y_ >> hp_;
+    return in;
+}
+
+void Object::operator<<(Object &ob){
+    cout << "Object:"<< endl 
+             << "    x = " << ob.x_ << endl
+             << "    y = " << ob.y_ << endl
+             << "    hp = " << ob.hp_ << endl
+             << "    id = " << ob.id_ << endl
+             << "Object." <<endl;
+}    
+
+int &Object::getx()
+    {return x_;}
+
+int &Object::gety()
+    {return y_;}
+
+int &Object::gethp()
+    {return hp_;} 
+
+int &Object::getid()
+    {return id_;}    
+       
 //-----------------------------------------------------------------------------------------
 
 
