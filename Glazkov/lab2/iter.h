@@ -45,12 +45,37 @@ public:
 	};
 
 public:
-	List();
-	~List();
-	void append(const T& t);
-	void remove();
-	Iterator begin();
-	Iterator end();
+	List() : m_head(NULL), m_tail(NULL) {}
+	~List() {
+		while (m_head) {
+			remove();
+		}
+	}
+	void append(T t) {
+		if (Node* node = new Node(t)) {
+			if (m_head != NULL) {
+				node->m_prev = m_tail;
+				m_tail->m_next = node;
+				m_tail = node;
+			}
+			else {
+				m_head = m_tail = node;
+			}
+		}
+	}
+	void remove() {
+		if (m_head) {
+			Node* newHead = m_head->m_next;
+			delete m_head;
+			m_head = newHead;
+		}
+	}
+	Iterator begin() {
+		return Iterator(m_head);
+	}
+	Iterator end() {
+		return Iterator(NULL);
+	}
 	size_t size();
 
 	T& operator[](int i) {
@@ -64,7 +89,7 @@ public:
 private:
 	struct Node {
 		Node() : m_next(NULL), m_prev(NULL) {}
-		Node(const T& t) : m_t(t), m_next(NULL), m_prev(NULL) {}
+		Node(T t) : m_t(t), m_next(NULL), m_prev(NULL) {}
 		T m_t;
 		Node* m_next;
 		Node* m_prev;

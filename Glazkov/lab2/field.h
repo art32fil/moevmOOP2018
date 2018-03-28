@@ -1,7 +1,9 @@
 #pragma once
 #include <fstream>
-#include "object.h"
 #include <vector>
+#include "object.h"
+#include "iter.h"
+
 
 
 using namespace std;
@@ -10,8 +12,8 @@ class Field {
 private:
 	int xSize; // ширина поля
 	int ySize; // высота поля
-	vector<Object*> armyA; // контейнер первой армии
-	vector<Object*> armyB; // контейнер второй армии
+	List<Object*> armyA; // контейнер первой армии
+	List<Object*> armyB; // контейнер второй армии
 	int countArmyA; // количество объектов первой армии
 	int countArmyB; // количество объектов второй армии
 public:
@@ -21,11 +23,11 @@ public:
 
 	void getSizeFromFile(ifstream& file); // получить размеры поля из файла
 	void getArmyFromFile(ifstream& file); // получить объекты армий из файла
-	bool checkArmyCoords(vector<Object*> army, int count, int i, int j); // проверить наличие объектов армии на координатах
-	vector<Object*> getArmyA(); // получить контейнер первой армии
-	vector<Object*> getArmyB(); // получить контейнер второй армии
+	Object* checkArmyCoords(List<Object*> &army, int count, int i, int j); // проверить наличие объектов армии на координатах
+	List<Object*>& getArmyA(); // получить контейнер первой армии
+	List<Object*>& getArmyB(); // получить контейнер второй армии
 	int getCountArmyA(); // получить количество объектов первой армии
 	int getCountArmyB(); // получить количество объектов второй армии
 	void printField(); // напечатать поле
-	void getDamage(vector<Object*> army, int count, int i, int j, int damage); // получить дамаг
+	//void getDamage(vector<Object*> army, int count, int i, int j, int damage); // получить дамаг
 };

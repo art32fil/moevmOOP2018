@@ -1,0 +1,10 @@
+link_all: main.o iter.o field.o object.o
+	g++ main.o iter.o object.o field.o -o main
+main.o: main.cpp field.h
+	g++ -c main.cpp
+field.o: object.h iter.h field.cpp field.h
+	g++ -c field.cpp
+object.o: object.cpp object.h
+	g++ -c object.cpp
+iter.o: iter.cpp iter.h
+	g++ -c iter.cpp

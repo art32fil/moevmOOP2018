@@ -1,8 +1,10 @@
 #include <iostream>
-#include "object.h"
 #include "field.h"
 
 using namespace std;
+
+//void getDamage(List<Object*> &army, int count, int i, int j, int damage);
+
 int main() {
 
 	ifstream file("input.txt");
@@ -15,10 +17,10 @@ int main() {
 		cin >> x;
 		if (x == 'q') break;
 		cin >> y;
-		if (field->checkArmyCoords(field->getArmyB(), field->getCountArmyB(), (int)y-48, (int)x - 48)) {
-			cout << "Eneter damage: ";
-			cin >> damage;
-			field->getDamage(field->getArmyB(), field->getCountArmyB(), (int)y - 48, (int)x - 48, damage);
+		cout << "Eneter damage: ";
+		cin >> damage;
+		if (field->checkArmyCoords(field->getArmyB(), field->getCountArmyB(), (int)y - 48, (int)x - 48)) {
+			field->checkArmyCoords(field->getArmyB(), field->getCountArmyB(), (int)y - 48, (int)x - 48)->getDamage(damage);
 		}
 		else {
 			cout << "No Enemy here" << endl << "---------------------------------------" << endl;
@@ -28,10 +30,10 @@ int main() {
 		cin >> x;
 		if (x == 'q') break;
 		cin >> y;
+		cout << "Eneter damage: ";
+		cin >> damage;
 		if (field->checkArmyCoords(field->getArmyA(), field->getCountArmyA(), (int)y - 48, (int)x - 48)) {
-			cout << "Eneter damage: ";
-			cin >> damage;
-			field->getDamage(field->getArmyA(), field->getCountArmyA(), (int)y - 48, (int)x - 48, damage);
+			field->checkArmyCoords(field->getArmyA(), field->getCountArmyA(), (int)y - 48, (int)x - 48)->getDamage(damage);
 		}
 		else {
 			cout << "No Enemy here" << endl << "---------------------------------------" << endl;
