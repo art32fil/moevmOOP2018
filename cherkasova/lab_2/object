@@ -1,0 +1,111 @@
+#ifndef OBJECT
+#define OBJECT
+
+#include <iostream>
+#include <fstream>
+#include "iter"
+#include <memory>
+
+using namespace std;
+
+//--------------------------------------OBJECT-------------------------------------------
+class Object 
+{
+    int x_;
+    int y_;
+    int hp_;
+    int id_;
+
+public: 
+    int &getx();
+    int &gety();
+    int &gethp();
+    int &getid();         
+    
+    void print_ob();
+    void print_ob_simple();
+    
+    void read_obj(fstream &f, int id);
+    void damage(int damage);
+    bool is_obj(int i, int j, char **m);
+
+    Object(int x, int y, int hp, int id);
+    Object(istream &in, int id);      
+    Object();  
+
+    void operator<<(Object &ob); 
+    istream &operator>>(istream &in);
+
+// destructor ~Elem (see file list)
+    // ~Object() { cout <<"~"; print_ob(); } 
+};
+//-----------------------------------------------------------------------------------------
+
+
+//---------------------------------OBJECT-METHODS------------------------------------------
+Object::Object(int x, int y, int hp, int id) {
+    x_ = x; 
+    y_ = y; 
+    hp_ = hp;  
+    id_ = id;  
+    print_ob(); 
+}
+
+Object::Object(istream &in, int id){ 
+    in >> x_ >> y_ >> hp_;
+    id_ = id;
+    print_ob(); 
+}
+
+void Object::damage(int damage) { 
+    hp_ -= damage; 
+}
+
+bool Object::is_obj(int i, int j, char **m){
+    if (m[j][i] == 'o') return true;    
+    return false;
+}
+
+void Object::print_ob() {
+        cout << "Object:"<< endl 
+             << "    x = " << x_ << endl
+             << "    y = " << y_ << endl
+             << "    hp = " << hp_ << endl
+             << "    id = " << id_ << endl
+             << "Object." <<endl; 
+}
+
+void Object::print_ob_simple() { 
+    cout << "[ " << id_ << " " << x_ << " " << y_ << " "<< hp_ << " ]" << endl; 
+}
+
+istream &Object::operator>>(istream &in){
+    in >> x_ >> y_ >> hp_;
+    return in;
+}
+
+void Object::operator<<(Object &ob){
+    cout << "Object:"<< endl 
+             << "    x = " << ob.x_ << endl
+             << "    y = " << ob.y_ << endl
+             << "    hp = " << ob.hp_ << endl
+             << "    id = " << ob.id_ << endl
+             << "Object." <<endl;
+}    
+
+int &Object::getx()
+    {return x_;}
+
+int &Object::gety()
+    {return y_;}
+
+int &Object::gethp()
+    {return hp_;} 
+
+int &Object::getid()
+    {return id_;}    
+       
+//-----------------------------------------------------------------------------------------
+
+
+#endif //OBJECT

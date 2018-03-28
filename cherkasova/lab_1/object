@@ -1,0 +1,58 @@
+#ifndef OBJECT
+#define OBJECT
+
+#include <iostream>
+#include <fstream>
+#include "iter"
+
+using namespace std;
+
+class Field;
+
+//--------------------------------------OBJECT-------------------------------------------
+class Object {
+
+    int x;
+    int y;
+    int hp;
+
+public:
+    int getx(){return x;}
+    int gety(){return y;}
+    int gethp(){return hp;}            
+    void print_ob() {cout << "Object:\n    x = " << x << "\n    y = " << y << "\n    hp = " << hp << "\nObject." <<endl; }
+    void print_ob_simple() { cout << "[ " << x << " " << y << " "<< hp << " ]" << endl; }
+    
+    
+    void read_obj(fstream &f);
+    void damage(int d);
+    bool is_obj(int i, int j,  char **m);
+
+    Object(int x_, int y_, int hp_) { x = x_; y = y_; hp = hp_; print_ob(); }
+    Object(fstream &f) { read_obj(f); print_ob(); }
+
+// destructor ~Elem (see file list)
+    // ~Object() { cout <<"~"; print_ob(); } 
+};
+//-----------------------------------------------------------------------------------------
+
+
+//---------------------------------OBJECT-METHODS------------------------------------------
+void Object::damage(int d) { hp = hp - d; }
+
+bool Object::is_obj(int i, int j, char **m)
+{
+    if (m[j][i] == 'o') return true;    
+    return false;
+}
+
+void Object::read_obj(fstream &f)
+{
+    f >> x >> y >> hp;  
+    // cout << "check obj from file: " << x <<" "<<y<<" "<<hp<<endl;  
+}
+
+//-----------------------------------------------------------------------------------------
+
+
+#endif //OBJECT
