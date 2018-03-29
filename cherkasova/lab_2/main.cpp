@@ -50,7 +50,6 @@ int main()
         }
     }
 
-    // Field *fd = new Field(x_load, y_load);        
     Field fd(x_load, y_load);
 
     if(choice){ // file
@@ -60,7 +59,7 @@ int main()
         cin >> fd;    
     }
 
-    fd.print_field();
+    // cout << fd;
     int flag = 0;
     cout << "See all containers (army: [ object_index x y hp] ):\n"; fd.print_cont();
     while(1){
@@ -76,7 +75,7 @@ int main()
             ind = fd.find_ob_index(x,y);
             if(ind == -1 || a == -1) { cout << "Selected target wasn't found. Try again (maybe inccorect input)." <<endl; 
                     cin.clear(); continue;}
-            else if (fd.getconts()[a]->find(ind)->get().is_obj(x,y,fd.getmap())) {
+            else if (fd.is_obj(x,y)) {
                 {cout << "Yes: hp = "<< fd.getconts()[a]->find(ind)->get().gethp() << endl; flag = 1; break;}
             } else {cout << "No: doesn't exist or was killed.\n"; flag = 1;}
             if(flag) break;
@@ -111,14 +110,14 @@ int main()
     fd.getconts()[a]->find(ind)->get().damage(d);
     cout << "Hit points left in selected target: " << fd.getconts()[a]->find(ind)->get().gethp() <<endl;
 
-    fd.print_field();
+    cout << fd;
 
     while(1){
         cinclear();
         cout << "Continue or quit? (c/q)\n";
         char switch_on;
         cin >> switch_on; 
-        if (switch_on == 'c') continue;
+        if (switch_on == 'c') break;
         else if (switch_on == 'q') { fd.~Field(); filename.close(); exit(0);}
         else { cout << "ERROR! Incorrect input, try again.\n";  cinclear(); continue; }
     }
