@@ -20,7 +20,7 @@ class Field{
     int y_size_;
    
     char **map; //map[y][x] - access
-    vector <List<Object>*> all_cont;     
+    List<List<Object>*> conts;     
 
 public:
     Field( int x_size, int y_size   );
@@ -30,14 +30,15 @@ public:
     void print_cont();
     void add_to_map(int i, int j);
     void read_file(istream &f);
-    int find_ob_index(int i, int j);
+    Object *get_ob(int i, int j);
     int belonging_army(int i, int j);
     void check_map();
-    bool is_obj(int i, int j);
+    int is_obj(int x, int y);
+    int find_ob_index(int i, int j);
 
 
     char **getmap();
-    vector <List<Object>*> getconts();
+    List <List<Object>*> getconts();
 
     friend istream &operator>>(istream &in, Field &fd);
     friend ostream &operator<<(ostream &out, const Field &fd);
@@ -50,14 +51,10 @@ Field::Field( int x_size, int y_size)
 {
     x_size_ = x_size;
     y_size_ = y_size;
-    crown_red = make_shared<Crown>;
-    crown_red = make_shared<Crown>;
-
 
     cout << "Field:"<<endl    
          <<"    x_size = " << x_size_<< endl
          <<"    y_size = " << y_size_<<endl; 
-    cout << "Field.\n";
     
 //  create a clean map
     int i = 0;
@@ -75,32 +72,14 @@ Field::Field( int x_size, int y_size)
     i = 0;
     while(i++ < 2){
         List<Object> *some = new List<Object>;
-        all_cont.push_back(some);
+        conts.insert_tail(some);
     }
 }
 
 Field::~Field(){
-    cout << "~Field:"<<endl    
-         <<"    x_size = " << x_size_<< endl
-         <<"    y_size = " << y_size_<<endl; 
-    for(auto &obj: all_cont){ obj->~List(); }
-    for(int j = 0; j < x_size_; j++){ delete[] map[j]; }
-    delete[] map;
-    cout << "~Field.\n";
-}
-
-void Field::add_to_map(int i, int j) 
-    { map[i][j] = 'o'; }
-
-bool Field::is_obj(int i, int j){
-    if (map[j][i] == 'o') return true;    
-    return false;
-}
-
-void Field::print_cont()
-{
+    cout << "~Field:"<<endl;     
     int count_cont = 0;
-    for(auto &cont: all_cont){ 
+    for(auto &cont: conts){ 
         for(auto &obj : *cont){ 
             cout << count_cont << ": "; obj.get().print_ob_simple();
         }
@@ -108,12 +87,25 @@ void Field::print_cont()
     }
 }
 
+Object *Field::get_ob(int i, int j) //map[j][i]-ok
+{
+    // for(auto &cont: conts){ 
+    //     int count = 0; 
+    //     for(auto &elem : *cont){ 
+    //         if(elem.get().getx() == i && elem.get().gety() == j) 
+    //             return &conts[elem.get().army()][count].get(); 
+    //         count++;
+    //     }
+    // }
+    // return nullptr; // not found
+}
+
 int Field::find_ob_index(int i, int j) //map[j][i]-ok
 {
-    for(auto &cont: all_cont){ 
+    for(auto &cont: conts){ 
         int count = 0; 
-        for(auto &obj : *cont){ 
-            if(obj.get().getx() == i && obj.get().gety() == j) 
+        for(auto &elem : *cont){ 
+            if(elem.get().getx() == i && elem.get().gety() == j) 
                 return count; 
             count++;
         }
@@ -124,7 +116,7 @@ int Field::find_ob_index(int i, int j) //map[j][i]-ok
 int Field::belonging_army(int i, int j)
 {
     int army = 0;
-    for(auto &cont: all_cont){ 
+    for(auto &cont: conts){ 
         for(auto &obj : *cont){ 
             if(obj.get().getx() == i && obj.get().gety() == j)  
                 return army;
@@ -136,7 +128,7 @@ int Field::belonging_army(int i, int j)
 
 void Field::check_map()
 {
-    for(auto &cont: all_cont){ 
+    for(auto &cont: conts){ 
         for(auto &obj : *cont){ 
             if(obj.get().gethp() <= 0) 
                 map[obj.get().gety()][obj.get().getx()] = 'x';
@@ -188,8 +180,8 @@ void Field::print_field(ostream &out)
 char **Field::getmap()
     {return map;}
 
-vector<List<Object>*>Field::getconts() 
-    {return all_cont;}
+List<List<Object>*>Field::getconts() 
+    {return conts;}
 
 //-----------------------------------------------------------------------------------------
 
@@ -199,6 +191,8 @@ ostream &operator<<(ostream &out, Field &fd){
 }
 
 istream &operator>>(istream &in, Field &fd){
+    int redflag = 0;
+    int greenflag = 0;
     int obj_amount = 0;
     int j = 0;
     while(j < 2){  
@@ -206,16 +200,14 @@ istream &operator>>(istream &in, Field &fd){
         int i = 0;
         while (i++ < obj_amount){ 
             Object* ob;
-            if (j == 0) {
-                // fd.crown_red->setcolor("red");
-                // fd.crown_red->getcolor() = "red";                              
-                fd.crown_red->getcolor() = 0;                                
+            if (j == 0) {                            
+                if(!redflag) {fd.crown_red = make_shared<Crown>("red"); redflag = 1;}
+                fd.crown_red->getcolor() = "red"; //0
                 ob = new Object(fd.crown_red, in);
             }
-            else if(j == 1){
-                // fd.crown_red->setcolor("green");
-                // fd.crown_red->getcolor() = "green";    
-                fd.crown_red->getcolor() = 1;                                                            
+            else if(j == 1){  
+                if(!greenflag) {fd.crown_green = make_shared<Crown>("green"); greenflag = 1;}
+                fd.crown_green->getcolor() = "green"; //1                                                            
                 ob = new Object(fd.crown_green, in);
             }
             fd.getconts()[j]->insert_tail(*ob); // add an object to j container   

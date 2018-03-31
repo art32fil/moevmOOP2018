@@ -9,7 +9,7 @@
 
 using namespace std;
 
-// class Crown;
+class Crown;
 
 //--------------------------------------OBJECT-------------------------------------------
 class Object 
@@ -33,6 +33,7 @@ public:
     void read_obj(fstream &f, int id);
     void damage(int damage);
     bool alive();
+    int army();
     bool check_crown();
 
 //fix
@@ -68,7 +69,7 @@ Object::Object(shared_ptr<Crown> crown, int x, int y, int hp): x_(x), y_(y), hp_
 }
 
 Object::Object(shared_ptr<Crown> crown, istream &in): id_(count_ob_++), crown_(crown){ 
-    in >> *this;
+    in >> *this; 
     print_ob(); 
 }
 
@@ -96,6 +97,11 @@ char Object::draw(){
     else if(!alive()) return 'x';
 } 
 
+int Object::army(){
+    if(crown_->getcolor() == "green") return 1;
+    if(crown_->getcolor() == "red")return 0; // red    
+}
+
 void Object::print_ob_simple() { 
     cout << "[ " << id_ << " " << x_ << " " << y_ << " "<< hp_ << " ]" << endl; 
 }
@@ -120,9 +126,9 @@ istream &operator>>(istream &in, Object &ob){
 }
 
 ostream &operator<<(ostream &out, Object &ob){
-    if(ob.crown_->getcolor() == 1 /* "green" */)
+    if(ob.crown_->getcolor() ==  "green" ) // 1
         out << "\033[32m";
-    if(ob.crown_->getcolor() == 0 /* "red" */)
+    if(ob.crown_->getcolor() == "red") // 0
         out << "\033[31m";
     out << ob.draw() << "\033[0m";
     return out;

@@ -18,7 +18,7 @@ class Iter{
 public:
     Iter(Elem<T> *ptr) : elm(ptr) {};
     
-    Elem<T> &operator*();
+    Elem<T> &operator*    ();
     Elem<T> *operator->();
     Iter operator++(); 
     Iter operator--();
