@@ -77,7 +77,6 @@ public:
 template <typename T>
 T List<T>::operator[] (size_t index)
 {
-
     T value = find(index)->get();
     return value;
 }

@@ -93,7 +93,7 @@ int main()
             if(ind == -1 || a == -1) { cout << "Selected target wasn't found. Try again (maybe inccorect input)." <<endl; 
                     cin.clear(); continue;}
             else if (fd.is_obj(x,y) == 1) {
-                {cout << "Yes: hp = "<< fd.getconts()[a]->find(ind)->get().gethp() << endl; flag = 1; break;}
+                {cout << "Yes: hp = "<< fd.getconts()[a].find(ind)->get().gethp() << endl; flag = 1; break;}
             } else {cout << "No: doesn't exist or was killed.\n"; flag = 1;}
             if(flag) break;
         }
@@ -124,8 +124,8 @@ int main()
     cout << "Input a damage value (unsigned int): "; 
     cin >> d; 
     ind = fd.find_ob_index(x,y);
-    fd.getconts()[a]->find(ind)->get().damage(d);
-    cout << "Hit points left in selected target: " << fd.getconts()[a]->find(ind)->get().gethp() <<endl;
+    fd.getconts()[a].find(ind)->get().damage(d);
+    cout << "Hit points left in selected target: " << fd.getconts()[a].find(ind)->get().gethp() <<endl;
 
     cout << fd;
 
