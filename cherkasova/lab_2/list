@@ -21,12 +21,22 @@ class Elem
     Elem* prev;
 
 public:
-    Elem(T info = decltype(info)(0), Elem *n = nullptr, Elem *p = nullptr) : info(info), next(n),prev(p) {}
-    ~Elem(){ cout << "~Object:\n    x = " << info.getx() << "\n    y = " << info.gety() << "\n    hp = " << info.gethp() 
-                    <<"\n    id = " << info.getid() << "\n~Object." <<endl;}
-    T& get(){ return info; } // getter and setter too because of &
-    const T& get() const { return info; } 
+    Elem(const T& info_ = T(0), Elem *n = nullptr, Elem *p = nullptr) 
+                : info(info_), next(n),prev(p) {}
+
+    T& get(); 
+    const T& get() const; 
 };
+//-----------------------------------------------
+
+//--------------ElemMethods------------------------------
+template <typename T>
+T& Elem<T>::get()
+    { return info; } 
+
+template <typename T>
+const T& Elem<T>::get() const
+    { return info; }
 //-----------------------------------------------
 
 //------------------List--------------------------
@@ -43,9 +53,9 @@ public:
     ~List();
     
     bool is_empty();  
-    void insert_after(T value, size_t index);
-    void insert_head (T value);
-    void insert_tail (T value);
+    void insert_after(const T& value, size_t index);
+    void insert_head (const T& value);
+    void insert_tail (const T& value);
     void print(); 
     void delete_elem(size_t index);
     size_t get_size();
@@ -113,7 +123,7 @@ Elem<T> *List<T>::find(size_t index)
 }
 
 template <typename T>
-void List<T>::insert_after(T value, size_t index)
+void List<T>::insert_after(const T& value, size_t index)
 {
     index += 1;
     if( is_empty()){
@@ -124,16 +134,16 @@ void List<T>::insert_after(T value, size_t index)
     }
     else if( index < get_size() ){ 
         Elem<T> *tmp = find(index-1);
-        Elem<T> *newElem = new Elem<T>(value, tmp->next, tmp);
+        Elem<T>* newElem = new Elem<T>(value, tmp->next, tmp);
         tmp->next = newElem;
     }
     
 }
 
 template <typename T>
-void List<T>::insert_head (T value)
+void List<T>::insert_head (const T& value)
 {
-    Elem<T> *newElem = new Elem<T>(value);
+    Elem<T>* newElem = new Elem<T>(value);
     if ( is_empty() ){ 
         head = newElem;
         tail = newElem;
@@ -146,13 +156,13 @@ void List<T>::insert_head (T value)
 }
 
 template <typename T> 
-void List<T>::insert_tail(T value) 
+void List<T>::insert_tail(const T& value) 
 {
     if ( is_empty () ){ 
         insert_head(value);   
     }
     else{
-        Elem<T> *newElem = new Elem<T>(value,nullptr,tail);
+        Elem<T>* newElem = new Elem<T>(value,nullptr,tail); 
         tail->next = newElem;
         tail = newElem;
     }

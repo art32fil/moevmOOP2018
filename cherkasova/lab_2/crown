@@ -1,0 +1,44 @@
+#ifndef CROWN
+#define CROWN
+
+#include <iostream>
+#include <memory>
+
+using namespace std;
+//--------------------------------------CROWN----------------------------------------------
+class Crown{
+    string color;
+
+public:
+    Crown(string color);
+    ~Crown();
+
+    string &getcolor();
+    // const string getcolor() const;
+   ;
+};
+//------------------------------------CROWN-METHODS----------------------------------------
+Crown::Crown(string color): color(color){
+    cout << "Crown:\n";
+    cout << "   color = " << color << endl;
+    cout << "Crown.\n";
+}
+
+Crown::~Crown(){
+    cout << "~Crown:\n";
+    cout << "   color = " << color << endl;
+    cout << "~Crown.\n";
+}
+
+string &Crown::getcolor(){
+    return color;
+}
+
+// const string Crown::getcolor() const{ 
+    // cout << "CONST" << endl;
+//     return color;
+//}
+
+//-----------------------------------------------------------------------------------------
+
+#endif // CROWN

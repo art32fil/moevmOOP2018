@@ -3,10 +3,13 @@
 
 #include <iostream>
 #include <fstream>
-#include "iter"
 #include <memory>
+#include "iter"
+#include "crown"
 
 using namespace std;
+
+class Crown;
 
 //--------------------------------------OBJECT-------------------------------------------
 class Object 
@@ -14,84 +17,94 @@ class Object
     int x_;
     int y_;
     int hp_;
-    int id_;
+
+    const int id_;
+    int count_ob_;
+    int cur_amount_;
+
+    const shared_ptr<Crown> crown_;
 
 public: 
-    int &getx();
-    int &gety();
-    int &gethp();
-    int &getid();         
-    
+        
     void print_ob();
     void print_ob_simple();
+    char draw(); 
     
     void read_obj(fstream &f, int id);
     void damage(int damage);
-    bool is_obj(int i, int j, char **m);
+    bool alive();
+    int army();
+    bool check_crown();
 
-    Object(int x, int y, int hp, int id);
-    Object(istream &in, int id);      
-    Object();  
+//fix
+    int &getx();
+    int &gety();
+    int &gethp();
+    int& getid();
+    const int &getid() const;
 
-    void operator<<(Object &ob); 
-    istream &operator>>(istream &in);
+    Object(shared_ptr<Crown> crown, int x, int y, int hp);
+    Object(shared_ptr<Crown> crown, istream &in);      
+    ~Object();
 
-// destructor ~Elem (see file list)
-    // ~Object() { cout <<"~"; print_ob(); } 
+    friend istream &operator>>(istream &in, Object &ob);
+    friend ostream &operator<<(ostream &out, Object &ob);
 };
 //-----------------------------------------------------------------------------------------
 
 
 //---------------------------------OBJECT-METHODS------------------------------------------
-Object::Object(int x, int y, int hp, int id) {
-    x_ = x; 
-    y_ = y; 
-    hp_ = hp;  
-    id_ = id;  
+void Object::print_ob() {
+    cout << "Object:"<< endl 
+         << "    x = " << x_ << endl
+         << "    y = " << y_ << endl
+         << "    hp = " << hp_ << endl
+         << "    crown = " << crown_->getcolor() << endl
+         << "    id = " << id_ << endl
+         << "Object." <<endl; 
+}
+
+Object::Object(shared_ptr<Crown> crown, int x, int y, int hp): x_(x), y_(y), hp_(hp), id_(count_ob_++), crown_(crown) {
     print_ob(); 
 }
 
-Object::Object(istream &in, int id){ 
-    in >> x_ >> y_ >> hp_;
-    id_ = id;
+Object::Object(shared_ptr<Crown> crown, istream &in): id_(count_ob_++), crown_(crown){ 
+    in >> *this; 
     print_ob(); 
 }
+
+Object::~Object(){
+    cout << "~Object:"<< endl 
+            << "    x = " << x_ << endl
+            << "    y = " << y_ << endl
+            << "    hp = " << hp_ << endl
+            << "    crown = " <<crown_->getcolor() << endl
+            << "    id = " << id_ << endl
+        << "~Object." <<endl;
+    cur_amount_--;
+}   
 
 void Object::damage(int damage) { 
     hp_ -= damage; 
 }
 
-bool Object::is_obj(int i, int j, char **m){
-    if (m[j][i] == 'o') return true;    
-    return false;
+bool Object::alive(){
+    return (hp_ > 0);
 }
 
-void Object::print_ob() {
-        cout << "Object:"<< endl 
-             << "    x = " << x_ << endl
-             << "    y = " << y_ << endl
-             << "    hp = " << hp_ << endl
-             << "    id = " << id_ << endl
-             << "Object." <<endl; 
+char Object::draw(){
+    if(alive()) return 'o'; 
+    else if(!alive()) return 'x';
+} 
+
+int Object::army(){
+    if(crown_->getcolor() == "green") return 1;
+    if(crown_->getcolor() == "red")return 0; // red    
 }
 
 void Object::print_ob_simple() { 
     cout << "[ " << id_ << " " << x_ << " " << y_ << " "<< hp_ << " ]" << endl; 
 }
-
-istream &Object::operator>>(istream &in){
-    in >> x_ >> y_ >> hp_;
-    return in;
-}
-
-void Object::operator<<(Object &ob){
-    cout << "Object:"<< endl 
-             << "    x = " << ob.x_ << endl
-             << "    y = " << ob.y_ << endl
-             << "    hp = " << ob.hp_ << endl
-             << "    id = " << ob.id_ << endl
-             << "Object." <<endl;
-}    
 
 int &Object::getx()
     {return x_;}
@@ -102,10 +115,24 @@ int &Object::gety()
 int &Object::gethp()
     {return hp_;} 
 
-int &Object::getid()
-    {return id_;}    
+const int &Object::getid() const
+    {return id_;}   
        
 //-----------------------------------------------------------------------------------------
 
+istream &operator>>(istream &in, Object &ob){
+    in >> ob.x_ >> ob.y_ >> ob.hp_; 
+    return in;
+}
 
+ostream &operator<<(ostream &out, Object &ob){
+    if(ob.crown_->getcolor() ==  "green" ) // 1
+        out << "\033[32m";
+    if(ob.crown_->getcolor() == "red") // 0
+        out << "\033[31m";
+    out << ob.draw() << "\033[0m";
+    return out;
+}   
+
+//-----------------------------------------------------------------------------------------
 #endif //OBJECT
