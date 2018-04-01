@@ -83,22 +83,22 @@ Field::~Field(){
 void Field::add_to_map(int i, int j) 
     { map[i][j] = 'o'; }
 
-// void Field::read_file(istream &f)
-// {
-//     int obj_amount = 0;
-//     int j = 0;
-//     while(j < 2){  
-//         f >> obj_amount; 
-//         int i = 0;
-//         while (i++ < obj_amount){ 
-//             Object *ob = new Object(f, i);
-//             all_cont[j]->insert_tail(*ob); // add an object to j container   
-//             add_to_map(ob->gety(), ob->getx()); // mark this object on the map
-//         }
-//         j++;    
-//     }
-//     cout << "Field.\n";
-// }
+void Field::read_file(istream &f)
+{
+    int obj_amount = 0;
+    int j = 0;
+    while(j < 2){  
+        f >> obj_amount; 
+        int i = 0;
+        while (i++ < obj_amount){ 
+            Object *ob = new Object(f, i);
+            all_cont[j]->insert_tail(*ob); // add an object to j container   
+            add_to_map(ob->gety(), ob->getx()); // mark this object on the map
+        }
+        j++;    
+    }
+    cout << "Field.\n";
+}
 
 void Field::print_cont()
 {
