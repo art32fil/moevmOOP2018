@@ -64,11 +64,13 @@ int main()
             cout << "Enter the amount of objects (unsigned int)\n"; 
             cout << "Then - their location (x y) and hit points (unsigned int numbers separated by space): \n";
             cout << "Repeat the same actions for the second army. \n";
+// fix
         }
     }
 
     Field fd(x_load, y_load);
-
+    cout<<"I";
+    fd.getconts()[0];
     if(choice){ // file
         fin >> fd;
     }  

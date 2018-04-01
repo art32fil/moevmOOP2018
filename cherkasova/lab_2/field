@@ -91,6 +91,14 @@ Field::~Field(){
     }
 }
 
+int Field::is_obj(int i, int j)
+{
+    if (map[j][i] = 'o') return 1;
+    if (map[j][i] = 'x') return 0;
+    else return -1; // not found
+    
+}
+
 Object Field::get_ob(int i, int j) //map[j][i]-ok
 {
     for(auto &cont: conts){ 
@@ -145,8 +153,8 @@ void Field::check_map()
 void Field::print_cont()
 {
     int count_cont = 0;
-    for(auto &cont: all_cont){ 
-        for(auto &obj : *cont){ 
+    for(auto &cont: conts){ 
+        for(auto &obj : cont.get()){ 
             cout << count_cont << ": "; obj.get().print_ob_simple();
         }
         count_cont++;
@@ -219,12 +227,10 @@ istream &operator>>(istream &in, Field &fd){
             Object* ob;
             if (j == 0) {                            
                 if(!redflag) {fd.crown_red = make_shared<Crown>("red"); redflag = 1;}
-                fd.crown_red->getcolor() = "red"; //0
                 ob = new Object(fd.crown_red, in);
             }
             else if(j == 1){  
                 if(!greenflag) {fd.crown_green = make_shared<Crown>("green"); greenflag = 1;}
-                fd.crown_green->getcolor() = "green"; //1                                                            
                 ob = new Object(fd.crown_green, in);
             }
             fd.getconts()[j].insert_tail(*ob); // add an object to j container   
