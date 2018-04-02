@@ -13,9 +13,9 @@ public:
     Crown(string color);
     ~Crown();
 
-    string &getcolor();
-    // const string getcolor() const;
-   ;
+    // string &getcolor();
+    const string &getcolor() const;
+   
 };
 //------------------------------------CROWN-METHODS----------------------------------------
 Crown::Crown(string color): color(color){
@@ -30,14 +30,14 @@ Crown::~Crown(){
     cout << "~Crown.\n";
 }
 
-string &Crown::getcolor(){
+// string &Crown::getcolor(){
+//     return color;
+// }
+
+const string &Crown::getcolor() const{ 
+    cout << "CONST" << endl;
     return color;
 }
-
-// const string Crown::getcolor() const{ 
-    // cout << "CONST" << endl;
-//     return color;
-//}
 
 //-----------------------------------------------------------------------------------------
 

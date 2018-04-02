@@ -41,7 +41,6 @@ int menu()
 //-----------------MAIN----------------------------
 int main()
 {
-    // cout << type_info((fd.getconts()[0].find_ob_index(1,1).get()./.name();
     filebuf filename;
     auto flagfile = filename.open("input", ios::in);
     if(!flagfile){ cout << " ERROR with file!\n "; exit(1); }
@@ -69,7 +68,7 @@ int main()
     }
 
     Field fd(x_load, y_load);
-    cout<<"I";
+    // cout<<"I";
     fd.getconts()[0];
     if(choice){ // file
         fin >> fd;

@@ -6,6 +6,7 @@
         "object": "cpp",
         "field": "cpp",
         "union": "cpp",
+        "crown": "cpp",
         "iostream": "cpp",
         "*.tcc": "cpp",
         "system_error": "cpp",
@@ -14,6 +15,7 @@
         "functional": "cpp",
         "istream": "cpp",
         "tuple": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "typeinfo": "cpp"
     }
 }

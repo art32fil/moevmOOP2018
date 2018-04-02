@@ -69,12 +69,13 @@ Field::Field( int x_size, int y_size)
         }
     }
 // create containers for armies`
-    i = 0;
-    while(i++ < 2){
-        List<Object> *some = new List<Object>;
-        conts.insert_tail(*some);
-        // conts.push_back(some);
-    }
+    // i = 0;
+    // while(i++ < 2){
+    //     List<Object> *some = new List<Object>;
+        
+    //     conts.insert_tail(*some);
+    //     // conts.push_back(some);
+    // }
 }
 
 void Field::add_to_map(int i, int j) 
