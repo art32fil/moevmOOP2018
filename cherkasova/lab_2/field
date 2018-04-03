@@ -55,8 +55,8 @@ public:
 void Field::init() 
 {
     cout << "Field:"<<endl    
-         <<"    x_size = " << x_size<< endl
-         <<"    y_size = " << y_size<<endl; 
+         <<"    x_size = " << x_size << endl
+         <<"    y_size = " << y_size <<endl; 
     
 //  create a clean map
     int i = 0;
@@ -83,14 +83,13 @@ void Field::add_to_map(int i, int j)
     { map[i][j] = 'o'; }
 
 Field::~Field(){
-    cout << "~Field:"<<endl;     
-    int count_cont = 0;
-    for(auto &cont: contains){ 
-        for(auto &obj : cont.get()){ 
-            cout << count_cont << ": "; obj.get().print_ob_simple();
-        }
-        count_cont++;
-    }
+    cout << "~Field:"<<endl    
+         <<"    x_size = " << x_size << endl
+         <<"    y_size = " << y_size <<endl; 
+    for(auto &obj: contains){ obj->~List(); }
+    for(int j = 0; j < x_size; j++){ delete[] map[j]; }
+    delete[] map;
+    cout << "~Field.\n";
 }
 
 int Field::is_obj(int i, int j)
