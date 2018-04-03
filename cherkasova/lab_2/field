@@ -86,7 +86,7 @@ Field::~Field(){
     cout << "~Field:"<<endl    
          <<"    x_size = " << x_size << endl
          <<"    y_size = " << y_size <<endl; 
-    for(auto &obj: contains){ obj->~List(); }
+    for(auto &obj: contains){ obj.get().~List(); }
     for(int j = 0; j < x_size; j++){ delete[] map[j]; }
     delete[] map;
     cout << "~Field.\n";

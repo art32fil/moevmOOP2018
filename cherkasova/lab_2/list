@@ -223,7 +223,7 @@ List<T>::~List()
             head = tail;
         }
     }    
-    else { cerr << "The list is already empty (destructor)" << endl; }
+    else { cerr << "Destructor of list: already empty" << endl; }
 }
 
 template <typename T> 

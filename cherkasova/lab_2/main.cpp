@@ -3,8 +3,8 @@
 
 using namespace std;
 
-int Object::count_ob_;
-int Object::cur_amount_;
+int Object::count_ob;
+int Object::cur_amount;
 
 void cinclear()
 {

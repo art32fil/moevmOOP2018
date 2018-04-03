@@ -29,8 +29,7 @@ class Object
     static int cur_amount;
 
 
-public: 
-        
+public:     
     void print_ob();
     void print_ob_simple();
     char draw(); 
