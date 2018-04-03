@@ -9,20 +9,25 @@
 
 using namespace std;
 
-class Crown;
+// class Object;
+
+
+
+class crown;
 
 //--------------------------------------OBJECT-------------------------------------------
 class Object 
 {
-    int x_;
-    int y_;
-    int hp_;
+    int x;
+    int y;
+    int hp;
+    
+    const int id;
+    const shared_ptr<Crown> crown;
 
-    const int id_;
-    int count_ob_;
-    int cur_amount_;
+    static int count_ob;
+    static int cur_amount;
 
-    const shared_ptr<Crown> crown_;
 
 public: 
         
@@ -40,11 +45,13 @@ public:
     int &getx();
     int &gety();
     int &gethp();
-    int& getid();
+    int &getid();
+    int &get_cur_amount();
     const int &getid() const;
 
     Object(shared_ptr<Crown> crown, int x, int y, int hp);
     Object(shared_ptr<Crown> crown, istream &in);      
+    // Object(): id(count_ob++){}
     ~Object();
 
     friend istream &operator>>(istream &in, Object &ob);
@@ -56,40 +63,42 @@ public:
 //---------------------------------OBJECT-METHODS------------------------------------------
 void Object::print_ob() {
     cout << "Object:"<< endl 
-         << "    x = " << x_ << endl
-         << "    y = " << y_ << endl
-         << "    hp = " << hp_ << endl
-         << "    crown = " << crown_->getcolor() << endl
-         << "    id = " << id_ << endl
+         << "    x = " << x << endl
+         << "    y = " << y << endl
+         << "    hp = " << hp << endl
+         << "    id = " << id << endl
+        //  << "    crown = " << crown->getcolor() << endl
          << "Object." <<endl; 
 }
 
-Object::Object(shared_ptr<Crown> crown, int x, int y, int hp): x_(x), y_(y), hp_(hp), id_(count_ob_++), crown_(crown) {
+Object::Object(shared_ptr<Crown> crown, int x, int y, int hp): x(x), y(y), hp(hp), id(count_ob++), crown(crown) {
+    cur_amount++;    
     print_ob(); 
 }
 
-Object::Object(shared_ptr<Crown> crown, istream &in): id_(count_ob_++), crown_(crown){ 
+Object::Object(shared_ptr<Crown> crown, istream &in): id(count_ob++), crown(crown){ 
     in >> *this; 
+    cur_amount++;
     print_ob(); 
 }
 
 Object::~Object(){
     cout << "~Object:"<< endl 
-            << "    x = " << x_ << endl
-            << "    y = " << y_ << endl
-            << "    hp = " << hp_ << endl
-            << "    crown = " <<crown_->getcolor() << endl
-            << "    id = " << id_ << endl
+            << "    x = " << x << endl
+            << "    y = " << y << endl
+            << "    hp = " << hp << endl
+            // << "    crown = " <<crown->getcolor() << endl
+            << "    id = " << id << endl
         << "~Object." <<endl;
-    cur_amount_--;
+    cur_amount--;
 }   
 
 void Object::damage(int damage) { 
-    hp_ -= damage; 
+    hp -= damage; 
 }
 
 bool Object::alive(){
-    return (hp_ > 0);
+    return (hp > 0);
 }
 
 char Object::draw(){
@@ -98,37 +107,40 @@ char Object::draw(){
 } 
 
 int Object::army(){
-    if(crown_->getcolor() == "green") return 1;
-    if(crown_->getcolor() == "red")return 0; // red    
+    if(crown->getcolor() == "green") return 1;
+    if(crown->getcolor() == "red")return 0;    
 }
 
 void Object::print_ob_simple() { 
-    cout << "[ " << id_ << " " << x_ << " " << y_ << " "<< hp_ << " ]" << endl; 
+    cout << "[ " << id << " " << x << " " << y << " "<< hp << " ]" << endl; 
 }
 
 int &Object::getx()
-    {return x_;}
+    {return x;}
 
 int &Object::gety()
-    {return y_;}
+    {return y;}
 
 int &Object::gethp()
-    {return hp_;} 
+    {return hp;} 
 
 const int &Object::getid() const
-    {return id_;}   
+    {return id;}   
+
+int &Object::get_cur_amount()
+    {return cur_amount;}
        
 //-----------------------------------------------------------------------------------------
 
 istream &operator>>(istream &in, Object &ob){
-    in >> ob.x_ >> ob.y_ >> ob.hp_; 
+    in >> ob.x >> ob.y >> ob.hp; 
     return in;
 }
 
 ostream &operator<<(ostream &out, Object &ob){
-    if(ob.crown_->getcolor() ==  "green" ) // 1
+    if(ob.crown->getcolor() ==  "green" ) // 1
         out << "\033[32m";
-    if(ob.crown_->getcolor() == "red") // 0
+    if(ob.crown->getcolor() == "red") // 0
         out << "\033[31m";
     out << ob.draw() << "\033[0m";
     return out;

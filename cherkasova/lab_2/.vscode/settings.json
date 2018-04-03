@@ -16,6 +16,7 @@
         "istream": "cpp",
         "tuple": "cpp",
         "utility": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "iosfwd": "cpp"
     }
 }

@@ -21,7 +21,7 @@ class Elem
     Elem* prev;
 
 public:
-    Elem(const T& info_ = T(0), Elem *n = nullptr, Elem *p = nullptr) 
+    Elem(T& info_ = T(0), Elem *n = nullptr, Elem *p = nullptr) 
                 : info(info_), next(n),prev(p) {}
 
     T& get(); 
@@ -54,8 +54,8 @@ public:
     
     bool is_empty();  
     void insert_after(const T& value, size_t index);
-    void insert_head (const T& value);
-    void insert_tail (const T& value);
+    void insert_head (T& value);
+    void insert_tail (T& value);
     void print(); 
     void delete_elem(size_t index);
     size_t get_size();
@@ -110,6 +110,10 @@ size_t List<T>::get_size()
 template <typename T>
 Elem<T> *List<T>::find(size_t index)
 {
+    if(this->is_empty()) {
+        cerr << "Error in find: empty list!" << endl;
+        exit(1); 
+    }
     Elem<T> *tmp = head;
     int i = 0;
     while (tmp){
@@ -117,8 +121,23 @@ Elem<T> *List<T>::find(size_t index)
         tmp = tmp->next;
         i++;
     }
-    cerr << "Error in find: the index was not found" << endl;
+    cerr << "Error in find: the index was not found!" << endl;
     exit(1); 
+}
+
+template <typename T>
+void List<T>::insert_head (T& value)
+{
+    Elem<T>* newElem = new Elem<T>(value);
+    if ( is_empty() ){ 
+        head = newElem;
+        tail = newElem;
+    }    
+    else {
+        head->prev = newElem;
+        newElem->next = head;
+        head = newElem;
+    }
 }
 
 template <typename T>
@@ -139,23 +158,8 @@ void List<T>::insert_after(const T& value, size_t index)
     
 }
 
-template <typename T>
-void List<T>::insert_head (const T& value)
-{
-    Elem<T>* newElem = new Elem<T>(value);
-    if ( is_empty() ){ 
-        head = newElem;
-        tail = newElem;
-    }    
-    else {
-        head->prev = newElem;
-        newElem->next = head;
-        head = newElem;
-    }
-}
-
 template <typename T> 
-void List<T>::insert_tail(const T& value) 
+void List<T>::insert_tail(T& value) 
 {
     if ( is_empty () ){ 
         insert_head(value);   
@@ -211,7 +215,7 @@ void List<T>::delete_elem(size_t index)
 template <typename T> 
 List<T>::~List()
 { 
-    cout << "\nDestructor of the list was called\n";
+    // cout << "\nDestructor of the list was called\n";
     if( !is_empty() ){
         while ( head ){
             tail = head->next;
@@ -219,7 +223,7 @@ List<T>::~List()
             head = tail;
         }
     }    
-    else { cerr << "The list is already empty (destructor)" << endl; exit(1); }
+    else { cerr << "The list is already empty (destructor)" << endl; }
 }
 
 template <typename T> 

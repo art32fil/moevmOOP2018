@@ -7,18 +7,24 @@
 using namespace std;
 //--------------------------------------CROWN----------------------------------------------
 class Crown{
-    string color;
+    const string color;
 
 public:
     Crown(string color);
+    Crown();
     ~Crown();
 
-    // string &getcolor();
     const string &getcolor() const;
    
 };
 //------------------------------------CROWN-METHODS----------------------------------------
-Crown::Crown(string color): color(color){
+Crown::Crown(const string color): color(color){
+    cout << "Crown:\n";
+    cout << "   color = " << color << endl;
+    cout << "Crown.\n";
+}
+
+Crown::Crown(){
     cout << "Crown:\n";
     cout << "   color = " << color << endl;
     cout << "Crown.\n";
@@ -30,12 +36,7 @@ Crown::~Crown(){
     cout << "~Crown.\n";
 }
 
-// string &Crown::getcolor(){
-//     return color;
-// }
-
 const string &Crown::getcolor() const{ 
-    cout << "CONST" << endl;
     return color;
 }
 

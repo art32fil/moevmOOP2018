@@ -3,6 +3,9 @@
 
 using namespace std;
 
+int Object::count_ob_;
+int Object::cur_amount_;
+
 void cinclear()
 {
     cin.clear(ios::goodbit); // if the latest input was wrong - flushing bufer
@@ -49,8 +52,8 @@ int main()
     int x_load = 0;
     int y_load = 0;
     int army_number = 0;
-    int choice = menu();
-
+    
+    /* int choice = menu();
     if(choice){ // file
         fin >> x_load >> y_load;   
     }  
@@ -68,22 +71,25 @@ int main()
     }
 
     Field fd(x_load, y_load);
-    // cout<<"I";
-    fd.getconts()[0];
     if(choice){ // file
-        fin >> fd;
     }  
     else { //console
         cin >> fd;    
-    }
+    } */
+    
+    Field fd;
+    fd.read_from_file(fin);   
+    fin >> fd;
+    fd.print_field(cout);
+    
 
 //fix while
     int flag = 0;
-    cout << "See all containers (army: [ object_index x y hp] ):\n"; fd.print_cont();
+    cout << "See all containers - army: [ object_index x y hp] :\n"; fd.print_cont();
     while(1){
         int a, x, y, ind;
         while(1){
-            cinclear();//setstate(ios::goodbit(true)); 
+            cinclear();
             cout << "If there is alive object? Enter coordinates of the object (x y - unsigned int numbers separated by space) or q to exit: " << endl;
             flag = 1;
             cin >> x;
