@@ -30,28 +30,27 @@ class Object
 
 
 public:     
-    void print_ob();
-    void print_ob_simple();
-    char draw(); 
-    
+    Object(shared_ptr<Crown> crown, int x, int y, int hp);
+    Object(shared_ptr<Crown> crown, istream &in);      
+    ~Object();
+
     void read_obj(fstream &f, int id);
     void damage(int damage);
     bool alive();
     int army();
     bool check_crown();
 
-//fix
+    void print_ob();
+    void print_ob_simple();
+    char draw(); 
+
     int &getx();
     int &gety();
     int &gethp();
     int &getid();
     int &get_cur_amount();
     const int &getid() const;
-
-    Object(shared_ptr<Crown> crown, int x, int y, int hp);
-    Object(shared_ptr<Crown> crown, istream &in);      
-    // Object(): id(count_ob++){}
-    ~Object();
+    const shared_ptr<Crown> getcrown();
 
     friend istream &operator>>(istream &in, Object &ob);
     friend ostream &operator<<(ostream &out, Object &ob);
@@ -65,8 +64,8 @@ void Object::print_ob() {
          << "    x = " << x << endl
          << "    y = " << y << endl
          << "    hp = " << hp << endl
+         << "    crown = " << crown->getcolor() << endl
          << "    id = " << id << endl
-        //  << "    crown = " << crown->getcolor() << endl
          << "Object." <<endl; 
 }
 
@@ -86,7 +85,7 @@ Object::~Object(){
             << "    x = " << x << endl
             << "    y = " << y << endl
             << "    hp = " << hp << endl
-            // << "    crown = " <<crown->getcolor() << endl
+            << "    crown = " <<crown->getcolor() << endl
             << "    id = " << id << endl
         << "~Object." <<endl;
     cur_amount--;
@@ -128,6 +127,9 @@ const int &Object::getid() const
 
 int &Object::get_cur_amount()
     {return cur_amount;}
+
+const shared_ptr<Crown> Object::getcrown()
+    {return crown;}
        
 //-----------------------------------------------------------------------------------------
 

@@ -24,6 +24,11 @@ public:
     Elem(T& info_ = T(0), Elem *n = nullptr, Elem *p = nullptr) 
                 : info(info_), next(n),prev(p) {}
 
+    ~Elem(){
+        delete info; 
+        // cout<<"~Elem\n";
+    }
+
     T& get(); 
     const T& get() const; 
 };
@@ -112,17 +117,18 @@ Elem<T> *List<T>::find(size_t index)
 {
     if(this->is_empty()) {
         cerr << "Error in find: empty list!" << endl;
-        exit(1); 
+        // exit(1); 
     }
     Elem<T> *tmp = head;
     int i = 0;
     while (tmp){
-        if (index == i) return tmp;
+        if (index == i) 
+            return tmp;
         tmp = tmp->next;
         i++;
     }
     cerr << "Error in find: the index was not found!" << endl;
-    exit(1); 
+    // exit(1); 
 }
 
 template <typename T>
