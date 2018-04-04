@@ -31,6 +31,7 @@ public:
 
     T& get(); 
     const T& get() const; 
+    Elem<T> &operator= ( T const &equal);
 };
 //-----------------------------------------------
 
@@ -42,6 +43,12 @@ T& Elem<T>::get()
 template <typename T>
 const T& Elem<T>::get() const
     { return info; }
+
+template <typename T>
+Elem<T> &Elem<T>::operator= (T const &equal){
+    get() = equal;
+    return *this;
+}
 //-----------------------------------------------
 
 //------------------List--------------------------
@@ -67,7 +74,7 @@ public:
     Elem<T> *find(size_t index);
 
     T operator [] (size_t index);
-    List<T> &operator= (const List<T>  &r);
+    List<T> &operator= (const List<T>  &equal);
 
     Elem<T> *get_head() { return head; }
     Elem<T> *get_tail() { return tail; }
@@ -87,11 +94,11 @@ T List<T>::operator[] (size_t index)
 }
 
 template <typename T>
-List<T> &List<T>::operator= (const List<T>  &r)
+List<T> &List<T>::operator= (const List<T>  &equal)
 {
-    if(&r == this)
+    if(&equal == this)
         return *this;
-    return this->head.get() = r->head.get() ;
+    return this->head.get() = equal->head.get() ;
 }
 
 template <typename T>
@@ -132,7 +139,7 @@ Elem<T> *List<T>::find(size_t index)
 }
 
 template <typename T>
-void List<T>::insert_head (T& value)
+void List<T>::insert_head(T& value)
 {
     Elem<T>* newElem = new Elem<T>(value);
     if ( is_empty() ){ 
@@ -167,7 +174,7 @@ void List<T>::insert_after(const T& value, size_t index)
 template <typename T> 
 void List<T>::insert_tail(T& value) 
 {
-    if ( is_empty () ){ 
+    if ( is_empty() ){ 
         insert_head(value);   
     }
     else{
