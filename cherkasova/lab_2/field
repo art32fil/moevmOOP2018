@@ -14,14 +14,14 @@ class Field{
     int x_size;
     int y_size;
     
-    weak_ptr<Crown> crown_red;
-    weak_ptr<Crown> crown_green;    
+    shared_ptr<Crown> crown_red;
+    shared_ptr<Crown> crown_green;    
 
     char **map; 
-    List<List<Object>> contains;     
+    vector<List<Object*>*> contains;     
     
     friend class Object;
-    friend class List<Object>;
+    friend class List<Object*>;
    
 public:
     // Field( int x_size, int y_size   );
@@ -33,17 +33,17 @@ public:
     void print_cont();
     void add_to_map(int i, int j);
     void read_file(istream &f);
-    Object get_ob(int i, int j);
+    Object *get_ob(int i, int j);
     int belonging_army(int i, int j);
     void check_map();
     int is_obj(int x, int y);
     int find_ob_index(int i, int j);
     void read_from_file(istream &in);
-    
 
-
+    int &get_x_size();
+    int &get_y_size();    
     char **getmap();
-    List<List<Object>> getconts();
+    vector<List<Object*>*> getconts();
 
     friend istream &operator>>(istream &in, Field &fd);
     friend ostream &operator<<(ostream &out, const Field &fd);
@@ -73,9 +73,8 @@ void Field::init()
 // create containers for armies`
     i = 0;
     while(i++ < 2){
-        List<Object> some;
-        contains.insert_tail(some);
-        // contains.push_back(some);
+        // contains.insert_tail(some);
+        contains.push_back(new List<Object*>);
     }
 }
 
@@ -86,7 +85,7 @@ Field::~Field(){
     cout << "~Field:"<<endl    
          <<"    x_size = " << x_size << endl
          <<"    y_size = " << y_size <<endl; 
-    for(auto &obj: contains){ obj.get().~List(); }
+    for(auto &cont: contains){ cont->~List(); }
     for(int j = 0; j < x_size; j++){ delete[] map[j]; }
     delete[] map;
     cout << "~Field.\n";
@@ -95,32 +94,35 @@ Field::~Field(){
 int Field::is_obj(int i, int j)
 {
     if (map[i][i] = 'o') return 1;
-    if (map[j][i] = 'x') return 0;
+    if (map[j][i] = 'x') {
+        contains[get_ob(i,j)->army()]->delete_elem(find_ob_index(i,j));
+        return 0;
+    }
     else return -1; // not found
     
 }
 
-Object Field::get_ob(int i, int j) //map[j][i]-ok
+Object *Field::get_ob(int i, int j) //map[j][i]-ok
 {
     for(auto &cont: contains){ 
         int count = 0; 
-        for(auto &elem : cont.get()){ 
-            if(elem.get().getx() == i && elem.get().gety() == j) {
-                Object o = contains[elem.get().army()][count]; 
-                return o;
+        for(auto &obj : *cont){ 
+            if(obj.get()->getx() == i && obj.get()->gety() == j) {
+                Object* o = cont[obj.get()->army()][count]; 
+                return o; 
             }
             count++;
         }
     }
-    // return ; // not found
+    return nullptr; // not found
 }
 
-int Field::find_ob_index(int i, int j) //map[j][i]-ok
+int Field::find_ob_index(int i, int j)
 {
     for(auto &cont: contains){ 
         int count = 0; 
-        for(auto &elem : cont.get()){ 
-            if(elem.get().getx() == i && elem.get().gety() == j) 
+        for(auto &obj : *cont){ 
+            if(obj.get()->getx() == i && obj.get()->gety() == j) 
                 return count; 
             count++;
         }
@@ -132,8 +134,8 @@ int Field::belonging_army(int i, int j)
 {
     int army = 0;
     for(auto &cont: contains){ 
-        for(auto &obj : cont.get()){ 
-            if(obj.get().getx() == i && obj.get().gety() == j)  
+        for(auto &obj : *cont){ 
+            if(obj.get()->getx() == i && obj.get()->gety() == j)  
                 return army;
         }
         army++;
@@ -144,9 +146,10 @@ int Field::belonging_army(int i, int j)
 void Field::check_map()
 {
     for(auto &cont: contains){ 
-        for(auto &obj : cont.get()){ 
-            if(obj.get().gethp() <= 0) 
-                map[obj.get().gety()][obj.get().getx()] = 'x';
+        for(auto &obj : *cont){ 
+            if(obj.get()->gethp() <= 0) {
+                map[obj.get()->gety()][obj.get()->getx()] = 'x';
+            }
         }
     }
 }
@@ -155,8 +158,8 @@ void Field::print_cont()
 {
     int count_cont = 0;
     for(auto &cont: contains){ 
-        for(auto &obj : cont.get()){ 
-            cout << count_cont << ": "; obj.get().print_ob_simple();
+        for(auto &obj : *cont){ 
+            cout << count_cont << ": "; obj.get()->print_ob_simple();
         }
         count_cont++;
     }
@@ -180,6 +183,7 @@ void Field::print_field(ostream &out)
             int belong = belonging_army(j,i);
             switch(belong){
                 case 0:
+                    // out << *get_ob(j,i);
                     out << "\x1b[31m"<<map[i][j]<<"\x1b[0m";
                     break;
                 case 1:
@@ -200,20 +204,7 @@ void Field::print_field(ostream &out)
         else out << "-"; 
     }out<<endl;   
     for(int i = 0; i < y_size; i++){ if(i==0) out << "  "; out <<  i; } out << endl; 
-    out <<endl;      
-}
-
-char **Field::getmap()
-    {return map;}
-
-List<List<Object>>Field::getconts() 
-    {return contains;}
-
-//-----------------------------------------------------------------------------------------
-
-ostream &operator<<(ostream &out, Field &fd){
-    fd.print_field(out);
-    return out;
+    out << endl;      
 }
 
 void Field::read_from_file(istream &in){
@@ -230,23 +221,22 @@ void Field::read_from_file(istream &in){
         int i = 0;
         while (i++ < obj_amount){ 
             Object *ob;
-            if (j == 0) {                            
+            if(j == 0) {                            
                 if(!redflag) {
-                    // this->crown_red.lock() = make_shared<Crown>("red");
+                    this->crown_red = make_shared<Crown>("red");
                     redflag = 1;
                 }
-                ob = new Object(this->crown_red.lock(), in);
+                ob = new Object(this->crown_red, in);
             }
-            else if(j == 1){  
+            if(j == 1){  
                 if(!greenflag) {
-                    // this->crown_green.lock() = make_shared<Crown>("green");
+                    this->crown_green = make_shared<Crown>("green");
                     greenflag = 1;
                 }
-                ob = new Object(this->crown_green.lock(), in);
+                ob = new Object(this->crown_green, in);
             }
-            this->getconts()[j].insert_tail(*ob); // add an object to j container   
+            this->getconts()[j]->insert_tail(ob); // add an object to j container   
             this->add_to_map(ob->gety(), ob->getx()); // mark this object on the map
-            cout<<"MATCh\n";
         }
         j++;    
     }
@@ -254,12 +244,27 @@ void Field::read_from_file(istream &in){
     cout << "Field.\n"; 
 }
 
+ostream &operator<<(ostream &out, Field &fd){
+    fd.print_field(out);
+    return out;
+}
+
 istream &operator>>(istream &in, Field &fd){
     in >> fd.x_size >> fd.y_size;
-    // fd.crown_red.lock() = make_shared<Crown>("red");
-    // fd.crown_green.lock() = make_shared<Crown>("green");
     return in;
 }
+
+int &Field::get_x_size()
+    {return x_size;}
+
+int &Field::get_y_size()
+    {return y_size;}
+
+char **Field::getmap()
+    {return map;}
+
+vector<List<Object*>*>Field::getconts() 
+    {return contains;}
 
 //-----------------------------------------------------------------------------------------
 #endif //FIELD
