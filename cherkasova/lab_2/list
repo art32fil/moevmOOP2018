@@ -228,7 +228,7 @@ void List<T>::delete_elem(size_t index)
 template <typename T> 
 List<T>::~List()
 { 
-    cout << "\nDestructor of the list was called\n";
+    // cout << "\nDestructor of the list was called\n";
     if( !is_empty() ){
         while ( head ){
             tail = head->next;
@@ -236,7 +236,7 @@ List<T>::~List()
             head = tail;
         }
     }    
-    else { cerr << "Destructor of list: already empty" << endl; }
+    // else { cerr << "Destructor of list: already empty" << endl; }
 }
 
 template <typename T> 

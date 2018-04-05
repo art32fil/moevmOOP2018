@@ -14,8 +14,8 @@ class Field{
     int x_size;
     int y_size;
     
-    shared_ptr<Crown> crown_red;
-    shared_ptr<Crown> crown_green;    
+    weak_ptr<Crown> crown_red;
+    weak_ptr<Crown> crown_green;    
 
     char **map; 
     List<List<Object*>*> contains;     
@@ -33,7 +33,7 @@ public:
     void print_cont();
     void add_to_map(int i, int j);
     void read_file(istream &f);
-    Object *get_ob(int i, int j);
+    Object *get_ob(int x, int y);
     int belonging_army(int i, int j);
     void check_map();
     int is_obj(int x, int y);
@@ -43,7 +43,7 @@ public:
     int &get_x_size();
     int &get_y_size();    
     char **getmap();
-    List<List<Object*>*> getconts();
+    List<List<Object*>*> &getconts();
 
     friend istream &operator>>(istream &in, Field &fd);
     friend ostream &operator<<(ostream &out, const Field &fd);
@@ -71,11 +71,11 @@ void Field::init()
         }
     }
 // create containers for armies`
-    for(i = 0; i < 2; i++){
-        List<Object*>* some = new List<Object*>;
-        contains.insert_tail(some);
-        // contains.push_back(new List<Object*>);
-    }
+    // for(i = 0; i < 2; i++){
+    //     List<Object*>* some = new List<Object*>;
+    //     contains.insert_tail(some);
+    //     // contains.push_back(new List<Object*>);
+    // }
 }
 
 void Field::add_to_map(int i, int j) 
@@ -85,10 +85,10 @@ Field::~Field(){
     cout << "~Field:"<<endl    
          <<"    x_size = " << x_size << endl
          <<"    y_size = " << y_size <<endl; 
-    for(auto &cont: contains){ cont.get()->~List(); }
-    for(int j = 0; j < x_size; j++){ delete[] map[j]; }
-    delete[] map;
-    cout << "~Field.\n";
+    // for(auto &cont: contains){ cont.get()->~List(); }
+    // for(int j = 0; j < x_size; j++){ delete[] map[j]; }
+    // delete[] map;
+    // cout << "~Field.\n";
 }
 
 int Field::is_obj(int i, int j)
@@ -102,19 +102,12 @@ int Field::is_obj(int i, int j)
     
 }
 
-Object *Field::get_ob(int i, int j) //map[j][i]-ok
+Object *Field::get_ob(int x, int y) //map[j][i]-ok
 {
-    for(auto &cont: contains){ 
-        int count = 0; 
-        for(auto &obj : *(cont.get())){ 
-            if(obj.get()->getx() == i && obj.get()->gety() == j) {
-                Object* o = cont.get()[obj.get()->army()][count]; 
-                return o; 
-            }
-            count++;
-        }
-    }
-    return nullptr; // not found
+    int a = belonging_army(x,y);
+    int ind = find_ob_index(x,y);
+    if(ind == -1 || a == -1) return nullptr;
+    return getconts()[a]->find(ind)->get();
 }
 
 int Field::find_ob_index(int i, int j)
@@ -211,34 +204,39 @@ void Field::read_from_file(istream &in){
     int redflag = 0;
     int greenflag = 0;
     int obj_amount = 0;
-    int j = 0;
     
     in >> *this;
     this->init();
-    
-    while(j < 2){  
+    // cout<<"size = "<<contains.get_size()<<endl;
+    for(int j = 0; j < 2; j++){  
         in >> obj_amount; 
-        int i = 0;
-        while (i++ < obj_amount){ 
+        for(int i = 0; i < obj_amount; i++){ 
             Object *ob;
+            static shared_ptr<Crown> tmp;
             if(j == 0) {                            
                 if(!redflag) {
-                    this->crown_red = make_shared<Crown>("red");
+                    List<Object*>* some = new List<Object*>;
+                    contains.insert_tail(some);
+                    tmp = shared_ptr<Crown>(new Crown("red"));
+                    this->crown_red = tmp;
                     redflag = 1;
                 }
-                ob = new Object(this->crown_red, in);
+                ob = new Object(tmp, in);
             }
             if(j == 1){  
                 if(!greenflag) {
-                    this->crown_green = make_shared<Crown>("green");
+                     List<Object*>* some = new List<Object*>;
+                    contains.insert_tail(some);
+                    tmp = shared_ptr<Crown>(new Crown("green"));
+                    this->crown_green = tmp;                                        
                     greenflag = 1;
                 }
-                ob = new Object(this->crown_green, in);
+                ob = new Object(tmp, in);
             }
-            this->getconts()[j]->insert_tail(ob); // add an object to j container   
-            this->add_to_map(ob->gety(), ob->getx()); // mark this object on the map
+            contains[j]->insert_tail(ob); // add an object to j container   
+            // cout<<"size = "<<contains[j]->get_size()<<endl;
+            add_to_map(ob->gety(), ob->getx()); // mark this object on the map
         }
-        j++;    
     }
     cout << "Field.\n"; 
 }
@@ -261,7 +259,7 @@ int &Field::get_y_size()
 
 char **Field::getmap()
     {return map;}
-List<List<Object*>*>Field::getconts() 
+List<List<Object*>*> &Field::getconts() 
     {return contains;}
 
 //-----------------------------------------------------------------------------------------

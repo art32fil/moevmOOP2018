@@ -82,7 +82,7 @@ int main()
             if(ind == -1 || a == -1) { cout << "Selected target wasn't found. Try again (maybe inccorect input)." <<endl; 
                     cin.clear(); continue;}
             else if (fd.is_obj(x,y) == 1) {
-                cout << "Yes: hp = "<< fd.get_ob(x,y)->gethp() << endl; 
+                cout << "Yes: hp = "<< fd.get_ob(x,y)->gethp() << endl;
                 flag = 1; 
                 break;
             } else {cout << "No: doesn't exist or was killed.\n"; flag = 1;}
@@ -131,9 +131,8 @@ int main()
     }
 }
     
-    // fd.~Field();
-    filename.close();
     // file.close();
+    filename.close();
     return 0;   
 }
 //------------------------------------------------
