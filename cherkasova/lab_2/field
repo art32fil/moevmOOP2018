@@ -14,8 +14,8 @@ class Field{
     int x_size;
     int y_size;
     
-    weak_ptr<Crown> crown_red;
-    weak_ptr<Crown> crown_green;    
+    shared_ptr<Crown> crown_red;
+    shared_ptr<Crown> crown_green;    
 
     char **map; 
     List<List<Object*>*> contains;     
@@ -137,6 +137,7 @@ int Field::belonging_army(int i, int j)
 
 void Field::check_map()
 {
+    // print_cont();
     for(auto &cont: contains){ 
         for(auto &obj : *(cont.get())){ 
             if(obj.get()->gethp() <= 0) {
