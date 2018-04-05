@@ -70,12 +70,11 @@ void Field::init()
             map[i][j] = '.';
         }
     }
-// create containers for armies`
-    // for(i = 0; i < 2; i++){
-    //     List<Object*>* some = new List<Object*>;
-    //     contains.insert_tail(some);
-    //     // contains.push_back(new List<Object*>);
-    // }
+//create containers for armies
+    for(i = 0; i < 2; i++){
+        List<Object*>* some = new List<Object*>;
+        contains.insert_tail(some);
+    }
 }
 
 void Field::add_to_map(int i, int j) 
@@ -207,7 +206,6 @@ void Field::read_from_file(istream &in){
     
     in >> *this;
     this->init();
-    // cout<<"size = "<<contains.get_size()<<endl;
     for(int j = 0; j < 2; j++){  
         in >> obj_amount; 
         for(int i = 0; i < obj_amount; i++){ 
@@ -215,8 +213,6 @@ void Field::read_from_file(istream &in){
             static shared_ptr<Crown> tmp;
             if(j == 0) {                            
                 if(!redflag) {
-                    List<Object*>* some = new List<Object*>;
-                    contains.insert_tail(some);
                     tmp = shared_ptr<Crown>(new Crown("red"));
                     this->crown_red = tmp;
                     redflag = 1;
@@ -225,8 +221,6 @@ void Field::read_from_file(istream &in){
             }
             if(j == 1){  
                 if(!greenflag) {
-                     List<Object*>* some = new List<Object*>;
-                    contains.insert_tail(some);
                     tmp = shared_ptr<Crown>(new Crown("green"));
                     this->crown_green = tmp;                                        
                     greenflag = 1;
@@ -234,7 +228,6 @@ void Field::read_from_file(istream &in){
                 ob = new Object(tmp, in);
             }
             contains[j]->insert_tail(ob); // add an object to j container   
-            // cout<<"size = "<<contains[j]->get_size()<<endl;
             add_to_map(ob->gety(), ob->getx()); // mark this object on the map
         }
     }
