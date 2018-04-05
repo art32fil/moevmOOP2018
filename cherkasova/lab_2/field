@@ -14,8 +14,8 @@ class Field{
     int x_size;
     int y_size;
     
-    shared_ptr<Crown> crown_red;
-    shared_ptr<Crown> crown_green;    
+    weak_ptr<Crown> crown_red;
+    weak_ptr<Crown> crown_green;    
 
     char **map; 
     List<List<Object*>*> contains;     
@@ -70,7 +70,7 @@ void Field::init()
             map[i][j] = '.';
         }
     }
-//create containers for armies
+create containers for armies`
     for(i = 0; i < 2; i++){
         List<Object*>* some = new List<Object*>;
         contains.insert_tail(some);
@@ -137,7 +137,6 @@ int Field::belonging_army(int i, int j)
 
 void Field::check_map()
 {
-    // print_cont();
     for(auto &cont: contains){ 
         for(auto &obj : *(cont.get())){ 
             if(obj.get()->gethp() <= 0) {
