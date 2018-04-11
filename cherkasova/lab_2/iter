@@ -22,8 +22,8 @@ public:
     Elem<T> *operator->();
     Iter operator++(); 
     Iter operator--();
-    bool operator!=(Iter const& r);
-    Iter &operator=(const Iter  &r);
+    bool operator!=(Iter const& equal);
+    Iter &operator=(const Iter  &equal);
 };
 //------------------------------------------------
 
@@ -50,18 +50,18 @@ Iter<T> Iter<T>::operator--()
 }
 
 template <typename T>
-Iter<T> &Iter<T>::operator=(const Iter<T>  &r)
+Iter<T> &Iter<T>::operator=(const Iter<T>  &equal)
 {
     // if an attempt to make the element equal to itself was, so the pointer to it will return
-    if(&r == this)
+    if(&equal == this)
         return *this;
-    return Iter(this.get() = r.get());
+    return Iter(this.get() = equal.get());
 }
 
 template <typename T>
-bool Iter<T>::operator!=(Iter<T> const& r)
+bool Iter<T>::operator!=(Iter<T> const& equal)
 {
-    return !(elm == r.elm);
+    return !(elm == equal.elm);
 }
 //------------------------------------------------
 

@@ -6,117 +6,116 @@
 
 using namespace std;
 
-class Object;
+// class Object;
 
 //--------------------------------------FIELD----------------------------------------------
 class Field{
-    friend class Object;
-    friend class List<Object>;
-    
-    int x_size_;
-    int y_size_;
-   
-    char **map; //map[y][x] - access
-    vector <List<Object>*> all_cont;     
 
+    int x_size;
+    int y_size;
+    
+    weak_ptr<Crown> crown_red;
+    weak_ptr<Crown> crown_green;    
+
+    char **map; 
+    List<List<Object*>*> contains;     
+    
+    friend class Object;
+    friend class List<Object*>;
+   
 public:
-    Field( int x_size, int y_size   );
+    // Field( int x_size, int y_size   );
+    Field(){}
     ~Field();
     
-    void print_field();
+    void init(); 
+    void print_field(ostream &out);
     void print_cont();
     void add_to_map(int i, int j);
     void read_file(istream &f);
-    int find_ob_index(int i, int j);
+    Object *get_ob(int x, int y);
     int belonging_army(int i, int j);
     void check_map();
+    int is_obj(int x, int y);
+    int find_ob_index(int i, int j);
+    void read_from_file(istream &in);
 
+    int &get_x_size();
+    int &get_y_size();    
     char **getmap();
-    vector <List<Object>*> getconts();
+    List<List<Object*>*> &getconts();
 
-    ostream &operator<<(ostream &out); 
+    friend istream &operator>>(istream &in, Field &fd);
+    friend ostream &operator<<(ostream &out, const Field &fd);
 };
 //-----------------------------------------------------------------------------------------
 
 
 //---------------------------------FIELD-METHODS-------------------------------------------
-Field::Field( int x_size, int y_size) 
+void Field::init() 
 {
-    x_size_ = x_size;
-    y_size_ = y_size;
-
     cout << "Field:"<<endl    
-         <<"    x_size = " << x_size_<< endl
-         <<"    y_size = " << y_size_<<endl; 
-    cout << "Field.\n";
+         <<"    x_size = " << x_size << endl
+         <<"    y_size = " << y_size <<endl; 
     
 //  create a clean map
     int i = 0;
     map = new char*[y_size]; 
    
-    for(int i = 0; i < y_size_; i++){ 
-        map[i] = new char[x_size_];
+    for(int i = 0; i < y_size; i++){ 
+        map[i] = new char[x_size];
     }
-    for(int i = 0; i < x_size_; i++){
-        for(int j = 0; j < y_size_; j++){
+    for(int i = 0; i < x_size; i++){
+        for(int j = 0; j < y_size; j++){
             map[i][j] = '.';
         }
     }
-// create containers for armies
-    i = 0;
-    while(i++ < 2){
-        List<Object> *some = new List<Object>;
-        all_cont.push_back(some);
+create containers for armies`
+    for(i = 0; i < 2; i++){
+        List<Object*>* some = new List<Object*>;
+        contains.insert_tail(some);
     }
-}
-
-Field::~Field(){
-    cout << "~Field:"<<endl    
-         <<"    x_size = " << x_size_<< endl
-         <<"    y_size = " << y_size_<<endl; 
-    for(auto &obj: all_cont){ obj->~List(); }
-    for(int j = 0; j < x_size_; j++){ delete[] map[j]; }
-    delete[] map;
-    cout << "~Field.\n";
 }
 
 void Field::add_to_map(int i, int j) 
     { map[i][j] = 'o'; }
 
-// void Field::read_file(istream &f)
-// {
-//     int obj_amount = 0;
-//     int j = 0;
-//     while(j < 2){  
-//         f >> obj_amount; 
-//         int i = 0;
-//         while (i++ < obj_amount){ 
-//             Object *ob = new Object(f, i);
-//             all_cont[j]->insert_tail(*ob); // add an object to j container   
-//             add_to_map(ob->gety(), ob->getx()); // mark this object on the map
-//         }
-//         j++;    
-//     }
-//     cout << "Field.\n";
-// }
-
-void Field::print_cont()
-{
-    int count_cont = 0;
-    for(auto &cont: all_cont){ 
-        for(auto &obj : *cont){ 
-            cout << count_cont << ": "; obj.get().print_ob_simple();
-        }
-        count_cont++;
-    }
+Field::~Field(){
+    cout << "~Field:"<<endl    
+         <<"    x_size = " << x_size << endl
+         <<"    y_size = " << y_size <<endl; 
+    // for(auto &cont: contains){ cont.get()->~List(); }
+    // for(int j = 0; j < x_size; j++){ delete[] map[j]; }
+    // delete[] map;
+    // cout << "~Field.\n";
 }
 
-int Field::find_ob_index(int i, int j) //map[j][i]-ok
+int Field::is_obj(int i, int j)
 {
-    for(auto &cont: all_cont){ 
+    if (map[i][i] = 'o') return 1;
+    if (map[j][i] = 'x') {
+        contains[get_ob(i,j)->army()]->delete_elem(find_ob_index(i,j));
+        return 0;
+    }
+    else return -1; // not found
+    
+}
+
+Object *Field::get_ob(int x, int y) //map[j][i]-ok
+{
+    int a = belonging_army(x,y);
+    int ind = find_ob_index(x,y);
+    if(ind == -1 || a == -1) return nullptr;
+    return getconts()[a]->find(ind)->get();
+}
+
+int Field::find_ob_index(int i, int j)
+{
+    for(auto &cont: contains){ 
         int count = 0; 
-        for(auto &obj : *cont){ 
-            if(obj.get().getx() == i && obj.get().gety() == j) return count; 
+        for(auto &obj : *(cont.get())){ 
+            if(obj.get()->getx() == i && obj.get()->gety() == j) 
+                return count; 
             count++;
         }
     }
@@ -126,9 +125,10 @@ int Field::find_ob_index(int i, int j) //map[j][i]-ok
 int Field::belonging_army(int i, int j)
 {
     int army = 0;
-    for(auto &cont: all_cont){ 
-        for(auto &obj : *cont){ 
-            if(obj.get().getx() == i && obj.get().gety() == j) return army;
+    for(auto &cont: contains){ 
+        for(auto &obj : *(cont.get())){ 
+            if(obj.get()->getx() == i && obj.get()->gety() == j)  
+                return army;
         }
         army++;
     }
@@ -137,84 +137,123 @@ int Field::belonging_army(int i, int j)
 
 void Field::check_map()
 {
-    for(auto &cont: all_cont){ 
-        for(auto &obj : *cont){ 
-            if(obj.get().gethp() <= 0) map[obj.get().gety()][obj.get().getx()] = 'x';
+    for(auto &cont: contains){ 
+        for(auto &obj : *(cont.get())){ 
+            if(obj.get()->gethp() <= 0) {
+                map[obj.get()->gety()][obj.get()->getx()] = 'x';
+            }
         }
     }
 }
 
-void Field::print_field()
+void Field::print_cont()
+{
+    int count_cont = 0;
+    for(auto &cont: contains){ 
+        for(auto &obj : *(cont.get())){ 
+            cout << count_cont << ": "; obj.get()->print_ob_simple();
+        }
+        count_cont++;
+    }
+}
+
+void Field::print_field(ostream &out)
 {   
     check_map();
-    cout <<endl;
-    for(int i = 0; i < y_size_; i++){ if(i==0) cout << "  "; cout <<  i; } cout << endl;        
-    for(int i = 0; i < y_size_; i++){ 
-        if(i==0 || i == y_size_-1) {
-            if(i==0) cout << "  ";
-            cout << "+"; 
+    out <<endl;
+    for(int i = 0; i < y_size; i++){ if(i==0) out << "  "; out <<  i; } out << endl;        
+    for(int i = 0; i < y_size; i++){ 
+        if(i==0 || i == y_size-1) {
+            if(i==0) out << "  ";
+            out << "+"; 
         }
-        else cout << "-"; 
-    }cout << endl;   
-    for(int i = 0; i < y_size_; i++){
-        cout << i << "|";
-        for(int j = 0; j < x_size_; j++){
+        else out << "-"; 
+    }out << endl;   
+    for(int i = 0; i < y_size; i++){
+        out << i << "|";
+        for(int j = 0; j < x_size; j++){
             int belong = belonging_army(j,i);
             switch(belong){
                 case 0:
-                    cout << "\x1b[31m"<<map[i][j]<<"\x1b[0m";
+                    // out << *get_ob(j,i);
+                    out << "\x1b[31m"<<map[i][j]<<"\x1b[0m";
                     break;
                 case 1:
-                    cout << "\x1b[32m"<<map[i][j]<<"\x1b[0m";
+                    out << "\x1b[32m"<<map[i][j]<<"\x1b[0m";
                     break;
-// ...another armies
                 default:
-                    cout << map[i][j];
+                    out << map[i][j];
                     break;
             }
         }
-        cout<< "|" <<endl;
+        out<< "|" <<endl;
     }
-    for(int i = 0; i < y_size_; i++){ 
-        if(i==0 || i == y_size_-1) {
-            if(i==0) cout << "  ";
-            cout << "+"; 
+    for(int i = 0; i < y_size; i++){ 
+        if(i==0 || i == y_size-1) {
+            if(i==0) out << "  ";
+            out << "+"; 
         }
-        else cout << "-"; 
-    }cout<<endl;   
-    for(int i = 0; i < y_size_; i++){ if(i==0) cout << "  "; cout <<  i; } cout << endl; 
-    cout <<endl;      
+        else out << "-"; 
+    }out<<endl;   
+    for(int i = 0; i < y_size; i++){ if(i==0) out << "  "; out <<  i; } out << endl; 
+    out << endl;      
 }
 
-ostream &Field::operator<<(ostream &out){
-    this->print_cont();
+void Field::read_from_file(istream &in){
+    int redflag = 0;
+    int greenflag = 0;
+    int obj_amount = 0;
+    
+    in >> *this;
+    this->init();
+    for(int j = 0; j < 2; j++){  
+        in >> obj_amount; 
+        for(int i = 0; i < obj_amount; i++){ 
+            Object *ob;
+            static shared_ptr<Crown> tmp;
+            if(j == 0) {                            
+                if(!redflag) {
+                    tmp = shared_ptr<Crown>(new Crown("red"));
+                    this->crown_red = tmp;
+                    redflag = 1;
+                }
+                ob = new Object(tmp, in);
+            }
+            if(j == 1){  
+                if(!greenflag) {
+                    tmp = shared_ptr<Crown>(new Crown("green"));
+                    this->crown_green = tmp;                                        
+                    greenflag = 1;
+                }
+                ob = new Object(tmp, in);
+            }
+            contains[j]->insert_tail(ob); // add an object to j container   
+            add_to_map(ob->gety(), ob->getx()); // mark this object on the map
+        }
+    }
+    cout << "Field.\n"; 
+}
+
+ostream &operator<<(ostream &out, Field &fd){
+    fd.print_field(out);
     return out;
 }
 
 istream &operator>>(istream &in, Field &fd){
-    int obj_amount = 0;
-    int j = 0;
-    while(j < 2){  
-        in >> obj_amount; 
-        int i = 0;
-        while (i++ < obj_amount){ 
-            Object *ob = new Object(in, i);
-            fd.getconts()[j]->insert_tail(*ob); // add an object to j container   
-            fd.add_to_map(ob->gety(), ob->getx()); // mark this object on the map
-        }
-        j++;    
-    }
-    cout << "Field.\n";
+    in >> fd.x_size >> fd.y_size;
     return in;
 }
 
+int &Field::get_x_size()
+    {return x_size;}
+
+int &Field::get_y_size()
+    {return y_size;}
 
 char **Field::getmap()
     {return map;}
-
-vector<List<Object>*>Field::getconts() 
-    {return all_cont;}
+List<List<Object*>*> &Field::getconts() 
+    {return contains;}
 
 //-----------------------------------------------------------------------------------------
-
 #endif //FIELD
