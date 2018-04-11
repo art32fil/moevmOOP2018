@@ -99,7 +99,7 @@ class Pole{
 						return h; //äëÿ íàëè÷èÿ èç çåëåíûé àðìèè âîçâðàùàåì çäîðîâüå
 					else
 					{
-						red.Delete(p);
+						green.Delete(p);
 						return 0;              //âîçâðàùàåì 0 åñëè áîåö óáèò
 					}	
 					
