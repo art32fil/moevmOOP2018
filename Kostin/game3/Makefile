@@ -9,4 +9,4 @@ main.o : main.cpp Battlefield.hpp Object.hpp Crown.hpp  $(PUTH)iterator.hpp  $(P
 	g++ -Wall -c 	main.cpp	-std=c++17
 
 clean :
-	rm -rf *.o	game2
+	rm -rf *.o	game3
