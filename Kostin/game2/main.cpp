@@ -4,6 +4,9 @@
 
 using namespace std;
 
+size_t Object::count = 0;
+size_t Object::amount = 0;
+
 void menu(){
     std::cout << '\n' <<
     "\033[1;35m*********************************************" <<
@@ -18,7 +21,10 @@ int main(int argc, char const *argv[]) {
     Battlefield btlf;
     btlf.Enter(fin);
     btlf.Draw_battlefield();
-    Object obj;
+
+    std::shared_ptr<Crown> temp(new Crown("Nan"));
+    //Object obj(temp);
+
     std::pair<int, Object&>* ob;
     size_t choice = 0;
     size_t pos_x = 0, pos_y = 0;
@@ -34,12 +40,16 @@ int main(int argc, char const *argv[]) {
             std::cout << "---------------------------------------------" << '\n';
                 return 0;
 
-            case 1:
+            case 1: {
                 std::cout << "Enter position x and y: ";
                 std::cin >> pos_x >> pos_y;
+                //std::cin >> obj; // ???? don't work // whay?
+
                 std::cout << '\n' << "it's interim object : ";
                 std::cout << '\n';
-                obj = {pos_x, pos_y}; //Colled of Constructor!
+
+                Object obj = {pos_x, pos_y, temp}; //Colled of Constructor!
+
                 ob = new std::pair<int, Object&>{btlf.check_colour_on_postion(obj)};
                 if(ob->first == 1){
                     std::cout << "It is object of \033[1;31m RED \033[0m army!" << '\n';
@@ -60,7 +70,7 @@ int main(int argc, char const *argv[]) {
                 cnt = 0; //!!!!!!!!!!!!!!!Warning!
                 if(ob->second.get_hp() <= 0 && ob->first == 1 ){ //
                     for (auto &el : btlf.get_red_arm()) {
-                        if(ob->second.get_pos() == el.get_Info().get_pos()){
+                        if(ob->second.get_ID() == el.get_Info().get_ID()){
                             btlf.get_red_arm().Delete_elem(cnt);
                         }
                         cnt++;
@@ -69,7 +79,7 @@ int main(int argc, char const *argv[]) {
                 cnt = 0;//!!!!!!!!!!!!!!!Warning!
                 if(ob->second.get_hp() <= 0 && ob->first == 2 ){
                     for (auto &el : btlf.get_gr_arm()) {
-                        if(ob->second.get_pos() == el.get_Info().get_pos()){
+                        if(ob->second.get_ID() == el.get_Info().get_ID()){
                             btlf.get_gr_arm().Delete_elem(cnt);
                         }
                         cnt++;
@@ -77,6 +87,7 @@ int main(int argc, char const *argv[]) {
                 }
                 btlf.Draw_battlefield();
                 break;
+                }
             default:
                 std::cout << "Incorrect choice!" << '\n';
                 break;
