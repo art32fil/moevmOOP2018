@@ -148,14 +148,14 @@ public:
     for(auto &obj: first_army)
         {
           if (obj.get_hp()<=0) //если нет hp, то отмечаем крестиком
-            pattern[obj.get_coord().y][obj.get_coord().x]='x';
+            pattern[obj.get_coord().x][obj.get_coord().y]='x';
         }
 
         //проходим по второму контейнеру-армии
         for(auto &obj: second_army)
         {
           if(obj.get_hp()<=0) //если нет hp, то отмечаем крестиком
-            pattern[obj.get_coord().y][obj.get_coord().x]='X';
+            pattern[obj.get_coord().x][obj.get_coord().y]='X';
         }
 
   }
