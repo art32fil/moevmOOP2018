@@ -32,15 +32,14 @@ struct Coordinates{
 
 class Object {
 private:
-    int hit_points;
-
     const std::shared_ptr<Crown> crown;
     const  size_t ID; // of Object in List
-    
+
     static size_t count;
     static size_t amount;
 
 protected:
+    int hit_points;
     Coordinates coords;
 public:
     Object() : ID(count++){
@@ -132,16 +131,13 @@ public:
     const size_t      &get_ID() const           { return ID; }
 
     Object* check_Coords(Coordinates const &);
+    virtual char type(){
+        return 'o';
+    }
 
     friend ostream  &operator<< (ostream &out, const Object &obj);
     friend istream  &operator>> (istream &in, Object &obj);
-    // friend ifstream &operator>> (ifstream &fin, Object &obj); //HOW?
 };
-
-// ifstream &operator>> (ifstream &fin, Object &obj){  //read from file
-//     fin >> obj.get_coords().axis_x >> obj.get_coords().axis_y >> obj.get_hp();
-//     return fin;
-// }
 
 ostream &operator<< (ostream &out, const Object &obj){  //write to console
      out << obj.get_coords().axis_x << obj.get_coords().axis_y << obj.get_hp();

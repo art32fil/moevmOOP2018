@@ -9,12 +9,12 @@ private:
 public:
     Crown (string clr = "without colour") : colour(clr){
         std::cout << "\tcolor = " << colour << std::endl
-                  << "\033[1;32m Crown \033[0m"
+                  << "\033[1;34m Crown \033[0m"
                   << std::endl << std::endl << std::endl;
     }
     ~Crown(){
         std::cout << "\tcolor = " << colour << std::endl
-                  << "\033[1;32m ~Crown\033[0m"
+                  << "\033[1;34m ~Crown\033[0m"
                   << std::endl << std::endl << std::endl;
     }
     // const string &get_color() const { return colour; }

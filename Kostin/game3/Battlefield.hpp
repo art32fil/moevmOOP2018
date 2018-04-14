@@ -3,12 +3,12 @@
 #include "../vector/my_vector.hpp"
 #include "../vector/iterator.hpp"
 #include "Object.hpp"
+#include "Warrior.hpp"
 #include "Crown.hpp"
 #include <iostream>
 #include <memory>
 #include <fstream>
 #include <string>
-//#include <istream>
 #include <utility>
 
 struct Elem_for_print{
@@ -61,46 +61,38 @@ public:
     }
 
     void Draw_battlefield();
+    void fld(List<Object> &army, Elem_for_print *&arr, bool clr);
     void Enter(ifstream &);
     size_t find_pos(size_t const &pos);
     std::pair<int, Object&> check_colour_on_postion(Object &arm);
 
 };
 
-/*istream &operator>> (istream &fin, Object &obj){  //read from file
-    fin >> obj.get_coords().axis_x >> obj.get_coords().axis_y >> obj.get_hp();
-    return fin;
-}*/
-
 ifstream &operator>> (ifstream &fin, Size &sz){ //read from file
     fin >> sz.x_size >> sz.y_size;
     return fin;
 }
 
-void Battlefield::Draw_battlefield(){
-    Elem_for_print *arr = new Elem_for_print[size.x_size*size.y_size];
-    for(auto &obj : red_army){
+void Battlefield::fld(List<Object> &army, Elem_for_print *&arr, bool clr) {
+    for(auto &obj : army){
         if (obj.get_Info().get_hp() <= 0) {
             arr[obj.get_Info().get_coords().axis_x +
                     obj.get_Info().get_coords().axis_y*size.y_size].l_d_e = 'x';
         }else{
             arr[obj.get_Info().get_coords().axis_x +
-                    obj.get_Info().get_coords().axis_y*size.y_size].l_d_e = 'o';
+                    obj.get_Info().get_coords().axis_y*size.y_size].l_d_e = obj.get_Info().type();
             }
         arr[obj.get_Info().get_coords().axis_x +
-                obj.get_Info().get_coords().axis_y*size.y_size].colour = false;
+                obj.get_Info().get_coords().axis_y*size.y_size].colour = clr;
     }
-    for(auto &obj : green_army){
-        if(obj.get_Info().get_hp() <= 0){
-            arr[obj.get_Info().get_coords().axis_x +
-                    obj.get_Info().get_coords().axis_y*size.y_size].l_d_e = 'x';
-        }else{
-            arr[obj.get_Info().get_coords().axis_x +
-                    obj.get_Info().get_coords().axis_y*size.y_size].l_d_e = 'o';
-        }
-        arr[obj.get_Info().get_coords().axis_x +
-                obj.get_Info().get_coords().axis_y*size.y_size].colour = true;
-    }
+}
+
+void Battlefield::Draw_battlefield(){
+    Elem_for_print *arr = new Elem_for_print[size.x_size*size.y_size];
+
+    fld(red_army, arr, false);
+    fld(green_army, arr, true);
+
     std::cout << '\n';
     std::cout << "   ";
     for (size_t i = 0; i < size.x_size; i++) {
@@ -135,9 +127,8 @@ void Battlefield::Enter(ifstream &fin){
     size_t q = 0;
 
     fin >> size;
+//---------------------------------------
     fin >> q;
-
-
     std::shared_ptr<Crown> temp(new Crown("red"));
     crown_red = temp;
     Object obj_one(temp);
@@ -145,14 +136,21 @@ void Battlefield::Enter(ifstream &fin){
         fin >> obj_one;
         red_army.Add_to_Head(obj_one);
     }
-
+//------------------------------------
     fin >> q;
     std::shared_ptr<Crown> temp1(new Crown("green"));
-    crown_red = temp1;
+    crown_green = temp1;
     Object obj_two(temp1);
     for (size_t i = 0; i < q; i++) {
         fin >> obj_two;
         green_army.Add_to_Head(obj_two);
+    }
+//---------------------------------
+    fin >> q;
+    Warrior war_one(temp);
+    for (size_t i = 0; i < q; i++) {
+        fin >> war_one;
+        green_army.Add_to_Head(war_one);
     }
 
     std::cout << '\n'<< "Destroing interim object from Enter : ";

@@ -8,6 +8,9 @@ private:
 public:
     Building();
     ~Building();
+    char type() override{
+        return 'b';
+    }
 };
 
 

@@ -57,7 +57,7 @@ int main(int argc, char const *argv[]) {
                 else if(ob->first ==  2)
                     std::cout << "It is object of \033[1;32m GREEN \033[0m army!" << '\n';
                 else if(ob->first == 3){
-                    std::cout << "It is object don't belong any army!" << '\n';
+                    std::cout << "\033[1;34m It is object don't belong any army!\033[0m" << '\n';
                     break;
                 }
                 std::cout << '\n';
