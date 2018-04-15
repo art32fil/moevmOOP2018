@@ -53,7 +53,7 @@ public:
                   << "\033[1;32m Battlefield(size_t, size_t) \033[0m"
                   << std::endl << std::endl << std::endl;
     }
-    ~Battlefield (){
+    ~Battlefield(){
         std::cout << "\tx = " << size.x_size << std::endl
                   << "\ty = " << size.y_size << std::endl
                   << "\033[1;31m ~Battlefield() \033[0m"
@@ -122,6 +122,23 @@ void Battlefield::Draw_battlefield(){
     delete []arr;
 }
 
+template <typename T>
+void read(istream &in, string type, List<Object*> &army, std::shared_ptr<Crown> &crown){
+    size_t q = 0;
+    string str;
+    in >> str;
+    if(str == type){
+        in >> q;
+        T *obj;
+        for (size_t i = 0; i < q; i++) {
+            obj = new T(crown);
+            in >> *obj;
+            army.Add_to_Head(obj);
+        }
+    }
+    str.clear();
+}
+
 void Battlefield::Enter(istream &in){
     size_t q = 0;
     string str;
@@ -135,40 +152,12 @@ void Battlefield::Enter(istream &in){
         in >> size;
     str.clear();
 //---------------------------------------
-    in >> str;
-    if(str == "Object-red")
-    in >> q;
-    Object *obj_one = new Object(cr_r);
-    for (size_t i = 0; i < q; i++) {
-        in >> *obj_one;
-        red_army.Add_to_Head(obj_one);
-    }
-    str.clear();
-//------------------------------------
-    in >> str;
-    if(str == "Object-green"){
-        in >> q;
-        Object *obj_two = new Object(cr_gr);
-        for (size_t i = 0; i < q; i++) {
-            in >> *obj_two;
-            green_army.Add_to_Head(obj_two);
-        }
-    }
-    str.clear();
-//---------------------------------
-    in >> str;
-    if(str == "Warrior-red"){
-        in >> q;
-        std::cout << q << ' ' << str << '\n';
-        Warrior *war_one = new Warrior(cr_r);
-        for (size_t i  = 0; i < q; i++) {
-            in >> *war_one;
-            std::cout << war_one->get_force() << '\n';
-            red_army.Add_to_Head(war_one);
-        }
-    }
-    str.clear();
-    std::cout << '\n'<< "Destroing interim object from Enter : ";
+    read<Object>(in, "Object-red", red_army, cr_r);
+    read<Object>(in, "Object-green", green_army, cr_gr);
+    read<Warrior>(in, "Warrior-red", red_army, cr_r);
+    read<Warrior>(in, "Warrior-green", green_army, cr_gr);
+
+    // std::cout << '\n'<< "Destroing interim object from Enter : ";
     std::cout << '\n';
 }
 
