@@ -1,0 +1,18 @@
+field
+10 10
+Object-red
+2
+0 0 80
+1 1 100
+Object-green
+1
+7 5 100
+Warrior-red
+2
+5 5 100 50
+3 4 60  90
+Building-red
+3
+9 0
+9 1
+0 3

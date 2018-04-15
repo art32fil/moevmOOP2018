@@ -3,9 +3,13 @@
 #include "../vector/my_vector.hpp"
 #include "../vector/iterator.hpp"
 #include "Object.hpp"
+#include "Crown.hpp"
 #include <iostream>
+#include <memory>
 #include <fstream>
-#include  <utility>
+#include <string>
+//#include <istream>
+#include <utility>
 
 struct Elem_for_print{
         bool colour; //true == green; false == red
@@ -22,9 +26,9 @@ struct Size{
                   << "\033[1;32m Size() \033[0m" << std::endl << std::endl << std::endl;
     }
     Size(){
-        /*std::cout << "\tx = " << x_size << std::endl
-                  << "\ty = " << y_size << std::endl
-                  << "\033[1;32m Size() \033[0m" << std::endl << std::endl << std::endl;*/
+        // std::cout << "\tx = " << x_size << std::endl
+        //           << "\ty = " << y_size << std::endl
+        //           << "\033[1;32m Size() \033[0m" << std::endl << std::endl << std::endl;
     }
 };
 
@@ -32,7 +36,9 @@ class Battlefield {
     friend class Object;
     Size size;
     List<Object> red_army;
+    std::weak_ptr<Crown> crown_red;
     List<Object> green_army;
+    std::weak_ptr<Crown> crown_green;
 public:
     const Size         &get_size()    const { return size; }
     const List<Object> &get_red_arm() const { return red_army; }
@@ -62,14 +68,15 @@ public:
     void Enter(ifstream &);
     size_t find_pos(size_t const &pos);
     std::pair<int, Object&> check_colour_on_postion(Object &arm);
+
 };
 
-ifstream &operator>> (ifstream &fin, Object &obj){
+/*istream &operator>> (istream &fin, Object &obj){  //read from file
     fin >> obj.get_coords().axis_x >> obj.get_coords().axis_y >> obj.get_hp();
     return fin;
-}
+}*/
 
-ifstream &operator>> (ifstream &fin, Size &sz){
+ifstream &operator>> (ifstream &fin, Size &sz){ //read from file
     fin >> sz.x_size >> sz.y_size;
     return fin;
 }
@@ -130,24 +137,29 @@ void Battlefield::Draw_battlefield(){
 
 void Battlefield::Enter(ifstream &fin){
     size_t q = 0;
-    Object obj;
+
     fin >> size;
     fin >> q;
 
+
+    std::shared_ptr<Crown> temp(new Crown("red"));
+    crown_red = temp;
+    Object obj_one(temp);
     for (size_t i = 0; i < q; i++) {
-        fin >> obj;
-        obj.get_pos() = i;
-        red_army.Add_to_Head(obj);
+        fin >> obj_one;
+        red_army.Add_to_Head(obj_one);
     }
 
     fin >> q;
+    std::shared_ptr<Crown> temp1(new Crown("green"));
+    crown_red = temp1;
+    Object obj_two(temp1);
     for (size_t i = 0; i < q; i++) {
-        fin >> obj;
-        obj.get_pos() = i;
-        green_army.Add_to_Head(obj);
+        fin >> obj_two;
+        green_army.Add_to_Head(obj_two);
     }
 
-    std::cout << '\n'<< "it's interim object : ";
+    std::cout << '\n'<< "Destroing interim object from Enter : ";
     std::cout << '\n';
 }
 
@@ -162,5 +174,18 @@ std::pair<int, Object&> Battlefield::check_colour_on_postion(Object &arm){
 
         return {3, arm};
 }
+
+// const string get_color(Object const &clr) const{
+//     if(ob->first == 1){
+//         return "red";
+//     }
+//     else if(ob->first ==  2)
+//         return "green"
+//     else if(ob->first == 3){
+//         std::cout << "It is object don't belong any army!" << '\n';
+//         break;
+//     }
+// }
+
 
 #endif //BATTLEFIELD_HPP
