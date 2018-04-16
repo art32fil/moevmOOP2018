@@ -51,36 +51,21 @@ istream &operator>> (istream &in, Warrior &warr){  //read from console
 }
 
 
-// constexpr size_t operator ""_hash(string s){
-//         std::hash<string> hash_;
-//     return hash_(s);
-// }
-
 void Warrior::move_to_(string s){
-    // std::hash<string> hash_;
-    // //constexpr up = hash_("up"), down = hash_("down");
-    // //size_t right = hash_("right"), left = hash_("left");
-    // switch (hash_(s)) {
-    //     case "up"_hash :
-    //         get_coords().axis_y +=1;
-    //     break;
-    //     case down:
-    //         get_coords().axis_y -=1;
-    //     break;
-    //     case right:
-    //         get_coords().axis_x +=1;
-    //     break;
-    //     case left:
-    //         get_coords().axis_x -=1;
-    //     break;
-    //     default:
-    //         std::cout << "Incorrect data!" << '\n';
-    //         break;
-    // }
+    if(s == "up")
+        get_coords().axis_y +=1;
+    else if(s == "right")
+        get_coords().axis_x +=1;
+    else if(s == "down")
+        get_coords().axis_y -=1;
+    else if(s == "left")
+        get_coords().axis_x -=1;
+    else
+        std::cout << "Incorrect data!" << '\n';
 }
 
 void Warrior::Attack(){
-
+    
 }
 
 #endif

@@ -4,6 +4,7 @@
 #include "../vector/iterator.hpp"
 #include "Object.hpp"
 #include "Warrior.hpp"
+#include "Building.hpp"
 #include "Crown.hpp"
 #include <iostream>
 #include <memory>
@@ -25,22 +26,28 @@ struct Size{
                   << "\ty = " << y_size << std::endl
                   << "\033[1;32m Size() \033[0m" << std::endl << std::endl << std::endl;
     }
-    Size(){
-        // std::cout << "\tx = " << x_size << std::endl
-        //           << "\ty = " << y_size << std::endl
-        //           << "\033[1;32m Size() \033[0m" << std::endl << std::endl << std::endl;
-    }
+    Size(){}
 };
 
+// template <typename T>
 class Battlefield {
     friend class Object;
     Size size;
-    List<Object*> red_army;
+
     std::weak_ptr<Crown> crown_red;
-    List<Object*> green_army;
     std::weak_ptr<Crown> crown_green;
+
+    List<Object*> red_army;
+    List<Object*> green_army;
+
+    List<Warrior*> warr_red_army;
+    List<Warrior*> warr_green_army;
+
+    List<Building*> build_red_army;
+    List<Building*> build_green_army;
+
 public:
-    const Size         &get_size()    const { return size; }
+    const Size          &get_size()    const { return size; }
     const List<Object*> &get_red_arm() const { return red_army; }
     const List<Object*> &get_gr_arm()  const { return green_army; }
     List<Object*>       &get_red_arm()       { return red_army; }
@@ -61,7 +68,6 @@ public:
     }
 
     void Draw_battlefield();
-    void fld(List<Object*> &army, Elem_for_print *&arr, bool clr);
     void Enter(istream &in);
     size_t find_pos(size_t const &pos);
     std::pair<int, Object*> check_colour_on_postion(Object* arm);
@@ -72,7 +78,8 @@ istream &operator>> (istream &fin, Size &sz){ //read from file
     return fin;
 }
 
-void Battlefield::fld(List<Object*> &army, Elem_for_print *&arr, bool clr) {
+template <typename T>
+void fld(List<T*> &army, Elem_for_print *&arr, bool clr, Size const &size) {
     for(auto &obj : army){
         if ( obj.get_Info()->get_hp() <= 0) {
             arr[ obj.get_Info()->get_coords().axis_x +
@@ -89,8 +96,14 @@ void Battlefield::fld(List<Object*> &army, Elem_for_print *&arr, bool clr) {
 void Battlefield::Draw_battlefield(){
     Elem_for_print *arr = new Elem_for_print[size.x_size*size.y_size];
 
-    fld(red_army, arr, false);
-    fld(green_army, arr, true);
+    fld<Object>(red_army, arr, false, size);
+    fld<Object>(green_army, arr, true, size);
+
+    fld<Warrior>(warr_red_army, arr, false, size);
+    fld<Warrior>(warr_green_army, arr, true, size);
+
+    fld<Building>(build_red_army, arr, false, size);
+    fld<Building>(build_green_army, arr, true, size);
 
     std::cout << '\n';
     std::cout << "   ";
@@ -123,7 +136,7 @@ void Battlefield::Draw_battlefield(){
 }
 
 template <typename T>
-void read(istream &in, string type, List<Object*> &army, std::shared_ptr<Crown> &crown){
+void read(istream &in, string type, List<T*> &army, std::shared_ptr<Crown> &crown){
     size_t q = 0;
     string str;
     in >> str;
@@ -136,7 +149,6 @@ void read(istream &in, string type, List<Object*> &army, std::shared_ptr<Crown> 
             army.Add_to_Head(obj);
         }
     }
-    str.clear();
 }
 
 void Battlefield::Enter(istream &in){
@@ -154,8 +166,8 @@ void Battlefield::Enter(istream &in){
 //---------------------------------------
     read<Object>(in, "Object-red", red_army, cr_r);
     read<Object>(in, "Object-green", green_army, cr_gr);
-    read<Warrior>(in, "Warrior-red", red_army, cr_r);
-    read<Warrior>(in, "Warrior-green", green_army, cr_gr);
+    read<Warrior>(in, "Warrior-red", warr_red_army, cr_r);
+    read<Warrior>(in, "Warrior-green", warr_green_army, cr_gr);
 
     // std::cout << '\n'<< "Destroing interim object from Enter : ";
     std::cout << '\n';

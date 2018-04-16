@@ -19,6 +19,6 @@ Warrior-green
 3 6 60  90
 Building-red
 3
-9 0
+9 0 9 1 9 2
 9 1
 0 3
