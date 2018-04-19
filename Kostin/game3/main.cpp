@@ -10,7 +10,7 @@ size_t Object::amount = 0;
 void menu(){
     std::cout << '\n' <<
     "\033[1;35m*********************************************" <<
-      '\n' << "** 1 - check colour of army on postion     **" <<
+      '\n' << "** 1 - choice the army                     **" <<
       '\n' << "** 0 - exit                                **" <<
       '\n' << "*********************************************\033[0m" <<
     '\n' << '\n';
@@ -23,8 +23,6 @@ int main(int argc, char const *argv[]) {
     btlf.Draw_battlefield();
 
     std::shared_ptr<Crown> temp(new Crown("Nan"));
-    //Object obj(temp);
-
     size_t choice = 0;
     size_t pos_x = 0, pos_y = 0;
     size_t dmg = 0;
@@ -40,6 +38,9 @@ int main(int argc, char const *argv[]) {
                 return 0;
 
             case 1: {
+                switch () {
+                    case /* value */:
+                }
                 std::cout << "Enter position x and y: ";
                 std::cin >> pos_x >> pos_y;
                 //std::cin >> obj; // ???? don't work // whay?

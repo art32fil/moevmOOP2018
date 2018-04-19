@@ -34,19 +34,13 @@ public:
     friend istream  &operator>> (istream &in, Warrior &war);
 };
 
-// ostream &operator<< (ostream &out, const Warrior &warr){  //write to console
-//      out << warr.force;
-//     return out;
-// }
-
-// istream &operator>> (istream &in, const Warrior &warr){  //write to console
-//      in >> warr.force;
-//     return in;
-// } // make it is virtual function if parant class????
+ostream &operator<< (ostream &out, const Warrior &warr){  //write to console
+     out << static_cast<const Object&>(warr) << warr.force;
+    return out;
+}
 
 istream &operator>> (istream &in, Warrior &warr){  //read from console
-    in >> warr.get_coords().axis_x >> warr.get_coords().axis_y
-       >> warr.get_hp() >> warr.force;
+    in >> static_cast<Object&>(warr) >> warr.force;
     return in;
 }
 
@@ -65,7 +59,7 @@ void Warrior::move_to_(string s){
 }
 
 void Warrior::Attack(){
-    
+
 }
 
 #endif

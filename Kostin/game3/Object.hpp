@@ -28,7 +28,20 @@ struct Coordinates{
          axis_y = std::move(crd.axis_y);
          return *this;
     }
+
+    friend ostream &operator<< (ostream &out, const Coordinates &coords);
+    friend istream &operator>> (istream &in, Coordinates &coords);
 };
+
+ostream &operator<< (ostream &out, const Coordinates &coords){
+     out << coords.axis_x << coords.axis_y;
+    return out;
+}
+
+istream &operator>> (istream &in, Coordinates &coords){
+    in >> coords.axis_x >> coords.axis_y;
+    return in;
+}
 
 class Object {
 private:
@@ -86,46 +99,46 @@ public:
                   << "\033[1;31m ~Object() \033[0m" << std::endl << std::endl;
             amount--;
     }
-    Object(Object const &obj) : ID(count++), crown(obj.crown){
-        coords = obj.get_coords();
-        hit_points = obj.get_hp();
-        std::cout << "\tx = " << coords.axis_x << std::endl
-                  << "\ty = " << coords.axis_y << std::endl
-                  << "\thp = " << hit_points << std::endl
-                  << "\tcrown = " << crown->get_color() << std::endl
-                  << "\tID = " << ID << std::endl
-                  << "\tcount = " << count << std::endl
-                  << "\033[1;32m Object(Object const &) \033[0m" << std::endl << std::endl;
-    }
-    Object(Object&& obj) : coords(std::move(obj.get_coords())),
-                hit_points(std::move(obj.get_hp())),
-                ID(std::move(obj.get_ID())), crown(std::move(obj.crown)) {
-        std::cout << "\tx = " << coords.axis_x << std::endl
-                  << "\ty = " << coords.axis_y << std::endl
-                  << "\thp = " << hit_points << std::endl
-                  << "\tcrown = " << crown->get_color() << std::endl
-                  << "\tID = " << ID << std::endl
-                  << "\tcount = " << count << std::endl
-                  << "\033[1;32m Object(Object &&) \033[0m"
-                  << std::endl << std::endl;
-        amount++;
-    }
+    // Object(Object const &obj) : ID(count++), crown(obj.crown){
+    //     coords = obj.get_coords();
+    //     hit_points = obj.get_hp();
+    //     std::cout << "\tx = " << coords.axis_x << std::endl
+    //               << "\ty = " << coords.axis_y << std::endl
+    //               << "\thp = " << hit_points << std::endl
+    //               << "\tcrown = " << crown->get_color() << std::endl
+    //               << "\tID = " << ID << std::endl
+    //               << "\tcount = " << count << std::endl
+    //               << "\033[1;32m Object(Object const &) \033[0m" << std::endl << std::endl;
+    // }
+    // Object(Object&& obj) : coords(std::move(obj.get_coords())),
+    //             hit_points(std::move(obj.get_hp())),
+    //             ID(std::move(obj.get_ID())), crown(std::move(obj.crown)) {
+    //     std::cout << "\tx = " << coords.axis_x << std::endl
+    //               << "\ty = " << coords.axis_y << std::endl
+    //               << "\thp = " << hit_points << std::endl
+    //               << "\tcrown = " << crown->get_color() << std::endl
+    //               << "\tID = " << ID << std::endl
+    //               << "\tcount = " << count << std::endl
+    //               << "\033[1;32m Object(Object &&) \033[0m"
+    //               << std::endl << std::endl;
+    //     amount++;
+    // }
 
-    Object &operator=  (Object&& obj){
-         coords = std::move(obj.get_coords());
-         hit_points = std::move(obj.get_hp());
-         //crown.reset(obj.crown.get()); //???
-         return *this;
-    }
-    Object &operator=  (Object &obj){
-        if(this != &obj)
-        {
-            coords = obj.get_coords();
-            hit_points = obj.get_hp();
-            // crown = obj.crown; //???
-        }
-        return *this;
-    }
+    // Object &operator=  (Object&& obj){
+    //      coords = std::move(obj.get_coords());
+    //      hit_points = std::move(obj.get_hp());
+    //      //crown.reset(obj.crown.get()); //???
+    //      return *this;
+    // }
+    // Object &operator=  (Object &obj){
+    //     if(this != &obj)
+    //     {
+    //         coords = obj.get_coords();
+    //         hit_points = obj.get_hp();
+    //         // crown = obj.crown; //???
+    //     }
+    //     return *this;
+    // }
     bool    operator== (Object* const &obj){
         return ((*obj).coords.axis_x == coords.axis_x && (*obj).coords.axis_y == coords.axis_y);
     }

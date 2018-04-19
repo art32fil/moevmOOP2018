@@ -81,15 +81,36 @@ istream &operator>> (istream &fin, Size &sz){ //read from file
 template <typename T>
 void fld(List<T*> &army, Elem_for_print *&arr, bool clr, Size const &size) {
     for(auto &obj : army){
-        if ( obj.get_Info()->get_hp() <= 0) {
-            arr[ obj.get_Info()->get_coords().axis_x +
-                    obj.get_Info()->get_coords().axis_y*size.y_size].l_d_e = 'x';
+         T *elem = obj.get_Info();
+        if ( elem->get_hp() <= 0) {
+            arr[ elem->get_coords().axis_x +
+                    elem->get_coords().axis_y*size.y_size].l_d_e = 'x';
         }else{
-            arr[ obj.get_Info()->get_coords().axis_x +
-                    obj.get_Info()->get_coords().axis_y*size.y_size].l_d_e = obj.get_Info()->type();
+            arr[ elem->get_coords().axis_x +
+                    elem->get_coords().axis_y*size.y_size].l_d_e = elem->type();
             }
-        arr[obj.get_Info()->get_coords().axis_x +
-                obj.get_Info()->get_coords().axis_y*size.y_size].colour = clr;
+        arr[elem->get_coords().axis_x +
+                elem->get_coords().axis_y*size.y_size].colour = clr;
+    }
+}
+
+template <typename T>
+void fld_build(List<T*> &army, Elem_for_print *&arr, bool clr, Size const &size) {
+    for(auto &obj : army){
+         T *elem = obj.get_Info();
+        std::cout << elem->get_hp() << '\n';
+        if ( elem->get_hp() <= 0){
+            for(auto &build : elem->get_building())
+                arr[ build.axis_x +
+                    build.axis_y*size.y_size].l_d_e = 'x';
+        }else{
+            for(auto &build : elem->get_building())
+                arr[ build.axis_x +
+                    build.axis_y*size.y_size].l_d_e = elem->type();
+            }
+        for(auto &build : elem->get_building())
+            arr[build.axis_x +
+                build.axis_y*size.y_size].colour = clr;
     }
 }
 
@@ -104,6 +125,8 @@ void Battlefield::Draw_battlefield(){
 
     fld<Building>(build_red_army, arr, false, size);
     fld<Building>(build_green_army, arr, true, size);
+    fld_build<Building>(build_red_army, arr, false, size);
+    fld_build<Building>(build_green_army, arr, true, size);
 
     std::cout << '\n';
     std::cout << "   ";
@@ -152,7 +175,6 @@ void read(istream &in, string type, List<T*> &army, std::shared_ptr<Crown> &crow
 }
 
 void Battlefield::Enter(istream &in){
-    size_t q = 0;
     string str;
     std::shared_ptr<Crown> cr_r(new Crown("red"));
     crown_red = cr_r;
@@ -166,8 +188,12 @@ void Battlefield::Enter(istream &in){
 //---------------------------------------
     read<Object>(in, "Object-red", red_army, cr_r);
     read<Object>(in, "Object-green", green_army, cr_gr);
+
     read<Warrior>(in, "Warrior-red", warr_red_army, cr_r);
     read<Warrior>(in, "Warrior-green", warr_green_army, cr_gr);
+
+    read<Building>(in, "Building-red", build_red_army, cr_r);
+    read<Building>(in, "Building-green", build_green_army, cr_gr);
 
     // std::cout << '\n'<< "Destroing interim object from Enter : ";
     std::cout << '\n';
