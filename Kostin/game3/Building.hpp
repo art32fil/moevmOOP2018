@@ -3,20 +3,34 @@
 #include "Object.hpp"
 #include <vector>
 
+ostream &operator<< (ostream &out, std::vector<Coordinates> const &v){
+    for(auto &el : v){
+        std::cout << el << ' ';
+    }
+    if(v.empty())
+        std::cout << "empty" << '\n';
+    return out;
+}
 
 class Building : public Object {
 private:
     std::vector<Coordinates> building;
 public:
     Building(const std::shared_ptr<Crown>& _crown) : Object(_crown){
-        std::cout << "\tBuilding = " <<  std::endl  //buildint trow error like lvalue
+        std::cout << "\tBuilding = " << building <<  std::endl  //buildint trow error like lvalue
                   << "\033[1;32m Building(size_t, size_t, ...) \033[0m"
                   << std::endl << std::endl;
     };
     Building(size_t arg_x, size_t arg_y, const std::shared_ptr<Crown> _crown, std::vector<Coordinates> v,
          int hp = 100) : Object(arg_x, arg_y, _crown, hp), building(v){};
 
-    ~Building(){};
+    ~Building(){
+        std::cout << "\tx = " << coords.axis_x << std::endl
+                  << "\ty = " << coords.axis_y << std::endl
+                  << "\thp = " << hit_points << std::endl
+                  << "\tforce = " << building << std::endl
+                  << "\033[1;31m ~Building() \033[0m" << std::endl << std::endl;
+    };
 
     std::vector<Coordinates>       &get_building()       {return building;}
     const std::vector<Coordinates> &get_building() const {return building;}
@@ -40,17 +54,7 @@ istream &operator>> (istream &in, std::vector<Coordinates> &v){
     return in;
 }
 
-ostream &operator<< (ostream &out, std::vector<Coordinates> const &v){
-    for(auto &el : v){
-        std::cout << el << ' ';
-    }
-    if(v.empty())
-        std::cout << "empty" << '\n';
-    return out;
-}
-
 istream &operator>> (istream &in, Building &bild){
-
     in >> static_cast<Object &>(bild) >> bild.building;
     return in;
 }

@@ -1,14 +1,5 @@
 field
 10 10
-Object-red
-3
-1 2 20
-1 1 100
-0 1 56
-Object-green
-2
-7 5 100
-5 7 30
 Warrior-red
 2
 5 5 100 50

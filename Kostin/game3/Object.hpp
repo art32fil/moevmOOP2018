@@ -31,6 +31,10 @@ struct Coordinates{
 
     friend ostream &operator<< (ostream &out, const Coordinates &coords);
     friend istream &operator>> (istream &in, Coordinates &coords);
+
+    bool operator== (Coordinates const &coords){
+        return ( this->axis_x == coords.axis_x && this->axis_y == coords.axis_y);
+    }
 };
 
 ostream &operator<< (ostream &out, const Coordinates &coords){
@@ -58,7 +62,7 @@ public:
     Object() : ID(count++){
         amount++;
     }
-    Object(const std::shared_ptr<Crown>& _crown) : ID(count++), crown(_crown){
+    Object(const std::shared_ptr<Crown>& _crown) : crown(_crown), ID(count++){
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
@@ -69,7 +73,7 @@ public:
         amount++;
     }
     Object(size_t arg_x, size_t arg_y, int hp = 100)
-                : coords(arg_x, arg_y), hit_points(hp), ID(count++) {
+                : ID(count++), hit_points(hp), coords(arg_x, arg_y){
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
@@ -80,7 +84,7 @@ public:
         amount++;
     }
     Object(size_t arg_x, size_t arg_y, const std::shared_ptr<Crown> _crown, int hp = 100 )
-                : coords(arg_x, arg_y), hit_points(hp), crown(_crown), ID(count++) {
+                : crown(_crown), ID(count++), hit_points(hp), coords(arg_x, arg_y){
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
@@ -99,48 +103,9 @@ public:
                   << "\033[1;31m ~Object() \033[0m" << std::endl << std::endl;
             amount--;
     }
-    // Object(Object const &obj) : ID(count++), crown(obj.crown){
-    //     coords = obj.get_coords();
-    //     hit_points = obj.get_hp();
-    //     std::cout << "\tx = " << coords.axis_x << std::endl
-    //               << "\ty = " << coords.axis_y << std::endl
-    //               << "\thp = " << hit_points << std::endl
-    //               << "\tcrown = " << crown->get_color() << std::endl
-    //               << "\tID = " << ID << std::endl
-    //               << "\tcount = " << count << std::endl
-    //               << "\033[1;32m Object(Object const &) \033[0m" << std::endl << std::endl;
-    // }
-    // Object(Object&& obj) : coords(std::move(obj.get_coords())),
-    //             hit_points(std::move(obj.get_hp())),
-    //             ID(std::move(obj.get_ID())), crown(std::move(obj.crown)) {
-    //     std::cout << "\tx = " << coords.axis_x << std::endl
-    //               << "\ty = " << coords.axis_y << std::endl
-    //               << "\thp = " << hit_points << std::endl
-    //               << "\tcrown = " << crown->get_color() << std::endl
-    //               << "\tID = " << ID << std::endl
-    //               << "\tcount = " << count << std::endl
-    //               << "\033[1;32m Object(Object &&) \033[0m"
-    //               << std::endl << std::endl;
-    //     amount++;
-    // }
 
-    // Object &operator=  (Object&& obj){
-    //      coords = std::move(obj.get_coords());
-    //      hit_points = std::move(obj.get_hp());
-    //      //crown.reset(obj.crown.get()); //???
-    //      return *this;
-    // }
-    // Object &operator=  (Object &obj){
-    //     if(this != &obj)
-    //     {
-    //         coords = obj.get_coords();
-    //         hit_points = obj.get_hp();
-    //         // crown = obj.crown; //???
-    //     }
-    //     return *this;
-    // }
     bool    operator== (Object* const &obj){
-        return ((*obj).coords.axis_x == coords.axis_x && (*obj).coords.axis_y == coords.axis_y);
+        return ((*obj).coords == coords && (*obj).coords == coords);
     }
 
     void              get_Damag(size_t const &dmg);
@@ -170,7 +135,7 @@ istream &operator>> (istream &in, Object &obj){  //read from console
 }
 
 Object* Object::check_Coords(Coordinates const &crds){
-    if(coords.axis_x == crds.axis_x && coords.axis_y == crds.axis_y)
+    if(coords == crds)
         return this;
     else
         return nullptr;

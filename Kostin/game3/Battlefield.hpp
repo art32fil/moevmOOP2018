@@ -24,7 +24,8 @@ struct Size{
     Size(size_t arg_x, size_t arg_y) : x_size(arg_x), y_size(arg_y){
         std::cout << "\tx = " << x_size << std::endl
                   << "\ty = " << y_size << std::endl
-                  << "\033[1;32m Size() \033[0m" << std::endl << std::endl << std::endl;
+                  << "\033[1;32m Size() \033[0m" << std::endl
+                  << std::endl << std::endl;
     }
     Size(){}
 };
@@ -47,11 +48,23 @@ class Battlefield {
     List<Building*> build_green_army;
 
 public:
-    const Size          &get_size()    const { return size; }
-    const List<Object*> &get_red_arm() const { return red_army; }
-    const List<Object*> &get_gr_arm()  const { return green_army; }
-    List<Object*>       &get_red_arm()       { return red_army; }
-    List<Object*>       &get_gr_arm()        { return green_army; }
+    const Size          &get_size()    const  { return size;         }
+
+    // const List<Object*> &get_red_arm() const  { return red_army;     }
+    // const List<Object*> &get_gr_arm()  const  { return green_army;   }
+    // List<Object*>       &get_red_arm()        { return red_army;     }
+    // List<Object*>       &get_gr_arm()         { return green_army;   }
+
+    const List<Warrior*> &get_red_warr() const { return warr_red_army;   }
+    const List<Warrior*> &get_gr_warr()  const { return warr_green_army; }
+    List<Warrior*>       &get_red_warr()       { return warr_red_army;   }
+    List<Warrior*>       &get_gr_warr()        { return warr_green_army; }
+
+    const List<Building*> &get_red_arm() const { return build_red_army;   }
+    const List<Building*> &get_gr_arm()  const { return build_green_army; }
+    List<Building*>       &get_red_arm()       { return build_red_army;   }
+    List<Building*>       &get_gr_arm()        { return build_green_army; }
+
 
     Battlefield(){}
     Battlefield(size_t arg_x, size_t arg_y) : size(arg_x, arg_y){
@@ -71,6 +84,7 @@ public:
     void Enter(istream &in);
     size_t find_pos(size_t const &pos);
     std::pair<int, Object*> check_colour_on_postion(Object* arm);
+    std::pair<int, Warrior*> check_colour_on_postion(Warrior* arm);
 };
 
 istream &operator>> (istream &fin, Size &sz){ //read from file
@@ -98,7 +112,6 @@ template <typename T>
 void fld_build(List<T*> &army, Elem_for_print *&arr, bool clr, Size const &size) {
     for(auto &obj : army){
          T *elem = obj.get_Info();
-        std::cout << elem->get_hp() << '\n';
         if ( elem->get_hp() <= 0){
             for(auto &build : elem->get_building())
                 arr[ build.axis_x +
@@ -117,16 +130,14 @@ void fld_build(List<T*> &army, Elem_for_print *&arr, bool clr, Size const &size)
 void Battlefield::Draw_battlefield(){
     Elem_for_print *arr = new Elem_for_print[size.x_size*size.y_size];
 
-    fld<Object>(red_army, arr, false, size);
-    fld<Object>(green_army, arr, true, size);
-
-    fld<Warrior>(warr_red_army, arr, false, size);
-    fld<Warrior>(warr_green_army, arr, true, size);
-
+    // fld<Object>(red_army, arr, false, size);
+    // fld<Object>(green_army, arr, true, size);
     fld<Building>(build_red_army, arr, false, size);
     fld<Building>(build_green_army, arr, true, size);
     fld_build<Building>(build_red_army, arr, false, size);
     fld_build<Building>(build_green_army, arr, true, size);
+    fld<Warrior>(warr_red_army, arr, false, size);
+    fld<Warrior>(warr_green_army, arr, true, size);
 
     std::cout << '\n';
     std::cout << "   ";
@@ -144,7 +155,7 @@ void Battlefield::Draw_battlefield(){
             if( arr[i*size.x_size + j].l_d_e == '.')
                 std::cout << ' ' << arr[i*size.x_size + j].l_d_e ;
             else if(arr[i*size.x_size + j].colour)
-                cout << "\033[1;32m " << arr[i*size.x_size + j].l_d_e << "\033[0m"; //green
+                cout << "\033[1;32m " << arr[i*size.x_size + j].l_d_e << "\033[0m";
             else
                 cout << "\033[1;31m " << arr[i*size.x_size + j].l_d_e << "\033[0m";
         }
@@ -186,8 +197,8 @@ void Battlefield::Enter(istream &in){
         in >> size;
     str.clear();
 //---------------------------------------
-    read<Object>(in, "Object-red", red_army, cr_r);
-    read<Object>(in, "Object-green", green_army, cr_gr);
+    // read<Object>(in, "Object-red", red_army, cr_r);
+    // read<Object>(in, "Object-green", green_army, cr_gr);
 
     read<Warrior>(in, "Warrior-red", warr_red_army, cr_r);
     read<Warrior>(in, "Warrior-green", warr_green_army, cr_gr);
@@ -206,6 +217,20 @@ std::pair<int, Object*> Battlefield::check_colour_on_postion(Object* arm){
 
         for(auto &obj: this->green_army)
             if(arm == obj.get_Info())
+                return {2, obj.get_Info()};
+
+        return {3, arm};
+}
+
+std::pair<int, Warrior*> Battlefield::check_colour_on_postion(Warrior* arm){
+        for(auto &obj: this->warr_red_army){
+            //std::cout << obj.get_Info()->get_coords() << '\n';
+            if(arm->get_coords() == obj.get_Info()->get_coords())
+                return {1, obj.get_Info()};
+            }
+
+        for(auto &obj: this->warr_green_army)
+            if(arm->get_coords() == obj.get_Info()->get_coords())
                 return {2, obj.get_Info()};
 
         return {3, arm};
