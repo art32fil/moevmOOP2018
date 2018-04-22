@@ -36,7 +36,8 @@ int main(int argc, char const *argv[]) {
         switch (choice) {
             case 0:
             std::cout << "---------------------------------------------" << '\n';
-                return 0;
+
+            return 0;
 
             case 1: {
                 std::cout << "Enter position x and y: ";

@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include <utility>
+#include <typeinfo>
 
 struct Elem_for_print{
         bool colour; //true == green; false == red
@@ -74,6 +75,24 @@ public:
                   << std::endl << std::endl << std::endl;
     }
     ~Battlefield(){
+
+        for(auto &el: warr_red_army){
+            delete el.get_Info();
+            el.get_Info() = nullptr;
+        }
+        for(auto &el : warr_green_army){
+            delete el.get_Info();
+            el.get_Info() = nullptr;
+        }
+        for(auto &el : build_red_army){
+            delete el.get_Info();
+            el.get_Info() = nullptr;
+        }
+        for(auto &el : build_green_army){
+            delete el.get_Info();
+            el.get_Info() = nullptr;
+        }
+
         std::cout << "\tx = " << size.x_size << std::endl
                   << "\ty = " << size.y_size << std::endl
                   << "\033[1;31m ~Battlefield() \033[0m"

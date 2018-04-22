@@ -95,7 +95,7 @@ public:
                   << "\033[1;32m Object(size_t, size_t, int) \033[0m" << std::endl << std::endl;
         amount++;
     }
-    ~Object(){
+    virtual ~Object(){
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
