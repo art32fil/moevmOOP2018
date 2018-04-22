@@ -31,11 +31,12 @@ struct Coordinates{
 
     friend ostream &operator<< (ostream &out, const Coordinates &coords);
     friend istream &operator>> (istream &in, Coordinates &coords);
-
-    bool operator== (Coordinates const &coords){
-        return ( this->axis_x == coords.axis_x && this->axis_y == coords.axis_y);
-    }
 };
+
+bool operator== (Coordinates const a,Coordinates const b)
+{
+    return ( a.axis_x == b.axis_x && a.axis_y == b.axis_y);
+}
 
 ostream &operator<< (ostream &out, const Coordinates &coords){
      out << coords.axis_x << coords.axis_y;
@@ -49,20 +50,20 @@ istream &operator>> (istream &in, Coordinates &coords){
 
 class Object {
 private:
-    const std::shared_ptr<Crown> crown;
     const  size_t ID; // of Object in List
-
     static size_t count;
     static size_t amount;
 
 protected:
+    const std::shared_ptr<Crown> crown;
     int hit_points;
     Coordinates coords;
+    Object* check_Coords(Coordinates const &);
 public:
     Object() : ID(count++){
         amount++;
     }
-    Object(const std::shared_ptr<Crown>& _crown) : crown(_crown), ID(count++){
+    Object(const std::shared_ptr<Crown>& _crown) :ID(count++), crown(_crown){
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
@@ -84,7 +85,7 @@ public:
         amount++;
     }
     Object(size_t arg_x, size_t arg_y, const std::shared_ptr<Crown> _crown, int hp = 100 )
-                : crown(_crown), ID(count++), hit_points(hp), coords(arg_x, arg_y){
+                : ID(count++), crown(_crown), hit_points(hp), coords(arg_x, arg_y){
         std::cout << "\tx = " << coords.axis_x << std::endl
                   << "\ty = " << coords.axis_y << std::endl
                   << "\thp = " << hit_points << std::endl
@@ -108,14 +109,15 @@ public:
         return ((*obj).coords == coords && (*obj).coords == coords);
     }
 
-    void              get_Damag(size_t const &dmg);
+    void              get_Damage(size_t const &dmg);
     int               &get_hp()                 { return hit_points; }
     const int         &get_hp()const            { return hit_points; }
     Coordinates       &get_coords()             { return coords; }
     const Coordinates &get_coords() const       { return coords; }
     const size_t      &get_ID() const           { return ID; }
+    const shared_ptr<Crown> &get_crown()const   { return crown; }
 
-    Object* check_Coords(Coordinates const &);
+
     virtual char type(){
         return 'o';
     }
@@ -141,7 +143,7 @@ Object* Object::check_Coords(Coordinates const &crds){
         return nullptr;
 };
 
-void Object::get_Damag(size_t const &dmg){
+void Object::get_Damage(size_t const &dmg){
     get_hp() -= dmg;
 }
 

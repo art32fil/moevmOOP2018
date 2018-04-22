@@ -60,10 +60,10 @@ public:
     List<Warrior*>       &get_red_warr()       { return warr_red_army;   }
     List<Warrior*>       &get_gr_warr()        { return warr_green_army; }
 
-    const List<Building*> &get_red_arm() const { return build_red_army;   }
-    const List<Building*> &get_gr_arm()  const { return build_green_army; }
-    List<Building*>       &get_red_arm()       { return build_red_army;   }
-    List<Building*>       &get_gr_arm()        { return build_green_army; }
+    const List<Building*> &get_red_build() const { return build_red_army;   }
+    const List<Building*> &get_gr_build()  const { return build_green_army; }
+    List<Building*>       &get_red_build()       { return build_red_army;   }
+    List<Building*>       &get_gr_build()        { return build_green_army; }
 
 
     Battlefield(){}
@@ -85,6 +85,7 @@ public:
     size_t find_pos(size_t const &pos);
     std::pair<int, Object*> check_colour_on_postion(Object* arm);
     std::pair<int, Warrior*> check_colour_on_postion(Warrior* arm);
+    Object* check_postion(Object*);
 };
 
 istream &operator>> (istream &fin, Size &sz){ //read from file
@@ -235,6 +236,37 @@ std::pair<int, Warrior*> Battlefield::check_colour_on_postion(Warrior* arm){
 
         return {3, arm};
 }
+
+bool operator== (std::vector<Coordinates> const v, Coordinates const tmp){
+    for(auto &el : v)
+        if(el == tmp)
+            return true;
+    return false;
+}
+
+Object* Battlefield::check_postion(Object* arm){
+    if(arm->get_crown()->get_color() == "green"){
+        for(auto &obj: this->warr_red_army)
+            if(arm->get_coords() == obj.get_Info()->get_coords())
+                return obj.get_Info();
+        for(auto &obj: this->build_red_army)
+            if(arm->get_coords() == obj.get_Info()->get_coords()
+             || obj.get_Info()->get_building() == arm->get_coords())
+                return obj.get_Info();
+        }
+    if(arm->get_crown()->get_color() == "red"){
+        for(auto &obj: this->warr_green_army)
+            if(arm->get_coords() == obj.get_Info()->get_coords())
+                return obj.get_Info();
+        for(auto &obj: this->build_green_army)
+            if(arm->get_coords() == obj.get_Info()->get_coords()
+            || obj.get_Info()->get_building() == arm->get_coords())
+                return obj.get_Info();
+        }
+
+        return nullptr;
+}
+
 
 // const string get_color(Object const &clr) const{
 //     if(ob->first == 1){

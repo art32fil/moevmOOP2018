@@ -1,6 +1,7 @@
 #ifndef WARRIOR_HPP
 #define WARRIOR_HPP
 #include "Object.hpp"
+#include "Battlefield.hpp"
 #include <string>
 #include <functional>
 
@@ -34,19 +35,19 @@ public:
     }
 
     void move_to_(string s);
-    void Attack();
+    virtual void Attack(Object*&);
 
     friend ostream  &operator<< (ostream &out, const Warrior &war);
     friend istream  &operator>> (istream &in, Warrior &war);
 };
 
 ostream &operator<< (ostream &out, const Warrior &warr){  //write to console
-     out << static_cast<const Object&>(warr) << warr.force;
+     out << dynamic_cast<const Object&>(warr) << warr.force;
     return out;
 }
 
 istream &operator>> (istream &in, Warrior &warr){  //read from console
-    in >> static_cast<Object&>(warr) >> warr.force;
+    in >> dynamic_cast<Object&>(warr) >> warr.force;
     return in;
 }
 
@@ -63,8 +64,12 @@ void Warrior::move_to_(string s){
         std::cout << "Incorrect data!" << '\n';
 }
 
-void Warrior::Attack(){
-
+void Warrior::Attack(Object*& tmp){
+    if(this->get_crown()->get_color() == "red"){
+        tmp->get_Damage(force);
+    }else if(this->crown->get_color() == "green"){
+        tmp->get_Damage(force);
+    }
 }
 
 #endif

@@ -67,25 +67,46 @@ int main(int argc, char const *argv[]) {
                 std::cout << '\n' << "Hit points: " << ob.second->get_hp() << endl;
                 std::cout << '\n';
                 btlf.Draw_battlefield();
-                // cnt = 0; //!!!!!!!!!!!!!!!Warning!
-                // if(ob.second->get_hp() <= 0 && ob.first == 1){ //
-                //     for (auto &el : btlf.get_red_arm()) {
-                //         if(ob.second->get_ID() == el.get_Info()->get_ID()){
-                //             btlf.get_red_arm().Delete_elem(cnt);
-                //         }
-                //         cnt++;
-                //     }
-                // }
-                // cnt = 0;//!!!!!!!!!!!!!!!Warning!
-                // if(ob.second->get_hp() <= 0 && ob.first == 2 ){
-                //     for (auto &el : btlf.get_gr_arm()) {
-                //         if(ob.second->get_ID() == el.get_Info()->get_ID()){
-                //             btlf.get_gr_arm().Delete_elem(cnt);
-                //         }
-                //         cnt++;
-                //     }
-                // }
-                // btlf.Draw_battlefield();
+                Object *tmp = btlf.check_postion(dynamic_cast<Object*>(ob.second));
+                if(tmp){
+                    ob.second->Attack(tmp);
+                    std::cout << "hp = " << tmp->get_hp() << '\n';
+                    cnt = 0; //!!!!!!!!!!!!!!!Warning!
+                    if(tmp->get_hp() <= 0 && ob.first == 1 && tmp->type()=='w'){ //
+                        for (auto &el : btlf.get_gr_warr()) {
+                            if(tmp->get_ID() == el.get_Info()->get_ID()){
+                                btlf.get_gr_warr().Delete_elem(cnt);
+                            }
+                            cnt++;
+                        }
+                    }
+                    if(tmp->get_hp() <= 0 && ob.first == 1 && tmp->type()=='b'){ //
+                        for (auto &el : btlf.get_gr_build()) {
+                            if(tmp->get_ID() == el.get_Info()->get_ID()){
+                                btlf.get_gr_build().Delete_elem(cnt);
+                            }
+                            cnt++;
+                        }
+                    }
+                    cnt = 0;//!!!!!!!!!!!!!!!Warning!
+                    if(tmp->get_hp() <= 0 && ob.first == 2 && tmp->type()=='w'){
+                        for (auto &el : btlf.get_red_warr()) {
+                            if(tmp->get_ID() == el.get_Info()->get_ID()){
+                                btlf.get_red_warr().Delete_elem(cnt);
+                            }
+                            cnt++;
+                        }
+                    }
+                    if(tmp->get_hp() <= 0 && ob.first == 2 && tmp->type()=='b'){
+                        for (auto &el : btlf.get_red_build()) {
+                            if(tmp->get_ID() == el.get_Info()->get_ID()){
+                                btlf.get_red_build().Delete_elem(cnt);
+                            }
+                            cnt++;
+                        }
+                    }
+                }
+                btlf.Draw_battlefield();
                 break;
                 }
             default:
