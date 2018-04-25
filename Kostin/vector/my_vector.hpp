@@ -19,7 +19,10 @@ private:
     Elem *next;
 public:
     Elem(T const &inf) : info(inf), prev(nullptr), next(nullptr) {};
-    T& get_Info() {return info; }
+
+    T       &get_Info()       {return info; }
+    const T &get_Info() const {return info; }
+
     Elem<T> &operator= ( T const &r);
 };
 //--------------CLASS-ELEM-----------------
@@ -37,7 +40,7 @@ public:
     bool is_Empty();
     void Print_List();
 
-    void Add_After(T data, size_t k);   // Elem(
+    void Add_After(T const &data, size_t k);   // Elem(
     void Add_to_Head(T const &data);
     void Add_to_Tail(T const &data);
 
@@ -53,7 +56,7 @@ public:
 
     T       operator[] (size_t index);
     Iterator<T> begin(){    return Iterator<T>(head);    }
-    Iterator<T> end()  {    return Iterator<T>(nullptr);    }
+    Iterator<T> end()  {    return Iterator<T>(nullptr); }
 };
 //--------------CLASS-LIST-----------------
 
@@ -85,19 +88,19 @@ istream &operator>> (istream &in, Elem<T> &el){
 }
 
 template <typename T>
-ostream &operator<< (ostream &out, Elem<T> &el){
-    out << el.get_Info() << '\n';
-    return out;
-}
-
-template <typename T>
 ifstream &operator>> (ifstream &fin, Elem<T> &el){
     fin >> el.get_Info();
     return fin;
 }
 
 template <typename T>
-ofstream &operator<< (ofstream &fout, Elem<T> &el){
+ostream &operator<< (ostream &out, const Elem<T> &el){
+    out << el.get_Info() << '\n';
+    return out;
+}
+
+template <typename T>
+ofstream &operator<< (ofstream &fout, const Elem<T> &el){
     fout << el.get_Info() << '\n';
     return fout;
 }
@@ -124,7 +127,7 @@ template <typename T>
 Elem<T> *List<T>::get_Elem(size_t index){
     size_t count = 0;
     Elem<T> *tmp = head;
-    while ( tmp && count < index-1) {
+    while (count < index) {
         tmp = tmp->next;
         count++;
     }
@@ -172,6 +175,7 @@ void List<T>::Add_to_Head(T const &data){
         head->prev = new_p;
         head = new_p;
     }
+
 }
 
 template <typename T>   //Adding new element
@@ -187,29 +191,27 @@ void List<T>::Add_to_Tail(T const &data){
 }
 
 template <typename T>   //Adding new element
-void List<T>::Add_After(T data, size_t k){
+void List<T>::Add_After(T const &data, size_t k){
 
     size_t s = Quantity();
-    Elem<T> *tmp = head, *new_p;
-
+    Elem<T> *tmp, *new_p;
     if(is_Empty() || k == 0 )
         Add_to_Head(data);
-    else if(k > s)
+    else if(k >= s)
         Add_to_Tail(data);
-    else if(k >= 1   &&   k <= s){
+    else if(k >= 1   &&   k < s){
         new_p = Init(data);
-        tmp = get_Elem(k);
-        new_p->next = tmp->next;
+        tmp = get_Elem(k-1);
+
         new_p->prev = tmp;
+        new_p->next = tmp->next;
+        tmp->next->prev = new_p;
         tmp->next = new_p;
     }
 }
 
-//---------------------
 template <typename T>
 void List<T>::delete_one(){
-    delete head;
-    delete tail;
     head = nullptr;
     tail = nullptr;
 }
@@ -251,16 +253,16 @@ void List<T>::Delete_from_tail(){
 template <typename T>
 void List<T>::Delete_elem(size_t k){
     size_t s = Quantity();
-    Elem<T> *tmp = head;
+    Elem<T> *tmp;
 
     if(is_Empty() || k == 0 )
         Delete_from_head();
-    else if(k > s)
+    else if(k >= s -1)
         Delete_from_tail();
-    else if(k >= 1   &&   k <= s){
+    else if(k >= 1   &&   k < s){
         tmp = get_Elem(k);
         tmp->prev->next = tmp->next;
-        tmp->next = tmp->prev;
+        tmp->next->prev = tmp->prev;
         delete tmp;
     }
 }
