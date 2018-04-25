@@ -1,0 +1,5 @@
+make: 0laba.o
+      g++ 0laba.o -o out -std = c++11
+
+0laba.o: 0laba.cpp list.h iter.h
+      g++ -c 0laba.cpp -std=c++11

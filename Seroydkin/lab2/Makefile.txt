@@ -1,0 +1,8 @@
+make: 2labaOOP.o battlefield.o object.o 
+	g++ main.o battlefield.o object.o -o out -std=c++11
+2labaOPP.o: 2labaOOP.cpp battlefield.h
+	g++-c 2labaOOP.cpp  -std=c++11 
+battlefield.o: battlefield.cpp battlefield.h iter.h list.h
+	g++ -c battlefield.cpp -std=c++11
+object.o: object.cpp object.h crown.h
+	g++ -c object.cpp -std=c++11
