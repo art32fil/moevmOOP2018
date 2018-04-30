@@ -38,11 +38,12 @@ public:
 	virtual Object* is_on_position(_2dim);
 	bool last_representive();
 
+	const _2dim get_coords();
+
 	long use_count();
 
 	friend istream &operator>>(istream &in, Object &ob);
 	friend ostream &operator<<(ostream &out, Object &ob);
-
 
 };
 

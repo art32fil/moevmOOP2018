@@ -22,6 +22,7 @@ public:
 	int hit(_2dim, int);
 	Object* check_position(_2dim);
 	void del_from_position(_2dim);
+	Warior *relocate(string da_way, Warior *unit);
 
 	friend battlefield *const operator<<(battlefield *const bf, Object &obj);
 };

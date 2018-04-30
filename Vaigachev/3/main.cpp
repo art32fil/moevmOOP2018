@@ -1,5 +1,6 @@
 #include <iostream>
 #include "battlefield.h"
+#include <string>
 
 using namespace std;
 
@@ -12,20 +13,42 @@ int main() {
 	game->print();
 	cout << "Field printed!" << endl;
 	char x, y = NULL;
+	string da_way;
 	int damage;
-	int result;
+	int result = 0;
+	int option;
 	while (true) {
 		cout << "input coordinates of target (separeted by space) [press q to exit]" << endl << "Enter coords: ";
 		cin >> x;
 		if (x == 'q') break;
 		cin >> y;
-		//cout << (int)x - 48 << " " << (int)y - 48 << endl;
-		if (game->check_position({ (int)x - 48, (int)y - 48 })) {
-			cout << "[Target selected]" << endl << "Enter damage..." ;
-			cin >> damage;	
-			result = game->hit({ (int)x - 48, (int)y - 48 }, damage);
+		
+
+		if (auto temp = game->check_position({ (int)x - 48, (int)y - 48 })) {
+			cout << "[Target selected]" << endl;
+			cout << "Choose option..." << endl;
+			if (dynamic_cast<Warior *>(temp)) {
+				cout << "1. Hit" << endl;
+				cout << "2. Move" << endl;
+				cin >> option;
+				switch (option) {
+				case(1):
+					cin >> damage;
+					result = game->hit({ (int)x - 48, (int)y - 48 }, damage);
+					break;
+				case(2):
+					cin >> da_way;
+					temp = game->relocate(da_way, dynamic_cast<Warior *>(temp));
+					break;
+				}
+			}
+			if (dynamic_cast<Building *>(temp)) {
+				cout << "1. Be hitted" << endl;
+				cin >> damage;
+				result = game->hit({ (int)x - 48, (int)y - 48 }, damage);
+			}
 			if (result) {
-				cout << "team #" << result << " ddefeaded!" << endl;
+				cout << "team #" << result << " Ddefeaded!" << endl;
 				break;
 			}
 		}
@@ -34,6 +57,7 @@ int main() {
 	}
 	delete game;
 	
+	getchar();
 	getchar();
 	/*
 	cout << "Field fight: START" << endl;

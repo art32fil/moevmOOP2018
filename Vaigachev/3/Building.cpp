@@ -32,7 +32,7 @@ Object* Building::is_on_position(_2dim delt) {
 		 v	(range)
 	
 	*/
-	//difficult because of y (it goes down)
+	//difficult because of ().y (it goes down)
 	up = pos.y >= range.y;
 	right = pos.x <= range.x;
 

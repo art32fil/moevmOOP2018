@@ -103,3 +103,7 @@ ostream& operator<<(ostream &out, Object &ob) {
 	out << " O " << "\033[0m";
 	return out;
 }
+
+const _2dim Object::get_coords() {
+	return pos;
+}

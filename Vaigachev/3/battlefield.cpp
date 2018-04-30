@@ -212,3 +212,35 @@ battlefield *const operator<<(battlefield *const bf, Object &obj)
 
 	return bf;
 }
+
+Warior * battlefield::relocate(string da_way, Warior *unit) {
+	for (char option : da_way) {
+		switch (option)
+		{
+		case('w'):
+			if (unit->get_coords().y > 1) unit->move(option);
+			else goto end;
+			break;
+		case('d'):
+			if (unit->get_coords().x < x_size) unit->move(option);
+			else goto end;
+			break;
+		case('s'):
+			if (unit->get_coords().y < y_size) unit->move(option);
+			else goto end;
+			break;
+		case('a'):
+			if (unit->get_coords().x > 1) unit->move(option);
+			else goto end;
+			break;
+		default:
+			end:
+			cout << "* bump *" << endl;
+			return unit;
+			break;
+		}
+
+	}
+
+
+}

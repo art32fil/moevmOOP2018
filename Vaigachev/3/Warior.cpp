@@ -35,3 +35,25 @@ ostream &operator<<(ostream &out, Warior &ob) {
 	out << " W " << "\033[0m";
 	return out;
 }
+
+Warior* Warior::move(char option) {
+	switch (option)
+	{
+	case('w'):
+		pos.y--;
+		break;
+	case('d'):
+		pos.x++;
+		break;
+	case('s'):
+		pos.y++;
+		break;
+	case('a'):
+		pos.x--;
+		break;
+	default:
+		cerr << "wrong command! " << option << endl;
+		break;
+	}
+	return this;
+}
