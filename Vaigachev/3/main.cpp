@@ -6,7 +6,7 @@ using namespace std;
 int main() {
 	
 	//Object blue({ 1,1 }, 1);
-
+	
 	battlefield *game = new battlefield();
 	cout << "Printing field..." << endl;
 	game->print();
@@ -33,6 +33,25 @@ int main() {
 		game->print();
 	}
 	delete game;
+	
 	getchar();
-	getchar();
+	/*
+	cout << "Field fight: START" << endl;
+	ifstream fin("data.txt");
+	if (fin.eof()) {
+		cerr << "File not found!" << endl;
+		getchar();
+		exit(EXIT_FAILURE);
+	}
+
+	const shared_ptr<Crown> crown1(new Crown(1));
+	const shared_ptr<Crown> crown2(new Crown(2));
+
+
+	Warior *w = new Warior(fin,crown1);
+
+	delete w;
+
+	getchar();*/
+
 }

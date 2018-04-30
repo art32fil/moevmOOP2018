@@ -1,6 +1,9 @@
 #pragma once
 #include "list.h"
-#include "Object.h"
+#include "Object.h" //delete later
+
+#include "Warior.h"
+#include "Building.h"
 #include "Crown.h"
 #include <memory>
 
@@ -19,4 +22,6 @@ public:
 	int hit(_2dim, int);
 	Object* check_position(_2dim);
 	void del_from_position(_2dim);
+
+	friend battlefield *const operator<<(battlefield *const bf, Object &obj);
 };

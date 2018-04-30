@@ -8,15 +8,17 @@ using namespace std;
 struct _2dim {
 		int x;
 		int y;
-
 	};
 class Object
 {
 
-	_2dim pos;
+private:
 	int health;
 	const shared_ptr<Crown> team;
 	const int id;
+
+protected:
+	_2dim pos;
 
 public:
 
@@ -25,7 +27,7 @@ public:
 	Object()  ;
 	Object(_2dim, int ,int);
 	Object(ifstream&, const shared_ptr<Crown > ) ;
-	~Object();
+	virtual ~Object();
 	Object(const Object & obj);
 
 	int get_id();
@@ -33,7 +35,7 @@ public:
 
 	int show_team();
 	int get_damage(int damage);
-	Object* is_on_position(_2dim);
+	virtual Object* is_on_position(_2dim);
 	bool last_representive();
 
 	long use_count();
@@ -43,3 +45,6 @@ public:
 
 
 };
+
+
+

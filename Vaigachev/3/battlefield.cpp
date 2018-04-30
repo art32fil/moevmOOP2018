@@ -74,12 +74,25 @@ Object* battlefield::check_position(_2dim cor) {
 	}
 	return NULL;
 }
-//todo: int t -> const shared_ptr t
+//todo: make reading of building , warrior & default
 void battlefield::new_team(List<Object*> *new_team,ifstream& fin,const shared_ptr<Crown> t) {
 	int size;
+	char type;
 	fin >> size;
 	for (int i = 0; i < size; i++) {
-		new_team->AddEnd(new Object(fin,t));
+		fin >> type;
+		switch (type)
+		{
+		case('w'):
+			new_team->AddEnd(new Warior(fin,t));
+			break;
+		case('b'):
+			new_team->AddEnd(new Building(fin, t));
+			break;
+		default:
+			break;
+		}
+		
 	}
 }
 
@@ -110,7 +123,7 @@ void battlefield::print() {
 				printf("%3.d", i);
 				cout << DEFFOREGR;
 			}
-			Object* temp = check_position({ j,i });
+			auto temp = check_position({ j,i });
 			if (temp) {/*
 				if (temp->show_team() == 1) {
 					//SetConsoleTextAttribute(hConsole, (WORD)((DEFBACKGR << 4) | Blue));
@@ -128,7 +141,7 @@ void battlefield::print() {
 					//SetConsoleTextAttribute(hConsole, (WORD)((DEFBACKGR << 4) | DEFFOREGR));
 					cout << DEFFOREGR;
 				}*/
-				cout << *temp ;
+				this << *temp ;
 			}
 			else
 			{
@@ -186,4 +199,16 @@ void battlefield::del_from_position(_2dim cor) {
 		team2->DelIndex(j);
 		return;
 	}
+}
+
+battlefield *const operator<<(battlefield *const bf, Object &obj)
+{
+	if (dynamic_cast<Warior*>(&obj)) {
+		cout << *dynamic_cast<Warior*>(&obj);
+	}
+	if (dynamic_cast<Building*>(&obj)) {
+		cout << *dynamic_cast<Building*>(&obj);
+	}
+
+	return bf;
 }

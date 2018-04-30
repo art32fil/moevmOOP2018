@@ -7,7 +7,7 @@ int Object::amount = 0;
 int Object::count = 0;
 
 
-
+//ToDo : first goes health
 Object::Object(_2dim posit,int hp,int t): id(amount+1)
 {
 	pos = posit;
@@ -25,7 +25,7 @@ Object::Object(_2dim posit,int hp,int t): id(amount+1)
 
 Object::Object(ifstream& fin, const shared_ptr<Crown> t) : id(amount+1), team(t)
 {
-	fin >> pos.x >> pos.y >> health;
+	fin >> health >> pos.x >> pos.y ;
 	//team = t;
 	amount++;
 	count++;
