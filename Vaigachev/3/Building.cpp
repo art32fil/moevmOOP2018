@@ -21,16 +21,16 @@ Building::~Building()
 	cout << "~Building : END." << endl << endl;
 }
 
-Object* Building::is_on_position(_2dim delt) { 
+Object* Building::is_on_position(_2dim delt) {
 	bool up, right; // sectors
 
-	/* up,right answers where (range) 
-		 ^up
-		 |
+	/* up,right answers where (range)
+		  ^up
+		  |
 	<- (pos) -> right
-		 |	
-		 v	(range)
-	
+		 |
+		v	(range)
+
 	*/
 	//difficult because of ().y (it goes down)
 	up = pos.y >= range.y;
@@ -69,9 +69,7 @@ ostream &operator<<(ostream &out, Building &ob) {
 		out << "\033[32m";
 	if (ob.show_team() == 2) // 0
 		out << "\033[31m";
-	out << "B" << "\033[0m";
+	out << " B " << "\033[0m";
 	return out;
 
 }
-
-

@@ -56,6 +56,7 @@ int main() {
 						result = game->hit({ x, y }, id);
 						break;
 					case(2):
+						cout << "Enter wasd like the track:";
 						cin >> da_way;
 						temp_obj = game->relocate(da_way, dynamic_cast<Warior *>(temp_obj));
 						break;
@@ -77,8 +78,8 @@ int main() {
 		}
 		else cout << "[Miss]" << endl;
 		game->print();
-	
-		
+
+
 	}
 	delete game;
 	delete temp;
