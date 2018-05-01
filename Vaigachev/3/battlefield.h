@@ -6,6 +6,7 @@
 #include "Building.h"
 #include "Crown.h"
 #include <memory>
+#include <vector>
 
 
 class battlefield
@@ -19,10 +20,17 @@ public:
     ~battlefield();
 	void new_team(List<Object*> *new_team, ifstream& fin,const shared_ptr<Crown>);
 	void print();
+
+	//reconstruction
 	int hit(_2dim, int);
+	void del_by_id(int);
+
+
 	Object* check_position(_2dim);
 	void del_from_position(_2dim);
 	Warior *relocate(string da_way, Warior *unit);
-
+	Object* select_by_id(int);
+	vector <Object *>* select_by_coords(_2dim);
+	char define_type(Object *);
 	friend battlefield *const operator<<(battlefield *const bf, Object &obj);
 };

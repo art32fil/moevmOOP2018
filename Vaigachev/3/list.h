@@ -117,6 +117,7 @@ public:
 
     void DelIndex(int index);
 
+	bool Empty();
 	//void SmartDel(T in,int ident(T));
 
 

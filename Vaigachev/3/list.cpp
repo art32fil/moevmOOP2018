@@ -161,6 +161,13 @@ void List<T>::DelIndex(int index){
     return;
 }
 
+template<typename T>
+bool List<T>::Empty()
+{
+	if (Head == NULL) return true;
+	else false;
+}
+
 template <typename T>
 void List<T>:: Show(){
     Node<T>* temp=Tail;

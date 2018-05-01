@@ -41,7 +41,7 @@ Object::Object(ifstream& fin, const shared_ptr<Crown> t) : id(amount+1), team(t)
 int Object::get_damage(int damage) {
 	health -= damage;
 	if (health <= 0) return get_id();
-	else return NULL;
+	else return -1;
 }
 
 Object* Object::is_on_position(_2dim cor) {

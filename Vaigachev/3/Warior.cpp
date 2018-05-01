@@ -57,3 +57,8 @@ Warior* Warior::move(char option) {
 	}
 	return this;
 }
+
+int Warior::give_force()
+{
+	return force;
+}

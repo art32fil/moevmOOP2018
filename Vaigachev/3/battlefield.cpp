@@ -155,17 +155,62 @@ void battlefield::print() {
 }
 
 //todo: bad realization
-int battlefield::hit(_2dim pos, int dmg) {
+int battlefield::hit(_2dim pos, int id) {
 
-	Object* temp = check_position(pos);
-	if ((temp->get_damage(dmg))) {
-		cout << endl << "count - " << temp->count << endl << "amount - " << temp->amount << endl << "use count " << temp->use_count() << endl;
-		if (temp->last_representive()) return temp->show_team();
-		del_from_position(pos);
-	};
+	Object* unit = select_by_id(id);
+	if (define_type(unit) == 'w') {
+		Warior* war  = dynamic_cast<Warior *>(unit);
+		vector <Object *> *list = select_by_coords(war->get_coords());
+		if (list->capacity() == 1) if (unit->get_damage(war->give_force())) if( war->last_representive()) return (war->show_team() == 1) ? 2 : 1 ; //suicide is hard work
+		for (auto obj : *list) {
+			if (obj->get_id() == war->get_id()) continue;
+			if (auto tmp = obj->get_damage(war->give_force())) {
+				if (obj->last_representive()) return war->show_team();
+				del_by_id(tmp);
+			}
+		}
+	}
+	else {
+		cerr << "Selected id is not unit!" << endl;
+		return 0;
+	}
 	return 0;
 }
 
+
+void battlefield::del_by_id(int id) {
+
+	int i = 0;
+	bool flag = false;
+
+	for (auto Elem : *team1) {
+		if (Elem->get_id() != id) i++; else {
+			flag = true;
+			break;
+		}
+	}
+	if (flag) {
+		team1->DelIndex(i);
+		return;
+	}
+
+	int j = 0;
+	bool mflag = false;
+	for (auto Elem : *team2) {
+		if (Elem->get_id() != id) {
+			j++;
+
+		}
+		else {
+			mflag = true;
+			break;
+		}
+	}
+	if (mflag) {
+		team2->DelIndex(j);
+		return;
+	}
+}
 
 void battlefield::del_from_position(_2dim cor) {
 
@@ -239,8 +284,47 @@ Warior * battlefield::relocate(string da_way, Warior *unit) {
 			return unit;
 			break;
 		}
+	}
+	return unit;
+}
 
+Object * battlefield::select_by_id(int id)
+{
+	for (auto Elem : *team1) {
+		if (Elem->get_id() == id) return Elem;
+	}
+	//return NULL;
+
+	for (auto Elem : *team2) {
+		if (Elem->get_id() == id) return Elem;
+	}
+	return NULL;
+}
+
+vector <Object*>* battlefield::select_by_coords(_2dim cor) {
+
+	vector <Object* > *temp = new vector<Object*>;
+
+	for (auto Elem : *team1) {
+		if (Elem->is_on_position(cor)) temp->push_back(Elem);
 	}
 
+	for (auto Elem : *team2) {
+		if (Elem->is_on_position(cor)) temp->push_back(Elem);
+	}
+
+	return temp;
 
 }
+
+char battlefield::define_type(Object * obj)
+{
+	if (dynamic_cast<Warior*>(obj)) {
+		return 'w';
+	}
+	if (dynamic_cast<Building*>(obj)) {
+		return 'b';
+	}
+	else return 'o';
+}
+
