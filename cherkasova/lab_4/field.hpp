@@ -138,7 +138,7 @@ int Field::attack(vector<pair<int,int>> aims, Warrior& w){
     
     for(auto &aim: aims){
         Object* ob = get_obj(get<0>(aim), get<1>(aim), mark_color);
-        if (!ob)  continue;    
+        if (!ob || !ob->alive())  continue;    
         
         if(ob->getmark() == 'o' || ob->getmark() == 'w'){
             ob->damage(w.getpower());
@@ -149,12 +149,20 @@ int Field::attack(vector<pair<int,int>> aims, Warrior& w){
         if(ob->getmark() == 'b'){
                 Building* bd = static_cast<Building*>(ob);
                 for(auto &item: bd->getlocation()){
-                    Object* bd = get_obj(get<0>(item), get<1>(item), mark_color);
-                    bd->damage(w.getpower());
-                    if(!ob->alive()) {
+                    if(get<0>(item) == bd->getx() && get<1>(item) == bd->gety()) 
+                        continue;                         
+                    Object* o = get_obj(get<0>(item), get<1>(item), mark_color);
+                    o->damage(w.getpower());
+                    if(!o->alive()) {
                         list.delete_elem(find_index(get<0>(item),get<1>(item),mark_color));
                     }
-                } 
+                }
+                bd->damage(w.getpower());
+                if(!ob->alive()) {
+                    list.delete_elem(find_index(get<0>(aim),get<1>(aim),mark_color));
+                }
+
+            
         }
     }
     return 0;
