@@ -50,6 +50,7 @@ public:
     const shared_ptr<Crown> getcrown();
     
     virtual int& getpower(){}  
+    virtual int& getrange(){}      
     virtual vector<pair<int, int>> &getlocation() {}
     
     virtual int move_to(char action, int border_x, int border_y){}  

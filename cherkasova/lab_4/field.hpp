@@ -146,7 +146,6 @@ int Field::attack(vector<pair<int,int>> aims, Warrior& w){
                 list.delete_elem(find_index(get<0>(aim), get<1>(aim),mark_color));
             }
         }
-
         if(ob->getmark() == 'b'){
                 Building* bd = static_cast<Building*>(ob);
                 for(auto &item: bd->getlocation()){

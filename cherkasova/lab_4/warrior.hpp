@@ -20,6 +20,8 @@ public:
     int move_to(char action, int border_x, int border_y) override;
     vector<pair<int, int>> aim_attack() override;
     int &getpower() override;
+    int &getrange() override;
+    
     // void print_ob_simple();
     
     char draw() override;
@@ -35,12 +37,14 @@ Warrior::Warrior(shared_ptr<Crown> crown, istream &in): Object(crown, in) {
     in >> *this;
     cout << "Warrior:"<< endl 
          << "    power = " << this->power << endl
+         << "    range = " << this->range << endl         
          << "Warrior." <<endl; 
 }
 
 Warrior::~Warrior() {
     cout << "~Warrior:"<< endl 
          << "    power = " << this->power << endl
+         << "    range = " << this->range << endl                  
          << "~Warrior." <<endl; 
 }
 
@@ -50,7 +54,7 @@ char Warrior::draw(){
 } 
 
 istream &operator>>(istream &in, Warrior &wr){
-    in >> wr.power;
+    in >> wr.power >> wr.range;
 }
 
 ostream &operator<<(ostream &out, Warrior &wr){
@@ -116,6 +120,9 @@ vector<pair<int, int>> Warrior::aim_attack() {
 
 int &Warrior::getpower()
     {return this->power;}
+
+int &Warrior::getrange()
+    {return this->range;}
 
 
 //-----------------------------------------------------------------------------------------
