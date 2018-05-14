@@ -1,0 +1,25 @@
+{
+    "files.associations": {
+        "iter": "cpp",
+        "list": "cpp",
+        "play": "cpp",
+        "object": "cpp",
+        "field": "cpp",
+        "union": "cpp",
+        "crown": "cpp",
+        "iostream": "cpp",
+        "*.tcc": "cpp",
+        "system_error": "cpp",
+        "type_traits": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "istream": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "typeinfo": "cpp",
+        "iosfwd": "cpp",
+        "fstream": "cpp",
+        "initializer_list": "cpp",
+        "ostream": "cpp"
+    }
+}
