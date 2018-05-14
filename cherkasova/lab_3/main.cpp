@@ -3,6 +3,9 @@
 
 using namespace std;
 
+int flag_exit = 0;
+int check = 0;
+
 int Object::count_ob;
 int Object::cur_amount;
 
@@ -46,6 +49,90 @@ int check_for_win(Field &fd){
     return -1; // continue gamme   
 }
 
+string names(char name_mark){
+    switch(name_mark){
+        case 'o':
+            return "object";
+            break;
+        case 'w':
+            return "warrior";
+            break;
+        case 's':
+            return "swordsman";
+            break;
+        case 'm':
+            return "magician";
+            break;
+        case 'b':
+            return "building";
+            break;
+        default:
+            return "c";
+            break;
+    }
+}
+
+void warrior_group_action(Object* o, Field& fd){
+    Warrior* w;
+    switch(o->getmark()){
+        case 'w':
+            w = static_cast<Warrior*>(o);
+            break;
+        case 's':
+            w = static_cast<Swordsman*>(o);
+            break;
+        case 'm':
+            w = static_cast<Magician*>(o);
+            break;
+    }
+    // int check = 0;    
+    char action;
+    int finish = 0;
+    while(!finish){
+        cin.clear();
+        cout << "To attack press 'a', to move -'m' [to finish - any other button]: ";
+        cin >> action; 
+        switch(action){
+        case 'm':                                           
+            cout << "----To move it up press 'u', down-'d', right-'r', left-'l': ";
+            cin.clear();                                
+            char act;
+            cin >> act;
+            if (w->move_to(act, fd.getx_size()-1, fd.gety_size()-1) == -1) { 
+                cout << "The warriow was not found or the border met\n"; break; 
+            }
+            cout << endl << fd;
+            break;
+        case 'a':
+            if (fd.attack(w->aim_attack(), w))
+                { cout << "There is no targets or they belong to the warrior's army \n"; break; }
+            cout << fd;
+            break;
+        default:
+            finish = 1;
+            break;
+        }
+        check = check_for_win(fd);
+        if(check != 1 && check != 0) { cout << "Continue\n"; }
+        else {finish = 1; flag_exit = 1;}
+    }
+
+}
+
+void behavior(string name, Object* o, Field& fd){
+    cout << "Selected target is " << name << endl;
+    cout << "----Location: " << o->getx() << " " << o->gety() << endl;    
+    cout << "----Hit points: " << o->gethp() << endl;
+    cout << "----Army: " << o->getcrown()->getcolor() << endl;
+    
+    char action;
+    int finish;
+    int mark = o->getmark();
+    if(mark == 'w' || mark == 's' || mark == 'm'){
+        warrior_group_action(o, fd); 
+    }         
+}
+
 //-----------------MAIN----------------------------
 int main()
 {
@@ -58,118 +145,31 @@ int main()
     Field fd;
     fin >> fd;   
     fd.print_field(cout);
-    cout << "See the list :\n"; fd.print_list();
-
-    int exit_key = 0; // all is good
-    int flag = 0;
-    int finish = 0;
-    int check = 0;
+    // cout << "See the list :\n"; fd.print_list();
 
     int a = 0, x = 0, y = 0, ind = 0, id_found;
     char c[1];
-    int flag_finish = 0;
-    while(!flag_finish){
+    int finish = 0; 
+    while(!finish){ // continue: finish = 0, quit: finish = 1
         cinclear();
-        cout << "Select a target (enter x y - unsigned int numbers separated by space) or q to exit: " << endl;
+        cout << "Select a target (enter x y - unsigned int numbers separated by space) [q to exit]: " << endl;
         cin >> c[0];
-        if ( *c == 'q') {flag_finish = 1; break;}    
+        if ( *c == 'q') {finish = 1; break;}    
         x = atoi(c); 
         cin >> y;
+        Object* ob;
         id_found = fd.find_id(x,y);
         if(id_found != -1)
-            Object* o = fd.get_obj(id_found);
+            ob = fd.get_obj(id_found);
         else { cout << "Selected target wasn't found. Try again (maybe inccorect input).\n"; cin.clear(); continue;}
-        
-        // ind = fd.find_index(x,y,'a');
-        // if(ind == -1) { 
-        //     cout << "Selected target wasn't found. Try again (maybe inccorect input)." <<endl; 
-        //     cin.clear(); continue;
-        // }
-        if (fd.is_obj(id_found)){
-            cout << "Selected target is ";
-            char action;
-            switch(fd.get_obj(id_found)->getmark()){
-                case 'o':
-                    cout << "object.\nPress i to see the information [q to quit]: \n";   
-                    cin >> action;
-                    switch(action){
-                        case 'q': 
-                            flag_finish = 1; 
-                            break;
-                        case 'i':
-                            cout << "Hit points: " << fd.get_obj(id_found)->gethp() << endl;
-                            cout << "Army it belongs to: " << fd.get_obj(id_found)->getcrown()->getcolor() << endl;
-                            break;
-                        default:
-                            exit_key = 1; //cout <<"Unknown command\n";
-                            break;
-                    } 
-                    break;
-                case 'w':
-                    cout << "warrior.\n";
-                    finish = 0;
-                    while(!finish){
-                        cin.clear();
-                        cout << "To attack press 'a', 'm'-to move, to see the info-'i' [any other button to finish]: ";
-                        cin >> action; 
-                        switch(action){
-                        case 'i':
-                            cout << "Hit points: " << fd.get_obj(id_found)->gethp() << endl;
-                            cout << "Power: " << fd.get_obj(id_found)->getpower() << endl;                                
-                            cout << "Army it belongs to: " << fd.get_obj(id_found)->getcrown()->getcolor() << endl;
-                            break;
-                        case 'm':                 
-                            cout << "To move it up press 'u', down-'d', right-'r', left-'l': ";
-                            cin.clear();                                
-                            char act;
-                            cin >> act;
-                            int moved;
-                            moved = fd.get_obj(id_found)->move_to(act, fd.get_x_size()-1, fd.get_y_size()-1);
-                            if ( moved == -1) { cout << "The warriow was not found or the border met\n"; break; }
-                            x = fd.get_obj(moved)->getx();
-                            y = fd.get_obj(moved)->gety();
-                            cout << endl << fd;
-                            break;
-                        case 'a':
-                            if (fd.attack(x,y,id_found))
-                                { cout << "There is no target or it belongs the same army \n"; break; }
-                            cout << fd;
-                            break;
-                        default:
-                            finish = 1;
-                            break;
-                    }
-                    check = check_for_win(fd);
-                    if(check != 1 && check != 0) { cout << "Continue\n"; }
-                    else {flag_finish = 1; break;}
-                }
-                break;
-                case 'b':
-                    cout << "building.\nPress i to see the information [q to quit]: \n";   
-                    char action;
-                    cin >> action;
-                    switch(action){
-                        case 'q': 
-                            flag_finish = 1; 
-                            break;
-                        case 'i':
-                            cout << "Hit points: " << fd.get_obj(id_found)->gethp() << endl;
-                            cout << "Army it belongs to: " << fd.get_obj(id_found)->getcrown()->getcolor() << endl;
-                            break;
-                        default:
-                            exit_key = 1; //cout <<"Unknown command\n";
-                            break;
-                    }                   
-                    break;
-                default:
-                    exit_key = 1; //cout <<"Unknown behavior\n";
-                    flag_finish = 1;
-                    break;
-            }
-        } else {
+        if (!fd.is_obj(id_found)){ 
             cout << "No: doesn't exist or was killed.\n"; 
-            flag_finish = 1;
-        }
+            continue;
+        }   
+        string name = names(ob->getmark());
+        if(name == "c") continue;
+        behavior(name, ob, fd); 
+        if(flag_exit) break;
     }    
 
 // fix comments for exit
@@ -177,7 +177,7 @@ int main()
     filename.close();
     if(check == 1) {cout << "\n!!!The red army won!!!\n\n"; }
     else if(check == 0){cout << "\n!!!The green army won!!!\n\n"; }
-    cout << "Exit status: " << exit_key << endl;
+    // cout << "Exit status: " << exit_key << endl;
     return 0;   
 }
 //------------------------------------------------

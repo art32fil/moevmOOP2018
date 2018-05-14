@@ -1,9 +1,8 @@
-#ifndef OBJECT
-#define OBJECT
-
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <vector>
 #include "crown.hpp"
 
 using namespace std;
@@ -37,7 +36,6 @@ public:
 
     void print_ob();
     void print_ob_simple();
-    
     virtual char draw(); 
 
     char &getmark();
@@ -49,11 +47,12 @@ public:
     const int &getid() const;
     const shared_ptr<Crown> getcrown();
     
-    virtual int move_to(char action, int border_x, int border_y){}  
-    // virtual int attack(){}  
     virtual int& getpower(){}  
+    virtual int& getrange(){}      
     virtual vector<pair<int, int>> &getlocation() {}
     
+    virtual int move_to(char action, int border_x, int border_y){}  
+    virtual vector<pair<int, int>> aim_attack() {}
 
     Object &operator=(Object&& ob);
     Object &operator=(Object &ob);
@@ -198,4 +197,4 @@ ostream &operator<<(ostream &out, Object &ob){
 }   
 
 //-----------------------------------------------------------------------------------------
-#endif //OBJECT
+

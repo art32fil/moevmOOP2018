@@ -1,11 +1,7 @@
-#ifndef FIELD
-#define FIELD
-#include <vector>
-#include "object.hpp"
+#pragma once
 #include "iter.hpp"
 #include "warrior.hpp"
 #include "building.hpp"
-// #include <cstring>
 
 using namespace std;
 
@@ -29,18 +25,18 @@ class Field
     void init();
     int find_id(int x, int y);
     int find_index(int id_);  
-    int find_index(int x, int y, int mark); 
+    int find_index(int x, int y, int mark_color); 
     Object *get_obj(int id_);
-    Object *get_obj(int x, int y, char mark);
+    Object *get_obj(int x, int y, char mark_color);
     bool is_obj(int id_);
-    int attack(int x, int y, int power);
+    int attack(vector<pair<int,int>> aims, Warrior* w);
     void read_from_file(istream &in);
     void print_list();
     void print_field(ostream &out);
 
     List<Object *> &getlist();  
-    int &get_x_size();
-    int &get_y_size();
+    int &getx_size();
+    int &gety_size();
 
     friend istream &operator>>(istream &in, Field &fd);
     friend ostream &operator<<(ostream &out, const Field &fd);
@@ -80,19 +76,19 @@ int Field::find_index(int id_){
     return -1; // not found
 }
 
-int Field::find_index(int x, int y, int mark){
+int Field::find_index(int x, int y, int mark_color){
     int count = 0;
     for (const auto &obj : list){
         if (obj.get()->getx() == x && obj.get()->gety() == y){
-            if(mark == 'a') // ob, bd, wr
+            if(mark_color == 'a') // ob, bd, wr
                 return count;
         
-            if(mark == 'g'){ // ob, bd
+            if(mark_color == 'g'){ // ob, bd
                 if(obj.get()->getcrown()->getcolor() == "green"){
                     return count;
                 }
             }
-            if(mark == 'r'){
+            if(mark_color == 'r'){
                 if(obj.get()->getcrown()->getcolor() == "red"){
                     return count;
                 }
@@ -112,8 +108,8 @@ Object *Field::get_obj(int id_){
     return nullptr;
 }
 
-Object *Field::get_obj(int x, int y, char mark){ //map[j][i]-ok
-    int ind = find_index(x,y,mark);
+Object *Field::get_obj(int x, int y, char mark_color){ //map[j][i]-ok
+    int ind = find_index(x,y,mark_color);
     if (ind == -1)
         return nullptr;
     return list.find(ind)->get();
@@ -131,30 +127,40 @@ bool Field::is_obj(int id_){
     return false; // not found
 }
 
-int Field::attack(int x, int y, int id_){
-    Object* ob = get_obj(id_);
-    if (!ob)  return -1;    
-    char mark;
-    string color = ob->getcrown()->getcolor();
-    if(color == "red") { color = "green"; mark = 'g';}
-    else {color == "red"; mark = 'r';}
-    ob = get_obj(x,y,mark);
-    if (!ob)  return -1;
-    if(ob->getmark() == 'o' || ob->getmark() == 'w'){
-        ob->damage(get_obj(id_)->getpower());
-        if(!ob->alive()) {
-            list.delete_elem(find_index(x,y,mark));
-        }
+int Field::attack(vector<pair<int,int>> aims, Warrior* w){
+    Swordsman* s;
+    Magician* m;
+    switch(w->getmark()){
+        case 's':
+            s = static_cast<Swordsman*>(w);
+        case 'm':
+            m = static_cast<Magician*>(w);
     }
-    if(ob->getmark() == 'b'){
-            Building* bd = static_cast<Building*>(ob);
-            for(auto &item: bd->getlocation()){
-                Object* bd = get_obj(get<0>(item), get<1>(item), mark);
-                bd->damage(get_obj(id_)->getpower());
-                if(!ob->alive()) {
-                    list.delete_elem(find_index(get<0>(item),get<1>(item),mark));
-                }
-            } 
+    char mark_color;
+    string color = w->getcrown()->getcolor();
+    if(color == "red") { color = "green"; mark_color = 'g';}
+    else {color == "red"; mark_color = 'r';}
+    
+    for(auto &aim: aims){
+        Object* ob = get_obj(get<0>(aim), get<1>(aim), mark_color);
+        if (!ob)  
+            continue;    
+        if(ob->getmark() == 'b'){
+                Building* bd = static_cast<Building*>(ob);
+                for(auto &item: bd->getlocation()){
+                    if(get<0>(item) == bd->getx() && get<1>(item) == bd->gety()) 
+                        continue;                         
+                    Object* o = get_obj(get<0>(item), get<1>(item), mark_color);
+                    o->damage(w->getpower());
+                    if(!o->alive()) {
+                        list.delete_elem(find_index(get<0>(item),get<1>(item),mark_color));
+                    }
+                }            
+        }
+        ob->damage(w->getpower());
+        if(!ob->alive()) {
+            list.delete_elem(find_index(get<0>(aim), get<1>(aim),mark_color));
+        }
     }
     return 0;
 }
@@ -252,6 +258,8 @@ void Field::read_from_file(istream &in){
             Object *ob;
             if (type == 'o') { ob = new Object(tmp, in); list.insert_tail(ob); }
             if (type == 'w') { ob = new Warrior(tmp, in); list.insert_tail(ob); }
+            if (type == 's') { ob = new Swordsman(tmp, in); list.insert_tail(ob); }
+            if (type == 'm') { ob = new Magician(tmp, in); list.insert_tail(ob); }           
             if (type == 'b') {
                 in >> type;
                 int hp;
@@ -290,14 +298,13 @@ istream &operator>>(istream &in, Field &fd){
     return in;
 }
 
-int &Field::get_x_size()
+int &Field::getx_size()
     { return x_size;}
 
-int &Field::get_y_size()
+int &Field::gety_size()
     {return y_size;}
 
 List<Object *> &Field::getlist()
     { return list; }
 
 //-----------------------------------------------------------------------------------------
-#endif //FIELD

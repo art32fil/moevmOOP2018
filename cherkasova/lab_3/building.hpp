@@ -1,16 +1,11 @@
-#ifndef BUILDING
-#define BUILDING
-
-#include <iostream>
-#include <fstream>
+#pragma once
 #include "object.hpp"
-// #include "list.hpp"
-#include <vector>
 
 using namespace std;
 
 //--------------------------------------WARRIOR-------------------------------------------
-class Building : public Object{
+class Building : public Object
+{
     vector<pair<int, int>> location;
 
 public:
@@ -77,6 +72,3 @@ vector<pair<int, int>> &Building::getlocation() {
 } 
 
 //-----------------------------------------------------------------------------------------
-
-
-#endif // BUILDING
