@@ -1,15 +1,14 @@
-#ifndef MAGNICIAN
-#define MAGNICIAN
-#include <iostream>
-#include <fstream>
+#pragma once
 #include "warrior.hpp"
 
 using namespace std;
 
-
-// class Magician : public Warrior{
-        
-// };
+class Warrior;
+//--------------------------------------MAGNICIAN-------------------------------------------
+class Magician : public Warrior
+{
+public:
+    // vector<pair<int, int>> aim_attack() {}
+};
 
 //----------------------------------------------------------------------------------------
-#endif //MAGNICIAN

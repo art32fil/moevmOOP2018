@@ -1,7 +1,4 @@
-#ifndef FIELD
-#define FIELD
-#include <vector>
-#include "object.hpp"
+#pragma once
 #include "iter.hpp"
 #include "warrior.hpp"
 #include "building.hpp"
@@ -32,7 +29,7 @@ class Field
     Object *get_obj(int id_);
     Object *get_obj(int x, int y, char mark_color);
     bool is_obj(int id_);
-    int attack(vector<pair<int,int>> aims, Warrior& w);
+    int attack(vector<pair<int,int>> aims, Warrior* w);
     void read_from_file(istream &in);
     void print_list();
     void print_field(ostream &out);
@@ -130,39 +127,39 @@ bool Field::is_obj(int id_){
     return false; // not found
 }
 
-int Field::attack(vector<pair<int,int>> aims, Warrior& w){
+int Field::attack(vector<pair<int,int>> aims, Warrior* w){
+    Swordsman* s;
+    Magician* m;
+    switch(w->getmark()){
+        case 's':
+            s = static_cast<Swordsman*>(w);
+        case 'm':
+            m = static_cast<Magician*>(w);
+    }
     char mark_color;
-    string color = w.getcrown()->getcolor();
+    string color = w->getcrown()->getcolor();
     if(color == "red") { color = "green"; mark_color = 'g';}
     else {color == "red"; mark_color = 'r';}
     
     for(auto &aim: aims){
         Object* ob = get_obj(get<0>(aim), get<1>(aim), mark_color);
-        if (!ob || !ob->alive())  continue;    
-        
-        if(ob->getmark() == 'o' || ob->getmark() == 'w'){
-            ob->damage(w.getpower());
-            if(!ob->alive()) {
-                list.delete_elem(find_index(get<0>(aim), get<1>(aim),mark_color));
-            }
-        }
+        if (!ob)  
+            continue;    
         if(ob->getmark() == 'b'){
                 Building* bd = static_cast<Building*>(ob);
                 for(auto &item: bd->getlocation()){
                     if(get<0>(item) == bd->getx() && get<1>(item) == bd->gety()) 
                         continue;                         
                     Object* o = get_obj(get<0>(item), get<1>(item), mark_color);
-                    o->damage(w.getpower());
+                    o->damage(w->getpower());
                     if(!o->alive()) {
                         list.delete_elem(find_index(get<0>(item),get<1>(item),mark_color));
                     }
-                }
-                bd->damage(w.getpower());
-                if(!ob->alive()) {
-                    list.delete_elem(find_index(get<0>(aim),get<1>(aim),mark_color));
-                }
-
-            
+                }            
+        }
+        ob->damage(w->getpower());
+        if(!ob->alive()) {
+            list.delete_elem(find_index(get<0>(aim), get<1>(aim),mark_color));
         }
     }
     return 0;
@@ -261,6 +258,8 @@ void Field::read_from_file(istream &in){
             Object *ob;
             if (type == 'o') { ob = new Object(tmp, in); list.insert_tail(ob); }
             if (type == 'w') { ob = new Warrior(tmp, in); list.insert_tail(ob); }
+            if (type == 's') { ob = new Swordsman(tmp, in); list.insert_tail(ob); }
+            if (type == 'm') { ob = new Magician(tmp, in); list.insert_tail(ob); }           
             if (type == 'b') {
                 in >> type;
                 int hp;
@@ -309,4 +308,3 @@ List<Object *> &Field::getlist()
     { return list; }
 
 //-----------------------------------------------------------------------------------------
-#endif //FIELD

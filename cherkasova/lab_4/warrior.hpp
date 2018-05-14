@@ -1,15 +1,15 @@
-#ifndef WARRIOR
-#define WARRIOR
+#pragma once
 #include "object.hpp"
-#include "swordsman.hpp"
-#include "magician.hpp"
+// #include "swordsman.hpp"
+// #include "magician.hpp"
 
 
 using namespace std;
 
 
 //--------------------------------------WARRIOR-------------------------------------------
-class Warrior : public Object{
+class Warrior : public Object
+{
     int power;
     int range;
 
@@ -128,4 +128,104 @@ int &Warrior::getrange()
 //-----------------------------------------------------------------------------------------
 
 
-#endif // WARRIOR
+
+//--------------------------------------SWORDSMAN-------------------------------------------
+class Swordsman : public Warrior
+{
+public:
+    Swordsman(shared_ptr<Crown> crown, istream &in);
+    ~Swordsman();
+
+    char draw() override;
+    // vector<pair<int, int>> aim_attack() override;
+};
+
+//---------------------------------SWORDSMAN METHODS-----------------------------------------
+Swordsman::Swordsman(shared_ptr<Crown> crown, istream &in): Warrior(crown, in)  {
+    cout << "Swordsman."<< endl;         
+}
+
+Swordsman::~Swordsman() {
+    cout << "~Swordsman."<< endl;                
+}
+
+char Swordsman::draw(){
+    if(alive()) return 's'; 
+    else if(!alive()) return 'x';
+} 
+
+// vector<pair<int, int>> Swordsman::aim_attack(){
+//     vector<pair<int, int>> aim;
+//     aim.push_back(pair<int, int>(getx(), gety()));
+//     for (int i = 0; i <= range; i++) {
+//     	for (int j = 0; j <= range; j++) {
+//     		if (i == 0 && j == 0) continue;
+//     		aim.push_back(pair<int, int>(getx() + i, gety() + j));
+//     		aim.push_back(pair<int, int>(getx() - i, gety() - j));
+//     		aim.push_back(pair<int, int>(getx() - i, gety() + j));
+//     		aim.push_back(pair<int, int>(getx() + i, gety() - j));
+//     	}
+//     }
+//     return aim;
+// }
+
+ostream &operator<<(ostream &out, Swordsman &wr){
+    if(wr.getcrown()->getcolor() ==  "green" ) 
+        out << "\033[32m";
+    if(wr.getcrown()->getcolor() == "red") 
+        out << "\033[31m";
+    out << wr.draw() << "\033[0m";
+    return out;
+} 
+//----------------------------------------------------------------------------------------
+
+
+
+//--------------------------------------MAGNICIAN-------------------------------------------
+class Magician : public Warrior
+{
+public:
+     Magician(shared_ptr<Crown> crown, istream &in);
+    ~Magician();
+
+    char draw() override;
+    // vector<pair<int, int>> aim_attack() override;
+};
+//---------------------------------MAGICIAN-METHODS-----------------------------------------
+Magician::Magician(shared_ptr<Crown> crown, istream &in): Warrior(crown, in) {
+    cout << "Magician."<< endl;         
+}
+
+Magician::~Magician() {
+    cout << "~Magician."<< endl;                 
+}
+
+char Magician::draw(){
+    if(alive()) return 'm'; 
+    else if(!alive()) return 'x';
+} 
+
+// vector<pair<int, int>> Magician::aim_attack(){
+//     vector<pair<int, int>> aim;
+//     aim.push_back(pair<int, int>(getx(), gety()));
+//     for (int i = 0; i <= range; i++) {
+//     	for (int j = 0; j <= range; j++) {
+//     		if (i == 0 && j == 0) continue;
+//     		aim.push_back(pair<int, int>(getx() + i, gety() + j));
+//     		aim.push_back(pair<int, int>(getx() - i, gety() - j));
+//     		aim.push_back(pair<int, int>(getx() - i, gety() + j));
+//     		aim.push_back(pair<int, int>(getx() + i, gety() - j));
+//     	}
+//     }
+//     return aim;
+// }
+
+ostream &operator<<(ostream &out, Magician &wr){
+    if(wr.getcrown()->getcolor() ==  "green" ) 
+        out << "\033[32m";
+    if(wr.getcrown()->getcolor() == "red") 
+        out << "\033[31m";
+    out << wr.draw() << "\033[0m";
+    return out;
+} 
+//----------------------------------------------------------------------------------------

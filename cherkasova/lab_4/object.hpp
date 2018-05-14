@@ -1,6 +1,4 @@
-#ifndef OBJECT
-#define OBJECT
-
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <memory>
@@ -199,4 +197,4 @@ ostream &operator<<(ostream &out, Object &ob){
 }   
 
 //-----------------------------------------------------------------------------------------
-#endif //OBJECT
+

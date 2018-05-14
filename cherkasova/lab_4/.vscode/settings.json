@@ -11,6 +11,11 @@
         "functional": "cpp",
         "istream": "cpp",
         "tuple": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "fstream": "cpp",
+        "vector": "cpp",
+        "ostream": "cpp",
+        "typeinfo": "cpp",
+        "iostream": "cpp"
     }
 }

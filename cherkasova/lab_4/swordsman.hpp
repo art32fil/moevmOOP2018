@@ -1,15 +1,14 @@
-#ifndef SWORDSMAN
-#define SWORDSMAN
-#include <iostream>
-#include <fstream>
+#pragma once
 #include "warrior.hpp"
 
 using namespace std;
 
-
-// class Swordsman : public Warrior{
-        
-// };
+class Warrior;
+//--------------------------------------SWORDSMAN-------------------------------------------
+class Swordsman : public Warrior
+{
+public:
+    // vector<pair<int, int>> aim_attack() override{}     
+};
 
 //----------------------------------------------------------------------------------------
-#endif //SWORDSMAN
