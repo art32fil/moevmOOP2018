@@ -39,7 +39,7 @@ class Battlefield {
     List<Warrior*> warrior_red;
     List<Warrior*> warrior_green;
     List<Building*> building_red;
-	List<Building*> building_green;
+    List<Building*> building_green;
 public:
     const Size         &get_size()    const { return size; }       //возвращает размер поля
     //const List<Object> &get_red_arm() const { return red_army; }   //возвращает красную армию

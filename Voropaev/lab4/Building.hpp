@@ -27,7 +27,7 @@ public:
              cout << "\tx = " << coords.x << endl
                   << "\ty = " << coords.y << endl
                   << "\thp = " << hit_points << endl
-                  << "\tforce = " << building << endl
+                  << "\tcoordinates = " << building << endl
                   << "\033[1;31m ~Building() \033[0m" << endl << endl;
     };
 

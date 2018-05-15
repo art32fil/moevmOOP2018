@@ -81,7 +81,6 @@ int main(int argc, char const *argv[]) {
 			cin >> direction;
 			ob.second->move_to_(direction);
 			cout << endl;
-			cout << "Enter quantity of damage: ";
 			std::cout << '\n' << "Hit points: " << ob.second->get_hp() << endl;
                 std::cout << '\n';
                 btlf.Draw_battlefield();
