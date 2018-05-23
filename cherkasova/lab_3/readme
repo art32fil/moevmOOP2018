@@ -1,0 +1,25 @@
+TASK: see file ../task.pdf
+FILES: 
+	../list	
+	../iter
+	../object
+	../field
+	../main.cpp
+
+EXTRA_FILES:
+	fromconsole - file with input from console
+	input - file input 
+	makefile
+
+INPUT_EXAMPLE:
+	10 10 - size of field
+	2 - amount of armies
+	4 - amount of objects in the first army
+	0 0 80 - x y hp
+	1 1 100
+	2 2 100
+	0 2 100
+	3 - amount of objects in the second army
+	9 9 100
+	9 8 100
+	7 5 100
