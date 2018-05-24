@@ -1,5 +1,5 @@
 #pragma once
-#include "object.hpp"
+#include "object.h"
 // #include "swordsman.hpp"
 // #include "magician.hpp"
 
@@ -18,7 +18,7 @@ public:
     ~Warrior();
 
     int move_to(char action, int border_x, int border_y) override;
-    vector<pair<int, int>> aim_attack() override;
+    vector<pair<int, int>> aim_attack(List<Object*>& objects) override;
     int &getpower() override;
     int &getrange() override;
     
@@ -99,10 +99,10 @@ int Warrior::move_to(char action, int border_x, int border_y){
     return getid();
 }
 
-vector<pair<int, int>> Warrior::aim_attack() {
+vector<pair<int, int>> Warrior::aim_attack(List<Object*>& objects) {
     vector<pair<int, int>> aim;
-    aim.push_back(pair<int, int>(getx(), gety()));
     for (int i = 0; i <= range; i++) {
+        aim.push_back(pair<int, int>(getx(), gety()));
     	for (int j = 0; j <= range; j++) {
     		if (i == 0 && j == 0) continue;
     		aim.push_back(pair<int, int>(getx() + i, gety() + j));
@@ -136,6 +136,7 @@ public:
     Swordsman(shared_ptr<Crown> crown, istream &in);
     ~Swordsman();
 
+    vector<pair<int, int>> aim_attack(List<Object*>& objects) override;
     char draw() override;
     // vector<pair<int, int>> aim_attack() override;
 };
@@ -154,20 +155,38 @@ char Swordsman::draw(){
     else if(!alive()) return 'x';
 } 
 
-// vector<pair<int, int>> Swordsman::aim_attack(){
-//     vector<pair<int, int>> aim;
-//     aim.push_back(pair<int, int>(getx(), gety()));
-//     for (int i = 0; i <= range; i++) {
-//     	for (int j = 0; j <= range; j++) {
-//     		if (i == 0 && j == 0) continue;
-//     		aim.push_back(pair<int, int>(getx() + i, gety() + j));
-//     		aim.push_back(pair<int, int>(getx() - i, gety() - j));
-//     		aim.push_back(pair<int, int>(getx() - i, gety() + j));
-//     		aim.push_back(pair<int, int>(getx() + i, gety() - j));
-//     	}
-//     }
-//     return aim;
-// }
+vector<pair<int, int>> Swordsman::aim_attack(List<Object*>& objects){
+    int max_hp = 0;
+    pair<int,int> max_pair;
+    for(const auto& obj: objects){
+        if( obj.get()->getx() == this->getx() + 1 && obj.get()->gety() == this->gety() ||
+            obj.get()->getx() == this->getx() - 1 && obj.get()->gety() == this->gety() || 
+            obj.get()->getx() == this->getx() + 1 && obj.get()->gety() == this->gety() - 1 ||
+            obj.get()->getx() == this->getx() - 1 && obj.get()->gety() == this->gety() + 1) {
+            max_hp = obj.get()->gethp();
+            max_pair = make_pair(obj.get()->getx(), obj.get()->gety());
+            break;
+        }
+    }
+    cout <<"max = " << max_hp <<endl;
+    vector<pair<int, int>> aim;
+    
+    if(max_hp==0) return aim;
+    for(const auto& obj: objects){
+        if( obj.get()->getx() == this->getx() + 1 && obj.get()->gety() == this->gety() ||
+            obj.get()->getx() == this->getx() - 1 && obj.get()->gety() == this->gety() || 
+            obj.get()->getx() == this->getx() + 1 && obj.get()->gety() == this->gety() - 1 ||
+            obj.get()->getx() == this->getx() - 1 && obj.get()->gety() == this->gety() + 1) {
+            if(obj.get()->gethp() < max_hp){
+                max_hp = obj.get()->gethp();
+                max_pair = make_pair(obj.get()->getx(), obj.get()->gety());
+            }
+        }
+    }
+    aim.push_back(max_pair);
+    
+    return aim;
+}
 
 ostream &operator<<(ostream &out, Swordsman &wr){
     if(wr.getcrown()->getcolor() ==  "green" ) 

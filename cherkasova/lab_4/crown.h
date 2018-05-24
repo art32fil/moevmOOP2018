@@ -17,8 +17,9 @@ public:
     Crown();
     ~Crown();
 
+    string contr_color();
+
     const string &getcolor() const;
-   
 };
 //-----------------------------------------------------------------------------------------
 
@@ -45,6 +46,13 @@ Crown::~Crown(){
 
 const string &Crown::getcolor() const{ 
     return color;
+}
+
+string Crown::contr_color(){ 
+    if(color == "red") 
+        return "green";
+    else 
+        return "red";
 }
 
 //-----------------------------------------------------------------------------------------

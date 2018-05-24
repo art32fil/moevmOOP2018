@@ -1,7 +1,7 @@
 #pragma once
-#include "iter.hpp"
-#include "warrior.hpp"
-#include "building.hpp"
+#include "iter.h"
+#include "warrior.h"
+#include "building.h"
 
 using namespace std;
 
@@ -16,7 +16,7 @@ class Field
     weak_ptr<Crown> crown_red;
     weak_ptr<Crown> crown_green;
 
-    List<Object *> list;
+    List<Object*> list;
 
   public:
     Field() {}
@@ -29,7 +29,7 @@ class Field
     Object *get_obj(int id_);
     Object *get_obj(int x, int y, char mark_color);
     bool is_obj(int id_);
-    int attack(vector<pair<int,int>> aims, Warrior* w);
+    int attack(vector<pair<int,int>> aims, Object* w);
     void read_from_file(istream &in);
     void print_list();
     void print_field(ostream &out);
@@ -127,20 +127,9 @@ bool Field::is_obj(int id_){
     return false; // not found
 }
 
-int Field::attack(vector<pair<int,int>> aims, Warrior* w){
-    Swordsman* s;
-    Magician* m;
-    switch(w->getmark()){
-        case 's':
-            s = static_cast<Swordsman*>(w);
-        case 'm':
-            m = static_cast<Magician*>(w);
-    }
-    char mark_color;
-    string color = w->getcrown()->getcolor();
-    if(color == "red") { color = "green"; mark_color = 'g';}
-    else {color == "red"; mark_color = 'r';}
-    
+int Field::attack(vector<pair<int,int>> aims, Object* w){
+    if(aims.empty()) {cout << "return 0"<<endl;return 0;}
+    char mark_color = w->getcrown()->contr_color()[0];   
     for(auto &aim: aims){
         Object* ob = get_obj(get<0>(aim), get<1>(aim), mark_color);
         if (!ob)  
