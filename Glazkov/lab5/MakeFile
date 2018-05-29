@@ -1,0 +1,20 @@
+link_all: main.o iter.o field.o object.o warrior.o building.o knight.o mage.o
+	g++ main.o iter.o object.o crown.o field.o warrior.o building.o knight.o mage.o -o main
+main.o: main.cpp field.o
+	g++ -c main.cpp
+field.o: warrior.o building.o field.cpp field.h
+	g++ -c field.cpp
+knight.o: warrior.h knight.cpp knight.h
+	g++ -c knight.cpp
+mage.o: warrior.h mage.cpp mage.h
+	g++ -c mage.cpp
+warrior.o: object.h warrior.cpp warrior.h
+	g++ -c warrior.cpp
+building.o: object.h building.cpp building.h
+	g++ -c building.cpp
+object.o: object.cpp object.h iter.o crown.o
+	g++ -c object.cpp
+iter.o: iter.cpp iter.h
+	g++ -c iter.cpp
+crown.o: crown.cpp crown.h
+	g++ -c crown.cpp
