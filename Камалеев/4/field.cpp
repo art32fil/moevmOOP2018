@@ -551,12 +551,10 @@ void Field::Arena() {
 			red = 0;
 			for (auto& it : red_army) {
 				if (it->Is_Located(j, i) == 3) {
-					//cout<<"\033[0;31m";
-					SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 4));
+					cout<<"\033[0;31m";
 					flag = 0;
 					if (it->Is_Dead()) {
-						//cout<<"\033[0m";
-						SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));
+						cout<<"\033[0m";
 						cout << ".";
 					}
 					else cout << "b";
@@ -564,12 +562,10 @@ void Field::Arena() {
 					break;
 				}
 				if (it->Is_Located(j, i) == 4) {
-					//cout<<"\033[0;31m";
-					SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 4));
+					cout<<"\033[0;31m";
 					flag = 0;
 					if (it->Is_Dead()) {
-						//cout<<"\033[0m";
-						SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));
+						cout<<"\033[0m";
 						cout << ".";
 					}
 					else cout << "m";
@@ -577,12 +573,10 @@ void Field::Arena() {
 					break;
 				}
 				if (it->Is_Located(j, i) == 5) {
-					//cout<<"\033[0;31m";
-					SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 4));
+					cout<<"\033[0;31m";
 					flag = 0;
 					if (it->Is_Dead()) {
-						//cout<<"\033[0m";
-						SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));
+						cout<<"\033[0m";
 						cout << ".";
 					}
 					else cout << "s";
@@ -593,11 +587,9 @@ void Field::Arena() {
 			for (auto& it : green_army) {
 				if (red) break;
 				if (it->Is_Located(j, i) == 3) {
-					//cout <<"\033[1;32m";
-					SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 2));
+					cout <<"\033[1;32m";
 					if (it->Is_Dead()) {
-						//cout<<"\033[0m";
-						SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));
+						cout<<"\033[0m";
 						cout << ".";
 					}
 					else cout << "b";
@@ -605,11 +597,9 @@ void Field::Arena() {
 					break;
 				}
 				if (it->Is_Located(j, i) == 4) {
-					//cout <<"\033[1;32m";
-					SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 2));
+					cout <<"\033[1;32m";
 					if (it->Is_Dead()) {
-						//cout<<"\033[0m";
-						SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));
+						cout<<"\033[0m";
 						cout << ".";
 					}
 					else cout << "m";
@@ -617,11 +607,9 @@ void Field::Arena() {
 					break;
 				}
 				if (it->Is_Located(j, i) == 5) {
-					//cout <<"\033[1;32m";
-					SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 2));
+					cout <<"\033[1;32m";
 					if (it->Is_Dead()) {
-						//cout<<"\033[0m";
-						SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));
+						cout<<"\033[0m";
 						cout << ".";
 					}
 					else cout << "s";
@@ -630,15 +618,13 @@ void Field::Arena() {
 				}
 			}
 			if (flag) {
-				//cout<<"\033[0m";
-				SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));
+				cout<<"\033[0m";
 				cout << ".";
 			}
-			if (j == y_size - 1) { SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15)); cout << "|" << endl; }
+			if (j == y_size - 1) {cout<<"\033[0m"; cout << "|" << endl; }
 		}
 	}
-	//cout<<"\033[0m";
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));
+	cout<<"\033[0m";
 	cout << " +";
 	for (int i = 0; i < x_size; i++)cout << "-";
 	cout << "+" << endl;

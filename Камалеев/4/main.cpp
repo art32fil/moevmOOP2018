@@ -1,7 +1,7 @@
 #include "field.h"
 
 int main(){
-	ifstream fl("G:\\Files\\input.txt");
+	ifstream fl("input.txt");
 	int cmd, entr, x, y;
 	string clr,cr;
 	Field* fld = new Field(fl);
