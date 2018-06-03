@@ -32,6 +32,7 @@ ostream &operator<<(ostream &out, Warior &ob) {
 		out << "\033[32m";
 	if (ob.show_team() == 2) // 0
 		out << "\033[31m";
+<<<<<<< HEAD
 	if (dynamic_cast<Archer*>(&ob)) {
 		out << " A " << "\033[0m";
 	}
@@ -41,6 +42,9 @@ ostream &operator<<(ostream &out, Warior &ob) {
 	else {
 		out << " W " << "\033[0m";
 	}
+=======
+	out << " W " << "\033[0m";
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 	return out;
 }
 

@@ -5,7 +5,11 @@
 #include <string.h>
 #include <stdio.h>
 
+<<<<<<< HEAD
 class Warior : public Object
+=======
+class Warior :public Object
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 {
 	int force;
 public:
@@ -16,6 +20,7 @@ public:
 	// thinkaboutittoo friend istream &operator>>(istream &in, Warior &ob);
 	friend ostream &operator<<(ostream &out, Warior &ob);
 };
+<<<<<<< HEAD
 
 class Archer : public Warior {
 	int range;
@@ -37,4 +42,6 @@ public:
 
 };
 
+=======
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 #endif // WARRIOR_H

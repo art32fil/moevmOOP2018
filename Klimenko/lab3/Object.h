@@ -34,9 +34,12 @@ public:
 	int get_id();
 	int show_health();
 
+<<<<<<< HEAD
 	int get_health() {
 		return health;
 	}
+=======
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 	int show_team();
 	int get_damage(int damage);
 	virtual Object* is_on_position(_2dim);

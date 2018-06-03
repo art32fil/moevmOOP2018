@@ -1,7 +1,10 @@
 #ifndef BUILDING_H
 #define BUILDING_H
 #include "Object.h"
+<<<<<<< HEAD
 
+=======
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 class Building :public Object
 {
 	_2dim range;

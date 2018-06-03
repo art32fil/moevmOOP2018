@@ -62,6 +62,7 @@ int main() {
 						break;
 					}
 					break;
+<<<<<<< HEAD
 				case('a'):
 					cout << "1. Hit" << endl;
 					cout << "2. Move" << endl;
@@ -111,6 +112,8 @@ int main() {
 						break;
 					}
 					break;
+=======
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 				case('b'):
 					cout << "Be hitted" << endl;
 					cin >> damage;

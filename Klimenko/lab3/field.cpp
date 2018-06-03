@@ -74,12 +74,15 @@ void battlefield::new_team(List<Object*> *new_team, ifstream& fin, const shared_
 		case('w'):
 			new_team->AddEnd(new Warior(fin, t));
 			break;
+<<<<<<< HEAD
 		case('a'):
 			new_team->AddEnd(new Archer(fin, t));
 			break;
 		case('k'):
 			new_team->AddEnd(new Kamikaze(fin, t));
 			break;
+=======
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 		case('b'):
 			new_team->AddEnd(new Building(fin, t));
 			break;
@@ -100,7 +103,11 @@ battlefield::~battlefield()
 	cout << "~Field fight: END" << endl;
 }
 
+<<<<<<< HEAD
 void battlefield::print()
+=======
+void battlefield::print() 
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 {
 	cout << console.yellow;
 	cout << " + ";
@@ -131,9 +138,15 @@ void battlefield::print()
 }
 
 int battlefield::hit(_2dim pos, int id) {
+<<<<<<< HEAD
 	Object* unit = select_by_id(id);
 	char type = define_type(unit);
 	if (type == 'w') {
+=======
+
+	Object* unit = select_by_id(id);
+	if (define_type(unit) == 'w') {
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 		Warior* war = dynamic_cast<Warior *>(unit);
 		vector <Object *> *list = select_by_coords(war->get_coords());
 		if (list->capacity() == 1) if (unit->get_damage(war->give_force())) if (war->last_representive()) return (war->show_team() == 1) ? 2 : 1; //suicide is hard work
@@ -145,6 +158,7 @@ int battlefield::hit(_2dim pos, int id) {
 			}
 		}
 	}
+<<<<<<< HEAD
 	else if (type == 'a') {
 		Archer* archer = dynamic_cast<Archer *>(unit);
 		vector <Object *> *list = select_by_coords(archer->get_coords());
@@ -169,6 +183,8 @@ int battlefield::hit(_2dim pos, int id) {
 			}
 		}
 	}
+=======
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 	else {
 		cerr << "Selected id is not unit!" << endl;
 		return 0;
@@ -317,6 +333,7 @@ vector <Object*>* battlefield::select_by_coords(_2dim cor) {
 }
 
 char battlefield::define_type(Object * obj)
+<<<<<<< HEAD
 {	
 	if (dynamic_cast<Kamikaze*>(obj)) {
 		return 'k';
@@ -324,6 +341,9 @@ char battlefield::define_type(Object * obj)
 	if (dynamic_cast<Archer*>(obj)) {
 		return 'a';
 	}
+=======
+{
+>>>>>>> 12cbd71f862c9caf9069973ad3fa3da2e569ec44
 	if (dynamic_cast<Warior*>(obj)) {
 		return 'w';
 	}
