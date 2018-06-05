@@ -1,0 +1,21 @@
+{
+    "files.associations": {
+        "iter": "cpp",
+        "list": "cpp",
+        "play": "cpp",
+        "object": "cpp",
+        "field": "cpp",
+        "union": "cpp",
+        "crown": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "istream": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "fstream": "cpp",
+        "vector": "cpp",
+        "ostream": "cpp",
+        "typeinfo": "cpp",
+        "iostream": "cpp"
+    }
+}
