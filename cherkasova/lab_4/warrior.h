@@ -1,8 +1,5 @@
 #pragma once
 #include "object.h"
-// #include "swordsman.h"
-// #include "magician.h"
-
 
 using namespace std;
 
@@ -14,13 +11,12 @@ class Warrior : public Object
     int range;
 
 public:
-    // Warrior () {}
     Warrior(shared_ptr<Crown> crown, istream &in);
     Warrior(shared_ptr<Crown> crown, char mark = 'w', int x = 0, int y = 0, int hp = 10, int power = 10, int range = 0);
     ~Warrior();
 
     int move_to(char action, int border_x, int border_y) override;
-    vector<pair<int, int>> aim_attack(List<Object*>& objects) override;
+    vector<pair<int, int>> aim_attack() override;
     int &getpower() override;
     int &getrange() override;
     
@@ -109,7 +105,7 @@ int Warrior::move_to(char action, int border_x, int border_y){
     return getid();
 }
 
-vector<pair<int, int>> Warrior::aim_attack(List<Object*>& objects) {
+vector<pair<int, int>> Warrior::aim_attack() {
     vector<pair<int, int>> aim;
     for (int i = 0; i <= range; i++) {
         aim.push_back(pair<int, int>(getx(), gety()));

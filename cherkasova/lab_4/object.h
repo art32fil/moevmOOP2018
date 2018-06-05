@@ -46,21 +46,20 @@ public:
     int &get_cur_amount();
     const int &getid() const;
     const shared_ptr<Crown> getcrown();
-    
-    virtual int& getpower(){}  
-    virtual int& getrange(){}      
-    virtual vector<pair<int, int>> &getlocation() {}
-    
-    virtual int move_to(char action, int border_x, int border_y){}  
-    virtual vector<pair<int, int>> aim_attack(List<Object*>& objects) {return vector<pair<int, int>>{}; }
-    virtual Object* production(int x, int y){};
 
     Object &operator=(Object&& ob);
     Object &operator=(Object &ob);
     bool operator==(Object const &ob);
-
     friend istream &operator>>(istream &in, Object &ob);
     friend ostream &operator<<(ostream &out, Object &ob);
+
+    virtual int& getpower(){}  
+    virtual int& getrange(){}      
+    virtual vector<pair<int, int>> &getlocation() {}
+    virtual int move_to(char action, int border_x, int border_y){}  
+    virtual vector<pair<int, int>> aim_attack(){}
+    virtual vector<pair<int, int>> aim_attack(int direction){}
+    virtual Object* production(int x, int y){}
 };
 //-----------------------------------------------------------------------------------------
 
@@ -81,11 +80,6 @@ Object::Object(shared_ptr<Crown> crown, istream &in): id(count_ob++), crown(crow
     cur_amount++;
     print_ob(); 
 }
-
-// Object::Object(shared_ptr<Crown> crown, char mark): id(count_ob++), crown(crown), mark(mark){ 
-//     // cur_amount++;
-//     // print_ob(); 
-// }
 
 Object::Object(shared_ptr<Crown> crown, char mark, int x, int y, int hp): 
             id(count_ob++), crown(crown), mark(mark), x(x), y(y), hp(hp){ 

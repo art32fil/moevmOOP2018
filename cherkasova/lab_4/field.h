@@ -32,7 +32,8 @@ class Field
     Object *get_obj(int id_);
     Object *get_obj(int x, int y, char mark_color);
     bool is_obj(int id_);
-    int attack(vector<pair<int,int>> aims, Object* w);
+    vector<pair<int,int>> weakest_attack(Object* w);
+    int attack(Object* w);
     void read_from_file(istream &in);
     void print_list();
     void print_field(ostream &out);
@@ -130,7 +131,61 @@ bool Field::is_obj(int id_){
     return false; // not found
 }
 
-int Field::attack(vector<pair<int,int>> aims, Object* w){
+vector<pair<int,int>> Field::weakest_attack(Object* w){
+    int min_hp = 0;
+    pair<int,int> max_pair;
+
+    vector<int> hps;
+    vector<int> ids;    
+    for(const auto& obj: list){
+        if( obj.get()->getx() == w->getx() + 1 && obj.get()->gety() == w->gety() ||
+            obj.get()->getx() == w->getx() - 1 && obj.get()->gety() == w->gety() || 
+            obj.get()->getx() == w->getx() + 1 && obj.get()->gety() == w->gety() - 1 ||
+            obj.get()->getx() == w->getx() - 1 && obj.get()->gety() == w->gety() + 1) {
+            min_hp = obj.get()->gethp();
+            max_pair = make_pair(obj.get()->getx(), obj.get()->gety());
+            break;
+        }
+    }
+    vector<pair<int, int>> aim;
+    
+    if(min_hp==0) return aim;
+    for(const auto& obj: list){
+        if( obj.get()->getx() == w->getx() + 1 && obj.get()->gety() == w->gety() ||
+            obj.get()->getx() == w->getx() - 1 && obj.get()->gety() == w->gety() || 
+            obj.get()->getx() == w->getx() + 1 && obj.get()->gety() == w->gety() - 1 ||
+            obj.get()->getx() == w->getx() - 1 && obj.get()->gety() == w->gety() + 1) {
+            if(obj.get()->gethp() < min_hp){
+                min_hp = obj.get()->gethp();
+                max_pair = make_pair(obj.get()->getx(), obj.get()->gety());
+            }
+        }
+    }
+    aim.push_back(max_pair);
+    
+    return aim;
+}
+
+int Field::attack(Object* w){
+    vector<pair<int,int>> aims;
+    if(w->getmark() == 's') aims = weakest_attack(w);
+    if(w->getmark() == 'm') {
+        int direct;
+        cout << endl;
+        cout << "0    (горизоталь вправо)" <<endl
+             << "45   (диагональ вправо вверх)" <<endl
+             << "90   (вертикаль вверх)" <<endl      
+             << "135  (диагональ влево вверх)" <<endl
+             << "180  (горизоталь влево)" <<endl    
+             << "-45  (диагональ вправо вниз)" <<endl      
+             << "-90  (вертикаль вниз)" <<endl
+             << "-135 (диагональ влево вниз)\n" <<endl;
+        cout << "Enter the direction: ";
+        cin >> direct; cout << endl;
+        aims = w->aim_attack(direct);
+    }
+    else aims = w->aim_attack();
+
     if(aims.empty()) {return 0;}
     char mark_color = w->getcrown()->contr_color()[0];   
     for(auto &aim: aims){
@@ -258,6 +313,8 @@ void Field::read_from_file(istream &in){
                 in >> hp;
                 int coord_amount;
                 in >> coord_amount;
+                char type_product;
+                in >> type_product;
                 vector<pair<int, int>> loc;
                 int x, y;
                 for(int i = 0; i < coord_amount; i++){
@@ -267,7 +324,17 @@ void Field::read_from_file(istream &in){
                 }
                 for(auto &coord: loc){
                     Object* o;
-                    o = new Building<Warrior>(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                    switch(type_product){
+                        case 'w':
+                            o = new Building<Warrior>(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                            break;
+                        case 's':
+                            o = new Building<Swordsman>(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                            break;
+                        case 'm':
+                            o = new Building<Magician>(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                            break; 
+                    }
                     list.insert_tail(o); 
                 }               
             }

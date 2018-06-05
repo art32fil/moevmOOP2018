@@ -66,7 +66,7 @@ void warrior_group_action(Object* o, Field& fd){
     int finish = 0;
     while(!finish){
         cin.clear();
-        cout << "To attack press 'a', to move -'m' [to finish - any other key]: ";
+        cout << "To attack - 'a', to move -'m': ";
         cin >> action; 
         switch(action){
         case 'm':                                           
@@ -80,7 +80,7 @@ void warrior_group_action(Object* o, Field& fd){
             cout << endl << fd;
             break;
         case 'a':
-            if (fd.attack(o->aim_attack(fd.getlist()), o))
+            if (fd.attack(o))
                 { cout << "There is no targets or they belong to the warrior's army \n"; break; }
             cout << fd;
             break;
@@ -96,33 +96,27 @@ void warrior_group_action(Object* o, Field& fd){
 }
 
 void building_action(Object* o, Field& fd){ 
-    cout << "----Production: to make warrior press - 'w', swordsman - 's', magician - 'm', then define its location (x, y) or make a miracle - '!'  [q to finish]" << endl;
-    char type;
-    int x, y;
-    cin >> type >> x >> y; cout << x << " " << y << endl;
-    if (type == '!') {
-        cout << "!!! ---Сдам на 4 твимс у Малова--- Чудо активировано !!!" << endl;
-    }
-    if(fd.find_id(x,y) == -1 && x < fd.getx_size() && y < fd.gety_size()){
-        if(type == 'w' || type == 's' || type == 'm'){
+    cout << "To launch production press 'p' [any key to quit]: ";
+    char inp;
+    cin >> inp;
+    if (inp == 'p'){
+        int x, y;
+        cout << "Enter the location of a new warrior (x, y space delimed): ";
+        cin >> x >> y; 
+        if(fd.find_id(x,y) == -1 && x < fd.getx_size() && y < fd.gety_size()){
             Object* new_w = o->production(x, y);
-            cout << o->getmark() << endl;
             fd.getlist().insert_tail((new_w));
-            cout << fd;
+            cout << fd << endl;
         }
+        else if (fd.find_id(x,y) != -1) cout << "This location isn't available\n";
     }
-    else if (fd.find_id(x,y) != -1) cout << "This location isn't available\n";
-    else {
-        cout << "Wrong input\n";
-        cin.ignore();
-	    cin.clear();
-	    cin.get();
-        cout << "Press any key to continue\n";
+    if (inp == '!') {
+        cout << "!!! ---Сдам на 4 у Малова--- Чудо активировано !!!" << endl;
     }
 }
 
 void behavior(string name, Object* o, Field& fd){
-    cout << "Selected target is " << name << endl;
+    cout << "Selected target is " << name << " [to select the next press any other key]" << endl;
     cout << "----Location: " << o->getx() << " " << o->gety() << endl;    
     cout << "----Hit points: " << o->gethp() << endl;
     cout << "----Army: " << o->getcrown()->getcolor() << endl;
@@ -148,7 +142,6 @@ int main()
     Field fd;
     fin >> fd;   
     fd.print_field(cout);
-    // cout << "See the list :\n"; fd.print_list();
 
     int a = 0, x = 0, y = 0, ind = 0, id_found;
     char c[1];
@@ -183,7 +176,7 @@ int main()
         if(check == 1) {cout << "\n!!!The red army won!!!\n\n"; }
         else if(check == 0){cout << "\n!!!The green army won!!!\n\n"; }
     }   
-    else {cout << "\nError(1)\n";}
+    else {cout << "\nERROR (1)\n";}
     // cout << "Exit status: " << exit_key << endl;
     return 0;   
 }
