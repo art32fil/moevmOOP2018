@@ -1,7 +1,10 @@
 #pragma once
+
 #include "iter.h"
-#include "warrior.h"
 #include "building.h"
+#include "swordsman.h"
+#include "magician.h"
+
 
 using namespace std;
 
@@ -128,16 +131,16 @@ bool Field::is_obj(int id_){
 }
 
 int Field::attack(vector<pair<int,int>> aims, Object* w){
-    if(aims.empty()) {cout << "return 0"<<endl;return 0;}
+    if(aims.empty()) {return 0;}
     char mark_color = w->getcrown()->contr_color()[0];   
     for(auto &aim: aims){
         Object* ob = get_obj(get<0>(aim), get<1>(aim), mark_color);
         if (!ob)  
             continue;    
         if(ob->getmark() == 'b'){
-                Building* bd = static_cast<Building*>(ob);
-                for(auto &item: bd->getlocation()){
-                    if(get<0>(item) == bd->getx() && get<1>(item) == bd->gety()) 
+                // Building<>* bd = static_cast<Building*>(ob);
+                for(auto &item: ob->getlocation()){
+                    if(get<0>(item) == ob->getx() && get<1>(item) == ob->gety()) 
                         continue;                         
                     Object* o = get_obj(get<0>(item), get<1>(item), mark_color);
                     o->damage(w->getpower());
@@ -264,7 +267,7 @@ void Field::read_from_file(istream &in){
                 }
                 for(auto &coord: loc){
                     Object* o;
-                    o = new Building(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                    o = new Building<Warrior>(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
                     list.insert_tail(o); 
                 }               
             }

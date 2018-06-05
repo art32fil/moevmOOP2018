@@ -23,7 +23,7 @@ class Object
 
 public:     
     Object(shared_ptr<Crown> crown, istream &in); 
-    Object(shared_ptr<Crown> crown, char &mark, int &x, int &y, int &hp); 
+    Object(shared_ptr<Crown> crown, char mark, int x, int y, int hp); 
     Object(Object const &ob);    
     Object(Object&& ob);
     ~Object();
@@ -53,6 +53,7 @@ public:
     
     virtual int move_to(char action, int border_x, int border_y){}  
     virtual vector<pair<int, int>> aim_attack(List<Object*>& objects) {return vector<pair<int, int>>{}; }
+    virtual Object* production(int x, int y){};
 
     Object &operator=(Object&& ob);
     Object &operator=(Object &ob);
@@ -81,7 +82,12 @@ Object::Object(shared_ptr<Crown> crown, istream &in): id(count_ob++), crown(crow
     print_ob(); 
 }
 
-Object::Object(shared_ptr<Crown> crown, char &mark, int &x, int &y, int &hp): 
+// Object::Object(shared_ptr<Crown> crown, char mark): id(count_ob++), crown(crown), mark(mark){ 
+//     // cur_amount++;
+//     // print_ob(); 
+// }
+
+Object::Object(shared_ptr<Crown> crown, char mark, int x, int y, int hp): 
             id(count_ob++), crown(crown), mark(mark), x(x), y(y), hp(hp){ 
     print_ob(); 
 }

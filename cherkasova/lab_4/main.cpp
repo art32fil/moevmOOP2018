@@ -61,7 +61,7 @@ string names(char name_mark){
 }
 
 void warrior_group_action(Object* o, Field& fd){ 
-    cout << "----Power: " << o->getpower() << endl;          
+    cout << "----Power: " << o->getpower()  << endl;          
     char action;
     int finish = 0;
     while(!finish){
@@ -95,6 +95,32 @@ void warrior_group_action(Object* o, Field& fd){
 
 }
 
+void building_action(Object* o, Field& fd){ 
+    cout << "----Production: to make warrior press - 'w', swordsman - 's', magician - 'm', then define its location (x, y) or make a miracle - '!'  [q to finish]" << endl;
+    char type;
+    int x, y;
+    cin >> type >> x >> y; cout << x << " " << y << endl;
+    if (type == '!') {
+        cout << "!!! ---Сдам на 4 твимс у Малова--- Чудо активировано !!!" << endl;
+    }
+    if(fd.find_id(x,y) == -1 && x < fd.getx_size() && y < fd.gety_size()){
+        if(type == 'w' || type == 's' || type == 'm'){
+            Object* new_w = o->production(x, y);
+            cout << o->getmark() << endl;
+            fd.getlist().insert_tail((new_w));
+            cout << fd;
+        }
+    }
+    else if (fd.find_id(x,y) != -1) cout << "This location isn't available\n";
+    else {
+        cout << "Wrong input\n";
+        cin.ignore();
+	    cin.clear();
+	    cin.get();
+        cout << "Press any key to continue\n";
+    }
+}
+
 void behavior(string name, Object* o, Field& fd){
     cout << "Selected target is " << name << endl;
     cout << "----Location: " << o->getx() << " " << o->gety() << endl;    
@@ -107,6 +133,7 @@ void behavior(string name, Object* o, Field& fd){
     if(mark == 'o' || mark == 's' || mark == 'm' || mark == 'w'){
         warrior_group_action(o, fd); 
     }         
+    if(mark == 'b') building_action(o, fd);
 }
 
 //-----------------MAIN----------------------------
@@ -152,8 +179,11 @@ int main()
 // fix comments for exit
     // file.close();
     filename.close();
-    if(check == 1) {cout << "\n!!!The red army won!!!\n\n"; }
-    else if(check == 0){cout << "\n!!!The green army won!!!\n\n"; }
+    if (flag_exit == 0){
+        if(check == 1) {cout << "\n!!!The red army won!!!\n\n"; }
+        else if(check == 0){cout << "\n!!!The green army won!!!\n\n"; }
+    }   
+    else {cout << "\nError(1)\n";}
     // cout << "Exit status: " << exit_key << endl;
     return 0;   
 }
