@@ -1,5 +1,5 @@
 #include <typeinfo> // cout << typeid(...).name()
-#include "field.hpp"
+#include "field.h"
 
 using namespace std;
 
@@ -12,18 +12,6 @@ int Object::cur_amount;
 void cinclear(){
     cin.clear(ios::goodbit); // if the latest input was wrong - flushing bufer
     cin.ignore(65535, '\n');
-}
-
-int menu(){
-    char choice;
-    int key = 1;
-    while(key){
-        cout << "Would you like to load data from file? (y/n)\n";
-        cin >> choice;
-        if (choice == 'y') { key = 0; return 1; }
-        if(choice == 'n') { key = 0; return 0; }
-        else { cout << "ERROR! Incorrect input, try again.\n"; continue; }
-    }
 }
 
 int check_for_win(Field &fd){
@@ -72,25 +60,13 @@ string names(char name_mark){
     }
 }
 
-void warrior_group_action(Object* o, Field& fd){
-    Warrior* w;
-    switch(o->getmark()){
-        case 'w':
-            w = static_cast<Warrior*>(o);
-            break;
-        case 's':
-            w = static_cast<Swordsman*>(o);
-            break;
-        case 'm':
-            w = static_cast<Magician*>(o);
-            break;
-    }
-    // int check = 0;    
+void warrior_group_action(Object* o, Field& fd){ 
+    cout << "----Power: " << o->getpower()  << endl;          
     char action;
     int finish = 0;
     while(!finish){
         cin.clear();
-        cout << "To attack press 'a', to move -'m' [to finish - any other button]: ";
+        cout << "To attack - 'a', to move -'m': ";
         cin >> action; 
         switch(action){
         case 'm':                                           
@@ -98,13 +74,13 @@ void warrior_group_action(Object* o, Field& fd){
             cin.clear();                                
             char act;
             cin >> act;
-            if (w->move_to(act, fd.getx_size()-1, fd.gety_size()-1) == -1) { 
+            if (o->move_to(act, fd.getx_size()-1, fd.gety_size()-1) == -1) { 
                 cout << "The warriow was not found or the border met\n"; break; 
             }
             cout << endl << fd;
             break;
         case 'a':
-            if (fd.attack(w->aim_attack(), w))
+            if (fd.attack(o))
                 { cout << "There is no targets or they belong to the warrior's army \n"; break; }
             cout << fd;
             break;
@@ -119,8 +95,28 @@ void warrior_group_action(Object* o, Field& fd){
 
 }
 
+void building_action(Object* o, Field& fd){ 
+    cout << "To launch production press 'p' [any key to quit]: ";
+    char inp;
+    cin >> inp;
+    if (inp == 'p'){
+        int x, y;
+        cout << "Enter the location of a new warrior (x, y space delimed): ";
+        cin >> x >> y; 
+        if(fd.find_id(x,y) == -1 && x < fd.getx_size() && y < fd.gety_size()){
+            Object* new_w = o->production(x, y);
+            fd.getlist().insert_tail((new_w));
+            cout << fd << endl;
+        }
+        else if (fd.find_id(x,y) != -1) cout << "This location isn't available\n";
+    }
+    if (inp == '!') {
+        cout << "!!! ---Сдам на 4 у Малова--- Чудо активировано !!!" << endl;
+    }
+}
+
 void behavior(string name, Object* o, Field& fd){
-    cout << "Selected target is " << name << endl;
+    cout << "Selected target is " << name << " [to select the next press any other key]" << endl;
     cout << "----Location: " << o->getx() << " " << o->gety() << endl;    
     cout << "----Hit points: " << o->gethp() << endl;
     cout << "----Army: " << o->getcrown()->getcolor() << endl;
@@ -128,9 +124,10 @@ void behavior(string name, Object* o, Field& fd){
     char action;
     int finish;
     int mark = o->getmark();
-    if(mark == 'w' || mark == 's' || mark == 'm'){
+    if(mark == 'o' || mark == 's' || mark == 'm' || mark == 'w'){
         warrior_group_action(o, fd); 
     }         
+    if(mark == 'b') building_action(o, fd);
 }
 
 //-----------------MAIN----------------------------
@@ -145,12 +142,12 @@ int main()
     Field fd;
     fin >> fd;   
     fd.print_field(cout);
-    // cout << "See the list :\n"; fd.print_list();
 
     int a = 0, x = 0, y = 0, ind = 0, id_found;
     char c[1];
     int finish = 0; 
     while(!finish){ // continue: finish = 0, quit: finish = 1
+        cout << "Press any key to start\n";
         cinclear();
         cout << "Select a target (enter x y - unsigned int numbers separated by space) [q to exit]: " << endl;
         cin >> c[0];
@@ -175,8 +172,11 @@ int main()
 // fix comments for exit
     // file.close();
     filename.close();
-    if(check == 1) {cout << "\n!!!The red army won!!!\n\n"; }
-    else if(check == 0){cout << "\n!!!The green army won!!!\n\n"; }
+    if (flag_exit == 0){
+        if(check == 1) {cout << "\n!!!The red army won!!!\n\n"; }
+        else if(check == 0){cout << "\n!!!The green army won!!!\n\n"; }
+    }   
+    else {cout << "\nERROR (1)\n";}
     // cout << "Exit status: " << exit_key << endl;
     return 0;   
 }

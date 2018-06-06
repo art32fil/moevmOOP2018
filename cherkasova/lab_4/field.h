@@ -1,7 +1,10 @@
 #pragma once
-#include "iter.hpp"
-#include "warrior.hpp"
-#include "building.hpp"
+
+#include "iter.h"
+#include "building.h"
+#include "swordsman.h"
+#include "magician.h"
+
 
 using namespace std;
 
@@ -16,7 +19,7 @@ class Field
     weak_ptr<Crown> crown_red;
     weak_ptr<Crown> crown_green;
 
-    List<Object *> list;
+    List<Object*> list;
 
   public:
     Field() {}
@@ -29,7 +32,8 @@ class Field
     Object *get_obj(int id_);
     Object *get_obj(int x, int y, char mark_color);
     bool is_obj(int id_);
-    int attack(vector<pair<int,int>> aims, Warrior* w);
+    vector<pair<int,int>> weakest_attack(Object* w);
+    int attack(Object* w);
     void read_from_file(istream &in);
     void print_list();
     void print_field(ostream &out);
@@ -127,28 +131,71 @@ bool Field::is_obj(int id_){
     return false; // not found
 }
 
-int Field::attack(vector<pair<int,int>> aims, Warrior* w){
-    Swordsman* s;
-    Magician* m;
-    switch(w->getmark()){
-        case 's':
-            s = static_cast<Swordsman*>(w);
-        case 'm':
-            m = static_cast<Magician*>(w);
+vector<pair<int,int>> Field::weakest_attack(Object* w){
+    int min_hp = 0;
+    pair<int,int> max_pair;
+
+    vector<int> hps;
+    vector<int> ids;    
+    for(const auto& obj: list){
+        if( obj.get()->getx() == w->getx() + 1 && obj.get()->gety() == w->gety() ||
+            obj.get()->getx() == w->getx() - 1 && obj.get()->gety() == w->gety() || 
+            obj.get()->getx() == w->getx() + 1 && obj.get()->gety() == w->gety() - 1 ||
+            obj.get()->getx() == w->getx() - 1 && obj.get()->gety() == w->gety() + 1) {
+            min_hp = obj.get()->gethp();
+            max_pair = make_pair(obj.get()->getx(), obj.get()->gety());
+            break;
+        }
     }
-    char mark_color;
-    string color = w->getcrown()->getcolor();
-    if(color == "red") { color = "green"; mark_color = 'g';}
-    else {color == "red"; mark_color = 'r';}
+    vector<pair<int, int>> aim;
     
+    if(min_hp==0) return aim;
+    for(const auto& obj: list){
+        if( obj.get()->getx() == w->getx() + 1 && obj.get()->gety() == w->gety() ||
+            obj.get()->getx() == w->getx() - 1 && obj.get()->gety() == w->gety() || 
+            obj.get()->getx() == w->getx() + 1 && obj.get()->gety() == w->gety() - 1 ||
+            obj.get()->getx() == w->getx() - 1 && obj.get()->gety() == w->gety() + 1) {
+            if(obj.get()->gethp() < min_hp){
+                min_hp = obj.get()->gethp();
+                max_pair = make_pair(obj.get()->getx(), obj.get()->gety());
+            }
+        }
+    }
+    aim.push_back(max_pair);
+    
+    return aim;
+}
+
+int Field::attack(Object* w){
+    vector<pair<int,int>> aims;
+    if(w->getmark() == 's') aims = weakest_attack(w);
+    if(w->getmark() == 'm') {
+        int direct;
+        cout << endl;
+        cout << "0    (горизоталь вправо)" <<endl
+             << "45   (диагональ вправо вверх)" <<endl
+             << "90   (вертикаль вверх)" <<endl      
+             << "135  (диагональ влево вверх)" <<endl
+             << "180  (горизоталь влево)" <<endl    
+             << "-45  (диагональ вправо вниз)" <<endl      
+             << "-90  (вертикаль вниз)" <<endl
+             << "-135 (диагональ влево вниз)\n" <<endl;
+        cout << "Enter the direction: ";
+        cin >> direct; cout << endl;
+        aims = w->aim_attack(direct);
+    }
+    else aims = w->aim_attack();
+
+    if(aims.empty()) {return 0;}
+    char mark_color = w->getcrown()->contr_color()[0];   
     for(auto &aim: aims){
         Object* ob = get_obj(get<0>(aim), get<1>(aim), mark_color);
         if (!ob)  
             continue;    
         if(ob->getmark() == 'b'){
-                Building* bd = static_cast<Building*>(ob);
-                for(auto &item: bd->getlocation()){
-                    if(get<0>(item) == bd->getx() && get<1>(item) == bd->gety()) 
+                // Building<>* bd = static_cast<Building*>(ob);
+                for(auto &item: ob->getlocation()){
+                    if(get<0>(item) == ob->getx() && get<1>(item) == ob->gety()) 
                         continue;                         
                     Object* o = get_obj(get<0>(item), get<1>(item), mark_color);
                     o->damage(w->getpower());
@@ -266,6 +313,8 @@ void Field::read_from_file(istream &in){
                 in >> hp;
                 int coord_amount;
                 in >> coord_amount;
+                char type_product;
+                in >> type_product;
                 vector<pair<int, int>> loc;
                 int x, y;
                 for(int i = 0; i < coord_amount; i++){
@@ -275,7 +324,17 @@ void Field::read_from_file(istream &in){
                 }
                 for(auto &coord: loc){
                     Object* o;
-                    o = new Building(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                    switch(type_product){
+                        case 'w':
+                            o = new Building<Warrior>(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                            break;
+                        case 's':
+                            o = new Building<Swordsman>(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                            break;
+                        case 'm':
+                            o = new Building<Magician>(tmp, type, get<0>(coord), get<1>(coord), hp, loc);
+                            break; 
+                    }
                     list.insert_tail(o); 
                 }               
             }
