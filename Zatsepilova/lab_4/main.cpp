@@ -110,9 +110,6 @@ void building_action(Object* o, Field& fd){
         }
         else if (fd.find_id(x,y) != -1) cout << "This location isn't available\n";
     }
-    if (inp == '!') {
-        cout << "!!! ---Сдам на 4 у Малова--- Чудо активировано !!!" << endl;
-    }
 }
 
 void behavior(string name, Object* o, Field& fd){
